@@ -1,7 +1,7 @@
 # aih
 
 ## Introduce
-This is a terminal AI tools based on the idea of "Co-relation's enhancement of AI and human beings". 
+This is a terminal AI assistant tool based on the idea of "Co-relation's enhancement of AI and human beings". 
 Current functions:
 1. Assist you chat with ChatGPT-3.5-turbo from terminal.
 2. Automatic voice reading AI returns text. 
