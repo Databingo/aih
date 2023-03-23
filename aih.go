@@ -69,7 +69,7 @@ func main() {
 	fmt.Println("Welcome to aih 0.1.0\nType \".help\" for more information.")
 	// Start loop to read user input and setn API requests
 	scanner := bufio.NewScanner(os.Stdin)
-	max_tokens := 4096
+	max_tokens := 4097
 	used_tokens := 0
 	left_tokens := max_tokens - used_tokens
 	for {
