@@ -72,6 +72,7 @@ func main() {
 	max_tokens := 4097
 	used_tokens := 0
 	left_tokens := max_tokens - used_tokens
+	speak := 0
 	for {
 		fmt.Print(left_tokens, "> ")
 		scanner.Scan()
@@ -114,7 +115,15 @@ func main() {
 		       //fmt.Println(".key         Set key")
 		       fmt.Println(".proxy       Set proxy")
 		       fmt.Println(".exit        Exit")
+		       fmt.Println(".speak       Voice speak context")
+		       fmt.Println(".quiet       Quiet")
 		       fmt.Println("                 ")
+		       continue
+	       case ".speak":       
+                       speak = 1
+		       continue
+	       case ".quiet":       
+                       speak = 0
 		       continue
 		}
 
@@ -185,13 +194,14 @@ func main() {
 		//fmt.Printf("%+v\n", left_tokens)
 
 		// Speak the response using the "say" command
+		if speak == 1 {
 		go func(){
 		cmd := exec.Command("say", cnt)
 		err = cmd.Run()
 		if err != nil {
 			fmt.Println(err)
 		}
-		}()
+		}()}
 
 		messages = append(messages, openai.ChatCompletionMessage{
 			Role:    openai.ChatMessageRoleUser,
