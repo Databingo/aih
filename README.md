@@ -30,7 +30,7 @@ $ cd aih && go build
 
 ## About Suggestions
 This is just a test in concept of "Co-relation's enhancement of AI and human beings". 
-If you have any sugeestions please write in Issues.
+If you have any suggestions please write in Issues.
 
 
 
