@@ -185,13 +185,13 @@ func main() {
 		//fmt.Printf("%+v\n", left_tokens)
 
 		// Speak the response using the "say" command
-		//go func(){
+		go func(){
 		cmd := exec.Command("say", cnt)
 		err = cmd.Run()
 		if err != nil {
 			fmt.Println(err)
 		}
-		//}()
+		}()
 
 		messages = append(messages, openai.ChatCompletionMessage{
 			Role:    openai.ChatMessageRoleUser,

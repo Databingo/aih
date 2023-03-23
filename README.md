@@ -5,7 +5,7 @@ This is a terminal AI assistant tool based on the idea of "Co-relation's enhance
 Current functions:
 1. Assist you chat with ChatGPT-3.5-turbo from terminal.
 2. Automatic voice reading AI returns text. 
-![screenshot](aih.png)
+![screenshot](aih.gif)
 
 ## Support OS
 - Mac
