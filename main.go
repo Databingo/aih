@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"runtime"
 
 //	"github.com/eiannone/keyboard"
 //	"github.com/nsf/termbox-go"
@@ -104,10 +105,10 @@ func main() {
 			case "":
 				continue
 			case ".exit":
-				fmt.Println("Exiting...")
+				fmt.Println("Byebye")
 				return
-				//	case ".hist":
-				//		for _, cmd := range hist {
+				//	case ".history":
+				//		for _, cmd := range history {
 				//			fmt.Println(cmd)
 				//		}
 				//		continue
@@ -131,7 +132,8 @@ func main() {
 				fmt.Println(".proxy       Set proxy")
 				fmt.Println(".new         New conversation")
 				fmt.Println(".speak       Voice speak context")
-				fmt.Println(".quiet       Quiet")
+				fmt.Println(".quiet       Quiet not speak")
+				fmt.Println(".clear       Clear screen")
 				fmt.Println(".exit        Exit")
 				fmt.Println("                 ")
 				continue
@@ -147,6 +149,16 @@ func main() {
 			case ".quiet":
 				speak = 0
 				continue
+			case ".clear":
+			        cmd := ""
+			 	if runtime.GOOS != "windows"{
+				 cmd = "clear"
+				 clear := exec.Command(cmd)
+				 clear.Stdout = os.Stdout
+				 clear.Run()
+				}
+				 continue
+
 			// char, key, err := keyboard.GetKey()
 			// if err != nil { panic(err) }
 			// if key == keyboard.KeyArrowUp {
