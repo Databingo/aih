@@ -34,6 +34,7 @@ $ cd aih && go build
 |.new       | New conversation|
 |.speak     | Voice speak context|
 |.quiet     | Quiet not speak |
+|.clear     | Clear screen|
 |.exit      | Exit|
 
 ## Todo
