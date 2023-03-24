@@ -26,13 +26,15 @@ $ cd aih && go build
 4. The number in prompt is the left tokens in this conversation.
 
 ## Command list
-.help        Show help
-.key         Set key
-.proxy       Set proxy
-.new         New conversation
-.speak       Voice speak context
-.quiet       Quiet not speak 
-.exit        Exit
+|command   | operation|
+|----------|----------|
+|.help      | Show help|
+|.key       | Set key|
+|.proxy     | Set proxy|
+|.new       | New conversation|
+|.speak     | Voice speak context|
+|.quiet     | Quiet not speak |
+|.exit      | Exit|
 
 ## Todo
 1. Tidy code.
