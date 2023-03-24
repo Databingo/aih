@@ -13,18 +13,8 @@ Current functions:
 ## Installation
 ```bash
 $ git clone https://github.com/Databingo/aih
-$ cd aih && go build 
+$ cd aih && go mod tidy && go build 
 ```
-
-## Usage
-```bash
-./aih
-```
-1. Paste you OpenAI key from the terminal the first time you run aih;
-2. Type .proxy to set proxy if you need;
-3. It automatic start with conversation mode.
-4. The number in prompt is the left tokens in this conversation.
-
 ## Command list
 |command   | operation|
 |----------|----------|
@@ -36,6 +26,15 @@ $ cd aih && go build
 |.quiet     | Quiet not speak |
 |.clear     | Clear screen|
 |.exit      | Exit|
+
+## Usage
+```bash
+./aih
+```
+1. Paste you OpenAI key from the terminal the first time you run aih;
+2. Type .proxy to set proxy if you need;
+3. It automatic start with conversation mode.
+4. The number in prompt is the left tokens in this conversation.
 
 ## Todo
 1. Tidy code.
