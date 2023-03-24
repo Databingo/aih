@@ -116,11 +116,18 @@ func main() {
 		       fmt.Println(".proxy       Set proxy")
 		       fmt.Println(".exit        Exit")
 		       fmt.Println(".speak       Voice speak context")
+		       fmt.Println(".new         New conversation")
 		       fmt.Println(".quiet       Quiet")
 		       fmt.Println("                 ")
 		       continue
 	       case ".speak":       
                        speak = 1
+		       continue
+	       case ".new":       
+	               messages = make([]openai.ChatCompletionMessage, 0)
+	               max_tokens = 4097
+	               used_tokens = 0
+	               left_tokens = max_tokens - used_tokens
 		       continue
 	       case ".quiet":       
                        speak = 0
