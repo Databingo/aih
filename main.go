@@ -114,10 +114,10 @@ func main() {
 		       fmt.Println(".help        Show help")
 		       //fmt.Println(".key         Set key")
 		       fmt.Println(".proxy       Set proxy")
-		       fmt.Println(".exit        Exit")
-		       fmt.Println(".speak       Voice speak context")
 		       fmt.Println(".new         New conversation")
+		       fmt.Println(".speak       Voice speak context")
 		       fmt.Println(".quiet       Quiet")
+		       fmt.Println(".exit        Exit")
 		       fmt.Println("                 ")
 		       continue
 	       case ".speak":       
