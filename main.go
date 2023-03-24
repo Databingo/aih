@@ -237,7 +237,8 @@ func main() {
 			}
 
 			// Print the response to the terminal
-			c := color.New(color.FgWhite, color.Bold)
+			//c := color.New(color.FgWhite, color.Bold)
+			c := color.New(color.FgWhite)
 			cnt := strings.TrimSpace(resp.Choices[0].Message.Content)
 			used_tokens = resp.Usage.TotalTokens
 			left_tokens = max_tokens - used_tokens
