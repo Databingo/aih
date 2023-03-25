@@ -9,6 +9,7 @@ Current functions:
 
 ## Support OS
 - Mac
+- Linux
 
 ## Installation
 ```bash

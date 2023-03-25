@@ -60,7 +60,7 @@ func main() {
 	client := openai.NewClientWithConfig(config)
 	messages := make([]openai.ChatCompletionMessage, 0)
 
-	fmt.Println("Welcome to aih 0.1.0\nType \".help\" for more information.")
+	fmt.Println("Welcome to aih v0.1.0\nType \".help\" for more information.")
 	// Start loop to read user input and setn API requests
 	scanner := bufio.NewScanner(os.Stdin)
 	max_tokens := 4097
@@ -113,7 +113,6 @@ func main() {
 				//		}
 				//		continue
 			case ".proxy":
-				fmt.Println()
 				var proxy string
 				fmt.Println("Please input your proxy: ")
 				fmt.Scanln(&proxy)
@@ -124,6 +123,7 @@ func main() {
 				if err != nil {
 					fmt.Println("Save failed.")
 				}
+				fmt.Println("Please restart aih")
 				continue
 			case ".help":
 				//fmt.Println(".info        Print the information")
