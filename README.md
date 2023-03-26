@@ -37,7 +37,7 @@ Current functions:
 5. Inquery up-to-date dataset by type .update
 
 ## Up-to-date feature:
-In .update model Aih will use ChatGPT to summarise key words from your question fit for search engine, then apply inquery from google for the up-to-date response present in yellow color sentences.
+In `.update` model Aih will use ChatGPT to summarise key words from your question fit for search engine, then apply inquery from google for the up-to-date response present in yellow color sentences.
 
 ## Support OS
 - Mac
