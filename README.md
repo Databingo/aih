@@ -49,8 +49,7 @@ $ cd aih && go mod tidy && go build
 2. ~More roles such as cowriter?~
 
 ## About Suggestions
-This is just a test in concept of "Co-relation's enhancement of AI and human beings". 
+This is an open plan based on the idea of "Co-relation's enhancement of AI and human beings".
 If you have any suggestions please write in Issues.
-
 
 
