@@ -8,6 +8,7 @@ Current functions:
 2. Automatic voice reading AI returns text. 
 3. Assist you create precise prompt sequentially by type .prompt
 4. Assist you create well-expressed sentences sequentially by type .writer
+
 ![screenshot](aih.gif)
 
 ## Support OS
