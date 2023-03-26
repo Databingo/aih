@@ -42,6 +42,7 @@ $ cd aih && go mod tidy && go build
 
 ## Todo
 1. Tidy code.
+2. More toles such as cowriter?
 
 ## About Suggestions
 This is just a test in concept of "Co-relation's enhancement of AI and human beings". 
