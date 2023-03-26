@@ -30,6 +30,7 @@ $ cd aih && go mod tidy && go build
 |.exit      | Exit|
 |-----------|----------|
 |.prompt    | Role of Assistant for create precise prompt|
+|.writer    | Role of Checker for create well sentences|
 
 ## Usage
 ```bash
