@@ -165,13 +165,13 @@ func main() {
 				 clear.Run()
 				}
 				 continue
-			case ".promptor":
+			case ".prompt":
 				messages = make([]openai.ChatCompletionMessage, 0)
 				max_tokens = 4097
 				used_tokens = 0
 				left_tokens = max_tokens - used_tokens
 				userInput = prompt_prove 
-				role = ".promptor"
+				role = ".prompt"
 			// char, key, err := keyboard.GetKey()
 			// if err != nil { panic(err) }
 			// if key == keyboard.KeyArrowUp {
