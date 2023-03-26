@@ -1,7 +1,7 @@
 # aih
 
 ## Introduce
-Use ChatGPT-3.5-turbo in terminal.
+Use ChatGPT-3.5-turbo in terminal with contextual sensitivity.
 
 Current functions:
 1. Escape the frequent "An error occurred" of OpenAI's website.
