@@ -2,12 +2,6 @@
 
 Use ChatGPT-3.5-turbo in terminal with contextual sensitivity.
 
-Current functions:
-1. Escape the frequent "An error occurred" of OpenAI's website.
-2. Automatic voice reading AI returns text. 
-3. Assist you create precise prompt sequentially by type .prompt
-4. Assist you create well-expressed sentences sequentially by type .writer
-
 ![screenshot](aih.gif)
 
 ## Command list
@@ -33,6 +27,12 @@ Current functions:
 2. Type .proxy to set proxy if you need;
 3. It automatic start with conversation mode.
 4. The number in prompt is the left tokens in this conversation.
+
+Current functions:
+1. Escape the frequent "An error occurred" of OpenAI's website.
+2. Automatic voice reading AI returns text. 
+3. Assist you create precise prompt sequentially by type .prompt
+4. Assist you create well-expressed sentences sequentially by type .writer
 
 ## Support OS
 - Mac
