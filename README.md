@@ -10,15 +10,6 @@ Current functions:
 
 ![screenshot](aih.gif)
 
-## Support OS
-- Mac
-- Linux
-
-## Installation
-```bash
-$ git clone https://github.com/Databingo/aih
-$ cd aih && go mod tidy && go build 
-```
 ## Command list
 |command   | operation|
 |----------|----------|
@@ -42,6 +33,16 @@ $ cd aih && go mod tidy && go build
 2. Type .proxy to set proxy if you need;
 3. It automatic start with conversation mode.
 4. The number in prompt is the left tokens in this conversation.
+
+## Support OS
+- Mac
+- Linux
+
+## Installation
+```bash
+$ git clone https://github.com/Databingo/aih
+$ cd aih && go mod tidy && go build 
+```
 
 ## Todo
 1. Tidy code.
