@@ -70,13 +70,6 @@ func main() {
 	speak := 0
 	role := ""
 
-	//err = keyboard.Open()
-	//defer keyboard.Close()
-
-	//hist := make([]string, 0)
-	////cur := ""
-	//pos := -1
-
 	for {
 		fmt.Print(left_tokens, role, "> ")
 
@@ -90,11 +83,6 @@ func main() {
 		case ".exit":
 			fmt.Println("Byebye")
 			return
-			//	case ".history":
-			//		for _, cmd := range history {
-			//			fmt.Println(cmd)
-			//		}
-			//		continue
 		case ".proxy":
 			var proxy string
 			fmt.Println("Please input your proxy: ")
@@ -122,7 +110,7 @@ func main() {
 			fmt.Println("Please restart aih")
 			continue
 		case ".help":
-			//fmt.Println(".info        Print the information")
+			//fmt.Println(".info      Print the information")
 			fmt.Println(".help        Show help")
 			fmt.Println(".key         Set key")
 			fmt.Println(".proxy       Set proxy")
@@ -176,10 +164,8 @@ func main() {
 			role = ".update"
 			continue
 		}
-		//----------------
 
 		if role == ".update" {
-
 			// Generate a abstract response from ChatGPT
 			prompt := "Please abstract keywords from this message for search engine in one line separate by ',' : " + userInput
 			resp_, err := client.CreateChatCompletion(
@@ -228,7 +214,7 @@ func main() {
 		resp, err := client.CreateChatCompletion(
 			context.Background(),
 			openai.ChatCompletionRequest{
-				Model: openai.GPT3Dot5Turbo,
+				Model:    openai.GPT3Dot5Turbo,
 				Messages: messages,
 			},
 		)
