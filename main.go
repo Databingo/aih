@@ -130,10 +130,23 @@ func main() {
 				}
 				fmt.Println("Please restart aih")
 				continue
+			case ".key":
+				var proxy string
+				fmt.Println("Please input your OpenAI key: ")
+				fmt.Scanln(&proxy)
+				data, err := ioutil.ReadFile("aih.json")
+				sdata := string(data)
+				nnjs, _ := sjson.Set(sdata, "key", proxy)
+				err = ioutil.WriteFile("aih.json", []byte(nnjs), 0644)
+				if err != nil {
+					fmt.Println("Save failed.")
+				}
+				fmt.Println("Please restart aih")
+				continue
 			case ".help":
 				//fmt.Println(".info        Print the information")
 				fmt.Println(".help        Show help")
-				//fmt.Println(".key         Set key")
+				fmt.Println(".key         Set key")
 				fmt.Println(".proxy       Set proxy")
 				fmt.Println(".new         New conversation")
 				fmt.Println(".speak       Voice speak context")
