@@ -1,4 +1,4 @@
-# Aih
+# Aih: up-to-date ChatGPT
 
 Use ChatGPT-3.5-turbo in terminal with contextual sensitivity + up-to-date dataset.
 
