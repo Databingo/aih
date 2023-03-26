@@ -25,9 +25,10 @@ $ cd aih && go mod tidy && go build
 |.new       | New conversation|
 |.speak     | Voice speak context|
 |.quiet     | Quiet not speak |
-|.prompt    | Role of Assistant for create precise prompt|
 |.clear     | Clear screen|
 |.exit      | Exit|
+|-----------|----------|
+|.prompt    | Role of Assistant for create precise prompt|
 
 ## Usage
 ```bash
