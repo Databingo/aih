@@ -1,13 +1,14 @@
 # aih
 
 ## Introduce
-Use ChatGPT-3.5-turbo in terminal to escape the frequent "An error occurred" of OpenAI's website.
-![screenshot](aih.gif)
+Use ChatGPT-3.5-turbo in terminal.
 
 Current functions:
-1. Assist you chat with ChatGPT-3.5-turbo from terminal.
+1. Escape the frequent "An error occurred" of OpenAI's website.
 2. Automatic voice reading AI returns text. 
 3. Assist you create precise prompt sequentially by type .prompt
+4. Assist you create well-expressed sentences sequentially by type .writer
+![screenshot](aih.gif)
 
 ## Support OS
 - Mac
