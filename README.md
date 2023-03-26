@@ -2,6 +2,7 @@
 
 ## Introduce
 Use ChatGPT-3.5-turbo in terminal to escape the freqent "An error occurred" of OpenAI's website.
+
 Current functions:
 1. Assist you chat with ChatGPT-3.5-turbo from terminal.
 2. Automatic voice reading AI returns text. 
