@@ -1,6 +1,6 @@
 # Aih
 
-Use ChatGPT-3.5-turbo in terminal with contextual sensitivity.
+Use ChatGPT-3.5-turbo in terminal with contextual sensitivity + up-to-date dataset.
 
 ![screenshot](aih.gif)
 
@@ -9,11 +9,12 @@ Use ChatGPT-3.5-turbo in terminal with contextual sensitivity.
 |----------|----------|
 |.help      | Show help|
 |.key       | Set key|
-|.proxy     | Set proxy|
+|.proxy     | Set proxy for example: socks5://127.0.0.1:7890|
 |.new       | New conversation|
 |.speak     | Voice speak context|
 |.quiet     | Quiet not speak |
 |.clear     | Clear screen|
+|.update    | Inquery up-to-date dataset|
 |.exit      | Exit|
 |-----------|----------|
 |.prompt    | Role of Assistant for create precise prompt|
@@ -33,6 +34,10 @@ Current functions:
 2. Automatic voice reading AI returns text. 
 3. Assist you create precise prompt sequentially by type .prompt
 4. Assist you create well-expressed sentences sequentially by type .writer
+5. Inquery up-to-date dataset by type .update
+
+## Up-to-date feature deployment:
+.update allow you to type in questions that need up-to-date answers. In .update model Aih will use ChatGPT to summarise key words from you question fit for search engine, then apply inquery from google for the up-to-date response present in yellow color sentences.
 
 ## Support OS
 - Mac
