@@ -12,6 +12,7 @@ import (
 	"os/exec"
 	"strings"
 	"runtime"
+//	"strconv"
 
 //	"github.com/eiannone/keyboard"
 //	"github.com/nsf/termbox-go"
@@ -70,6 +71,7 @@ func main() {
 	used_tokens := 0
 	left_tokens := max_tokens - used_tokens
 	speak := 0
+	role := ""
 
 	//err = keyboard.Open()
 	//defer keyboard.Close()
@@ -79,7 +81,7 @@ func main() {
 	//pos := -1
 
 	for {
-		fmt.Print(left_tokens, "> ")
+		fmt.Print(left_tokens, role, "> ")
 
 	//	if keyboard.Wait() {
 	//		_, key, _ := keyboard.GetKey()
@@ -149,13 +151,8 @@ func main() {
 				max_tokens = 4097
 				used_tokens = 0
 				left_tokens = max_tokens - used_tokens
+	                        role = ""
 				continue
-			case ".prompt":
-				messages = make([]openai.ChatCompletionMessage, 0)
-				max_tokens = 4097
-				used_tokens = 0
-				left_tokens = max_tokens - used_tokens
-				userInput = prompt_prove 
 			case ".quiet":
 				speak = 0
 				continue
@@ -168,7 +165,13 @@ func main() {
 				 clear.Run()
 				}
 				 continue
-
+			case ".promptor":
+				messages = make([]openai.ChatCompletionMessage, 0)
+				max_tokens = 4097
+				used_tokens = 0
+				left_tokens = max_tokens - used_tokens
+				userInput = prompt_prove 
+				role = ".promptor"
 			// char, key, err := keyboard.GetKey()
 			// if err != nil { panic(err) }
 			// if key == keyboard.KeyArrowUp {
