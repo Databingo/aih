@@ -250,7 +250,7 @@ func main() {
 					//surf
 					err := bow.Open(durl)
 					if err != nil {
-						fmt.Println(err)
+						//fmt.Println(err)
 						return
 					}
 					cnt_p := bow.Body()
@@ -276,7 +276,7 @@ func main() {
 					)
 
 					if err != nil {
-						fmt.Println(err)
+						//fmt.Println(err)
 						return
 					}
 					summary := strings.TrimSpace(resps.Choices[0].Message.Content)
