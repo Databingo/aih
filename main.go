@@ -202,17 +202,6 @@ func main() {
 			key_ := strings.TrimSpace(resp_.Choices[0].Message.Content)
 			datetime := time.Now().Format("2006-01-02")
 			key_ = key_ + ", " + datetime
-			//list := []string{"video", "pdf", "mp3", "doc","ppt","mp4","avi","mov","mpeg","zip","rar","7z","xls","jpeg","jpg"}
-			//found := false
-			//for _, str := range list {
-			//if strings.Contains(strings.ToLower(key_), str){
-			// found = true
-			// break
-			//}
-			// }
-			//if !found{
-			// key_ = key_ + ", filetype:txt"
-			//}
 			cc.Println("Key:", key_)
 			// Search in google
 			results := make([]googlesearch.Result, 0)
