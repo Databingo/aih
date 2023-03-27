@@ -54,7 +54,7 @@ func main() {
 
 	// for normal page
 	client_n := &http.Client{}
-	client_n.Timeout = time.Second * 5
+	client_n.Timeout = time.Second * 10
 	//bow := surf.NewBrowser()
 
 	if Proxy != "" {
@@ -290,7 +290,7 @@ func main() {
 				pages = pages[:7000]
 			}
 			//fmt.Println(">>", pages)
-			prompt_ps := "Please well manage information from message below, for precise conscise, ignore useless answer: " + pages
+			prompt_ps := "Please well manage information from message below, for precise conscise, ignore useless answer, only useful answer: " + pages
 			resps, err := client.CreateChatCompletion(
 				context.Background(),
 				openai.ChatCompletionRequest{
