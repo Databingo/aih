@@ -279,7 +279,7 @@ func main() {
 						return
 					}
 					summary := strings.TrimSpace(resps.Choices[0].Message.Content)
-					fmt.Println("[", index, "] ", summary)
+					//fmt.Println("[", index, "] ", summary)
 					pages += summary
 				}(index)
 			}
