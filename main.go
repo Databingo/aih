@@ -5,7 +5,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/fatih/color"
-	"github.com/headzoo/surf"
+//	"github.com/headzoo/surf"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -55,7 +55,7 @@ func main() {
 	// for normal page
 	client_n := &http.Client{}
 	client_n.Timeout = time.Second * 5
-	bow := surf.NewBrowser()
+	//bow := surf.NewBrowser()
 
 	if Proxy != "" {
 		proxyUrl, err := url.Parse(Proxy)
@@ -226,33 +226,33 @@ func main() {
 				go func(index int) {
 					defer wg.Done()
 					//http
-					//	req, err := http.NewRequest("GET", durl, nil)
-					//	if err != nil {
-					//		fmt.Println(err)
-					//		return
-					//	}
-					//	req.Header = headers
-					//	resp_p, err := client_n.Do(req)
-					//	if err != nil {
-					//		fmt.Println(err)
-					//		return
-					//	}
+						req, err := http.NewRequest("GET", durl, nil)
+						if err != nil {
+							fmt.Println(err)
+							return
+						}
+						req.Header = headers
+						resp_p, err := client_n.Do(req)
+						if err != nil {
+							fmt.Println(err)
+							return
+						}
 
-					//	defer resp_p.Body.Close()
-					//	cnt_p, err := ioutil.ReadAll(resp_p.Body)
-					//	if err != nil {
-					//		fmt.Println(err)
-					//		return
-					//	}
+						defer resp_p.Body.Close()
+						cnt_p, err := ioutil.ReadAll(resp_p.Body)
+						if err != nil {
+							fmt.Println(err)
+							return
+						}
 					//---------------
 
 					//surf
-					err := bow.Open(durl)
-					if err != nil {
-						fmt.Println(err)
-						return
-					}
-					cnt_p := bow.Body()
+				//	err := bow.Open(durl)
+				//	if err != nil {
+				//		fmt.Println(err)
+				//		return
+				//	}
+				//	cnt_p := bow.Body()
 					//---------------
 
 					page := string(cnt_p)
