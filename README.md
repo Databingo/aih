@@ -3,6 +3,7 @@
 Use ChatGPT-3.5-turbo in terminal with contextual sensitivity + UP-TO-DATE dataset.
 
 ![screenshot](aih.gif)
+![screenshot](aih_update.png)
 
 
 ## Up-to-date feature:
