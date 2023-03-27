@@ -5,7 +5,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/fatih/color"
-//	"github.com/headzoo/surf"
+	"github.com/headzoo/surf"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -55,7 +55,7 @@ func main() {
 	// for normal page
 	client_n := &http.Client{}
 	client_n.Timeout = time.Second * 10
-	//bow := surf.NewBrowser()
+	bow := surf.NewBrowser()
 
 	if Proxy != "" {
 		proxyUrl, err := url.Parse(Proxy)
@@ -68,6 +68,7 @@ func main() {
 		// for normal page
 		//client_n := &http.Client{Transport: transport}
 		client_n.Transport = transport
+		bow.SetTransport(transport)
 	}
 
 	client := openai.NewClientWithConfig(config)
@@ -214,7 +215,7 @@ func main() {
 				cc.Println(i.URL)
 				cc.Println(i.Title)
 			}
-			cc.Println("------summary------")
+
 			var wg sync.WaitGroup
 			pages := ""
 			headers := http.Header{}
@@ -226,33 +227,33 @@ func main() {
 				go func(index int) {
 					defer wg.Done()
 					//http
-						req, err := http.NewRequest("GET", durl, nil)
-						if err != nil {
-							fmt.Println(err)
-							return
-						}
-						req.Header = headers
-						resp_p, err := client_n.Do(req)
-						if err != nil {
-							fmt.Println(err)
-							return
-						}
+					//	req, err := http.NewRequest("GET", durl, nil)
+					//	if err != nil {
+					//		fmt.Println(err)
+					//		return
+					//	}
+					//	req.Header = headers
+					//	resp_p, err := client_n.Do(req)
+					//	if err != nil {
+					//		fmt.Println(err)
+					//		return
+					//	}
 
-						defer resp_p.Body.Close()
-						cnt_p, err := ioutil.ReadAll(resp_p.Body)
-						if err != nil {
-							fmt.Println(err)
-							return
-						}
+					//	defer resp_p.Body.Close()
+					//	cnt_p, err := ioutil.ReadAll(resp_p.Body)
+					//	if err != nil {
+					//		fmt.Println(err)
+					//		return
+					//	}
 					//---------------
 
 					//surf
-				//	err := bow.Open(durl)
-				//	if err != nil {
-				//		fmt.Println(err)
-				//		return
-				//	}
-				//	cnt_p := bow.Body()
+					err := bow.Open(durl)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+					cnt_p := bow.Body()
 					//---------------
 
 					page := string(cnt_p)
@@ -284,11 +285,11 @@ func main() {
 				}(index)
 			}
 			wg.Wait()
-
 			// Generate a summary_total response from ChatGPT
 			if len(pages) > 7000 {
 				pages = pages[:7000]
 			}
+
 			//fmt.Println(">>", pages)
 			prompt_ps := "Please well manage information from message below, for precise conscise, ignore useless answer, only useful answer: " + pages
 			resps, err := client.CreateChatCompletion(
@@ -305,13 +306,14 @@ func main() {
 
 			if err != nil {
 				fmt.Println(err)
-				continue
+				return 
+				//continue
 			}
 			summary_total := strings.TrimSpace(resps.Choices[0].Message.Content)
+			cc.Println("------summary------")
 			cc.Println(summary_total)
 			cc.Println("-------------------")
-
-		}
+	       }
 
 		// Porcess input
 		messages = append(messages, openai.ChatCompletionMessage{
