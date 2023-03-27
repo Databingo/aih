@@ -8,9 +8,9 @@ Use ChatGPT-3.5-turbo in terminal with contextual sensitivity + UP-TO-DATE datas
 
 ## Up-to-date feature:
 In `.update` model Aih will use ChatGPT to 
-1. Summarise key words from your question fit for search engine for realtime information; 
+1. Summarise key words from your question fit for search engine;
 2. Then apply inquery from google for the up-to-date response present in yellow color sentences;
-3. Then print total summary from ChatGPT in yellow color sentences.
+3. Then print a total summary of several top-rank pages from ChatGPT in yellow.
 
 ## Command list
 |command   | operation|
