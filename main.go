@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/fatih/color"
+	"github.com/headzoo/surf"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -12,6 +13,8 @@ import (
 	"os/exec"
 	"runtime"
 	"strings"
+	"sync"
+	"time"
 	//	"strconv"
 	//	"github.com/eiannone/keyboard"
 	//	"github.com/nsf/termbox-go"
@@ -49,13 +52,22 @@ func main() {
 	// Set up the OpenAI API client
 	config := openai.DefaultConfig(OpenAI_Key)
 
+	// for normal page
+	client_n := &http.Client{}
+	client_n.Timeout = time.Second * 5
+	bow := surf.NewBrowser()
+
 	if Proxy != "" {
 		proxyUrl, err := url.Parse(Proxy)
 		if err != nil {
 			panic(err)
 		}
 		transport := &http.Transport{Proxy: http.ProxyURL(proxyUrl)}
+		// for openai api
 		config.HTTPClient = &http.Client{Transport: transport}
+		// for normal page
+		//client_n := &http.Client{Transport: transport}
+		client_n.Transport = transport
 	}
 
 	client := openai.NewClientWithConfig(config)
@@ -167,7 +179,7 @@ func main() {
 
 		if role == ".update" {
 			// Generate a abstract response from ChatGPT
-			prompt := "Please abstract keywords from this message for search engine in one line separate by ',' : " + userInput
+			prompt := "Please abstract or extent keywords from this message for precise information on search engine in one line separate by ',' : " + userInput
 			resp_, err := client.CreateChatCompletion(
 				context.Background(),
 				openai.ChatCompletionRequest{
@@ -184,23 +196,120 @@ func main() {
 				fmt.Println(err)
 				continue
 			}
+			cc := color.New(color.FgYellow)
 			key_ := strings.TrimSpace(resp_.Choices[0].Message.Content)
-
+			cc.Println("Key:", key_)
+			// Search in google
 			results := make([]googlesearch.Result, 0)
+			ops1 := googlesearch.SearchOptions{Limit: 12}
 			if Proxy != "" {
 				ops := googlesearch.SearchOptions{ProxyAddr: Proxy}
-				results, _ = googlesearch.Search(nil, key_, ops)
+				results, _ = googlesearch.Search(nil, key_, ops, ops1)
 			} else {
-				results, _ = googlesearch.Search(nil, key_)
+				results, _ = googlesearch.Search(nil, key_, ops1)
 			}
-			cc := color.New(color.FgYellow)
 			cc.Println("------up-to-date------")
 			for index, i := range results {
 				cc.Print("[", index, "] ")
 				cc.Println(i.URL)
 				cc.Println(i.Title)
 			}
-			cc.Println("----------------------")
+			cc.Println("------summary------")
+			var wg sync.WaitGroup
+			pages := ""
+			headers := http.Header{}
+			headers.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/538.36")
+			headers.Set("Accept-Language", "")
+			for index, i := range results {
+				durl := i.URL
+				wg.Add(1)
+				go func(index int) {
+					defer wg.Done()
+					//http
+					//	req, err := http.NewRequest("GET", durl, nil)
+					//	if err != nil {
+					//		fmt.Println(err)
+					//		return
+					//	}
+					//	req.Header = headers
+					//	resp_p, err := client_n.Do(req)
+					//	if err != nil {
+					//		fmt.Println(err)
+					//		return
+					//	}
+
+					//	defer resp_p.Body.Close()
+					//	cnt_p, err := ioutil.ReadAll(resp_p.Body)
+					//	if err != nil {
+					//		fmt.Println(err)
+					//		return
+					//	}
+					//---------------
+
+					//surf
+					err := bow.Open(durl)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+					cnt_p := bow.Body()
+					//---------------
+
+					page := string(cnt_p)
+					//fmt.Println(page)
+					if len(page) > 6000 {
+						page = page[:6000]
+					}
+					// Generate a summary response from ChatGPT
+					prompt_p := "Please abstract usefull information about `" + userInput + "` from message below, if no usefull information, return 0: " + page
+					resps, err := client.CreateChatCompletion(
+						context.Background(),
+						openai.ChatCompletionRequest{
+							Model: openai.GPT3Dot5Turbo,
+							Messages: []openai.ChatCompletionMessage{
+								{
+									Role:    openai.ChatMessageRoleUser,
+									Content: prompt_p,
+								}},
+						},
+					)
+
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+					summary := strings.TrimSpace(resps.Choices[0].Message.Content)
+					fmt.Println("[", index, "] ", summary)
+					pages += summary
+				}(index)
+			}
+			wg.Wait()
+
+			// Generate a summary_total response from ChatGPT
+			if len(pages) > 7000 {
+				pages = pages[:7000]
+			}
+			//fmt.Println(">>", pages)
+			prompt_ps := "Please well manage information from message below, for precise conscise, ignore useless answer: " + pages
+			resps, err := client.CreateChatCompletion(
+				context.Background(),
+				openai.ChatCompletionRequest{
+					Model: openai.GPT3Dot5Turbo,
+					Messages: []openai.ChatCompletionMessage{
+						{
+							Role:    openai.ChatMessageRoleUser,
+							Content: prompt_ps,
+						}},
+				},
+			)
+
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+			summary_total := strings.TrimSpace(resps.Choices[0].Message.Content)
+			cc.Println(summary_total)
+			cc.Println("-------------------")
 
 		}
 

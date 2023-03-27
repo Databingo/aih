@@ -46,6 +46,10 @@ github.com/google/go-cmp v0.3.0/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMyw
 github.com/google/go-cmp v0.3.1/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMywk6iLU=
 github.com/google/go-cmp v0.4.0 h1:xsAVV57WRhGj6kEIi8ReJzQlHHqcBYCElAvkovg3B/4=
 github.com/google/go-cmp v0.4.0/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
+github.com/headzoo/surf v1.0.1 h1:wk3+LT8gjnCxEwfBJl6MhaNg154En5KjgmgzAG9uMS0=
+github.com/headzoo/surf v1.0.1/go.mod h1:/bct0m/iMNEqpn520y01yoaWxsAEigGFPnvyR1ewR5M=
+github.com/headzoo/ut v0.0.0-20181013193318-a13b5a7a02ca h1:utFgFwgxaqx5OthzE3DSGrtOq7rox5r2sxZ2wbfTuK0=
+github.com/headzoo/ut v0.0.0-20181013193318-a13b5a7a02ca/go.mod h1:8926sG02TCOX4RFRzIMFIzRw4xuc/TwO2gtN7teMJZ4=
 github.com/jawher/mow.cli v1.1.0/go.mod h1:aNaQlc7ozF3vw6IJ2dHjp2ZFiA4ozMIYY6PyuRJwlUg=
 github.com/kennygrant/sanitize v1.2.4 h1:gN25/otpP5vAsO2djbMhF/LQX6R7+O1TB4yv8NzpJ3o=
 github.com/kennygrant/sanitize v1.2.4/go.mod h1:LGsjYYtgxbetdg5owWB2mpgUL6e2nfw2eObZ0u0qvak=

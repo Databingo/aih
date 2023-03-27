@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/fatih/color v1.15.0
+	github.com/headzoo/surf v1.0.1
 	github.com/rocketlaunchr/google-search v1.1.5
 	github.com/sashabaranov/go-openai v1.5.3
 	github.com/tidwall/gjson v1.14.4
@@ -20,6 +21,7 @@ require (
 	github.com/gocolly/colly/v2 v2.1.0 // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/golang/protobuf v1.4.2 // indirect
+	github.com/headzoo/ut v0.0.0-20181013193318-a13b5a7a02ca // indirect
 	github.com/kennygrant/sanitize v1.2.4 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect
