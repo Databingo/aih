@@ -3,6 +3,7 @@ module aih
 go 1.19
 
 require (
+	github.com/PuerkitoBio/goquery v1.5.1
 	github.com/fatih/color v1.15.0
 	github.com/headzoo/surf v1.0.1
 	github.com/rocketlaunchr/google-search v1.1.5
@@ -12,7 +13,6 @@ require (
 )
 
 require (
-	github.com/PuerkitoBio/goquery v1.5.1 // indirect
 	github.com/andybalholm/cascadia v1.2.0 // indirect
 	github.com/antchfx/htmlquery v1.2.3 // indirect
 	github.com/antchfx/xmlquery v1.2.4 // indirect

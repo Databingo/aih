@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"github.com/PuerkitoBio/goquery"
 	"github.com/fatih/color"
 	"github.com/headzoo/surf"
 	"io/ioutil"
@@ -199,6 +200,19 @@ func main() {
 			}
 			cc := color.New(color.FgYellow)
 			key_ := strings.TrimSpace(resp_.Choices[0].Message.Content)
+			datetime := time.Now().Format("2006-01-02")
+			key_ = key_ + ", " + datetime
+			//list := []string{"video", "pdf", "mp3", "doc","ppt","mp4","avi","mov","mpeg","zip","rar","7z","xls","jpeg","jpg"}
+			//found := false
+			//for _, str := range list {
+			//if strings.Contains(strings.ToLower(key_), str){
+			// found = true
+			// break
+			//}
+			// }
+			//if !found{
+			// key_ = key_ + ", filetype:txt"
+			//}
 			cc.Println("Key:", key_)
 			// Search in google
 			results := make([]googlesearch.Result, 0)
@@ -256,13 +270,15 @@ func main() {
 					cnt_p := bow.Body()
 					//---------------
 
-					page := string(cnt_p)
+					raw_page := string(cnt_p)
+					r_page, err := goquery.NewDocumentFromReader(strings.NewReader(raw_page))
+					page := r_page.Text()
 					//fmt.Println(page)
 					if len(page) > 6000 {
 						page = page[:6000]
 					}
 					// Generate a summary response from ChatGPT
-					prompt_p := "Please abstract usefull information about `" + userInput + "` from message below, if no usefull information, return 0: " + page
+					prompt_p := "Please abstract usefull information about `" + userInput + "` from message below, today is" + datetime + ", if no usefull information, return 0: " + page
 					resps, err := client.CreateChatCompletion(
 						context.Background(),
 						openai.ChatCompletionRequest{
@@ -306,14 +322,14 @@ func main() {
 
 			if err != nil {
 				fmt.Println(err)
-				return 
+				return
 				//continue
 			}
 			summary_total := strings.TrimSpace(resps.Choices[0].Message.Content)
 			cc.Println("------summary------")
 			cc.Println(summary_total)
 			cc.Println("-------------------")
-	       }
+		}
 
 		// Porcess input
 		messages = append(messages, openai.ChatCompletionMessage{
