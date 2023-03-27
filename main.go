@@ -152,12 +152,15 @@ func main() {
 			speak = 0
 			continue
 		case ".clear":
-			cmd := ""
-			if runtime.GOOS != "windows" {
-				cmd = "clear"
-				clear := exec.Command(cmd)
-				clear.Stdout = os.Stdout
-				clear.Run()
+			switch runtime.GOOS {
+			case "linux", "darwin":
+				cmd := exec.Command("clear")
+				cmd.Stdout = os.Stdout
+				cmd.Run()
+			case "windows":
+				cmd := exec.Command("cmd", "/c", "cls")
+				cmd.Stdout = os.Stdout
+				cmd.Run()
 			}
 			continue
 		case ".prompt":
@@ -350,11 +353,18 @@ func main() {
 		// Speak the response using the "say" command
 		if speak == 1 {
 			go func() {
-				cmd := exec.Command("say", cnt)
-				err = cmd.Run()
-				if err != nil {
-					fmt.Println(err)
+				switch runtime.GOOS {
+				case "linux", "darwin":
+					cmd := exec.Command("say", cnt)
+					err = cmd.Run()
+					if err != nil {
+						fmt.Println(err)
+					}
+				case "windows":
+					_ = 1 + 1
+
 				}
+
 			}()
 		}
 

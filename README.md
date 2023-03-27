@@ -47,6 +47,7 @@ Current functions:
 ## Support OS
 - Mac
 - Linux
+- Windows
 
 ## Installation
 ```bash
