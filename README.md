@@ -1,6 +1,6 @@
 # Aih: Realtime & up-to-date ChatGPT
 
-Use ChatGPT in terminal with contextual-sensitivity and realtime up-to-date dataset in a single binary file.
+Use ChatGPT in terminal with contextual-sensitivity and realtime up-to-date dataset after 2021 in a single binary file.
 
 ![screenshot](aih_update.png)
 ![screenshot](aih.gif)
