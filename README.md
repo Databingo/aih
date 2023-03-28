@@ -1,4 +1,4 @@
-# Aih: realtime & up-to-date ChatGPT
+# Aih: Realtime & up-to-date ChatGPT
 
 Use ChatGPT in terminal with contextual-sensitivity and realtime up-to-date dataset in a single binary file.
 
