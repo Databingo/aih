@@ -1,6 +1,6 @@
-# Aih: up-to-date ChatGPT
+# Aih: realtime & up-to-date ChatGPT
 
-Use ChatGPT-3.5-turbo in terminal with contextual sensitivity + UP-TO-DATE dataset.
+Use ChatGPT in terminal with contextual sensitivity and realtime up-to-date dataset in a single binary file.
 
 ![screenshot](aih_update.png)
 ![screenshot](aih.gif)
