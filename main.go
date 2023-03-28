@@ -267,7 +267,7 @@ func main() {
 					page := r_page.Text()
 					page = strings.ReplaceAll(page, "\n", " ")
 					page = strings.ReplaceAll(page, "  ", " ")
-					fmt.Println(page)
+					//fmt.Println(page)
 					if len(page) > 6000 {
 						page = page[:6000]
 					}
