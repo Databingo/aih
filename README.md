@@ -5,13 +5,6 @@ Use ChatGPT in terminal with contextual sensitivity and realtime up-to-date data
 ![screenshot](aih_update.png)
 ![screenshot](aih.gif)
 
-
-## Up-to-date feature:
-In `.update` model Aih will use ChatGPT to 
-1. Summarise key words from your question fit for search engine;
-2. Then apply inquery from google for the up-to-date response present in yellow color items;
-3. Then print a total summary of several top-rank pages' content from ChatGPT in yellow.
-
 ## Command list
 |command   | operation|
 |----------|----------|
@@ -43,6 +36,12 @@ Current functions:
 3. Assist you create precise prompt sequentially by type .prompt
 4. Assist you create well-expressed sentences sequentially by type .writer
 5. Inquery up-to-date dataset by type .update
+
+## Up-to-date feature:
+In `.update` model Aih will use ChatGPT to 
+1. Summarise key words from your question fit for search engine;
+2. Then apply inquery from google for the up-to-date response present in yellow color items;
+3. Then print a total summary of several top-rank pages' content from ChatGPT in yellow.
 
 ## Support OS
 - Mac
