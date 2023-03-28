@@ -265,7 +265,9 @@ func main() {
 					raw_page := string(cnt_p)
 					r_page, err := goquery.NewDocumentFromReader(strings.NewReader(raw_page))
 					page := r_page.Text()
-					//fmt.Println(page)
+					page = strings.ReplaceAll(page, "\n", " ")
+					page = strings.ReplaceAll(page, "  ", " ")
+					fmt.Println(page)
 					if len(page) > 6000 {
 						page = page[:6000]
 					}
