@@ -6,6 +6,7 @@ require (
 	github.com/PuerkitoBio/goquery v1.5.1
 	github.com/fatih/color v1.15.0
 	github.com/headzoo/surf v1.0.1
+	github.com/pkg/term v1.1.0
 	github.com/rocketlaunchr/google-search v1.1.5
 	github.com/sashabaranov/go-openai v1.5.3
 	github.com/tidwall/gjson v1.14.4
