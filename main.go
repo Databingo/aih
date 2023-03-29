@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bufio"
+//	"bufio"
 	"context"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
@@ -16,7 +16,8 @@ import (
 	"strings"
 	"sync"
 	"time"
-	//	"strconv"
+	"github.com/peterh/liner"
+	"strconv"
 	//	"github.com/eiannone/keyboard"
 	//	"github.com/nsf/termbox-go"
 	"github.com/rocketlaunchr/google-search"
@@ -77,19 +78,32 @@ func main() {
 
 	fmt.Println("Welcome to aih v0.1.0\nType \".help\" for more information.")
 	// Start loop to read user input and setn API requests
-	scanner := bufio.NewScanner(os.Stdin)
+//	scanner := bufio.NewScanner(os.Stdin)
 	max_tokens := 4097
 	used_tokens := 0
 	left_tokens := max_tokens - used_tokens
 	speak := 0
 	role := ""
 
+	////
+	liner := liner.NewLiner()
+	defer liner.Close()
+	if f, err := os.Open(".history"); err == nil {
+	 liner.ReadHistory(f)
+	 f.Close()
+	}
+	 /////
+
 	for {
-		fmt.Print(left_tokens, role, "> ")
+	 /////
+	        promp := strconv.Itoa(left_tokens) + role + "> "
+	        userInput, _:= liner.Prompt(promp)
+		liner.AppendHistory(userInput)
+		//fmt.Print(left_tokens, role, "> ")
 
 		// Parse the command line arguments to get the prompt
-		scanner.Scan()
-		userInput := scanner.Text()
+		//scanner.Scan()
+	//	userInput := scanner.Text()
 
 		switch userInput {
 		case "":
