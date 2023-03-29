@@ -2,9 +2,9 @@
 
 Use ChatGPT & Cursor in terminal with contextual-sensitivity and realtime up-to-date dataset after 2021 in a single binary file.
 
-Access realtime date:
+.update mode: Access realtime date<br>
 ![screenshot](aih_update.png)
-Code creation by Cursor:
+.code mode: Code creation by Cursor<br>
 ![screenshot](aih_code.png)
 ![screenshot](aih.gif)
 
