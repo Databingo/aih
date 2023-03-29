@@ -1,23 +1,25 @@
 package main
 
 import (
-//	"bufio"
+	//	"bufio"
 	"context"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/atotto/clipboard"
 	"github.com/fatih/color"
 	"github.com/headzoo/surf"
+	"github.com/peterh/liner"
+	"github.com/sohaha/cursor"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
 	"os/exec"
 	"runtime"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
-	"github.com/peterh/liner"
-	"strconv"
 	//	"github.com/eiannone/keyboard"
 	//	"github.com/nsf/termbox-go"
 	"github.com/rocketlaunchr/google-search"
@@ -78,7 +80,7 @@ func main() {
 
 	fmt.Println("Welcome to aih v0.1.0\nType \".help\" for more information.")
 	// Start loop to read user input and setn API requests
-//	scanner := bufio.NewScanner(os.Stdin)
+	//	scanner := bufio.NewScanner(os.Stdin)
 	max_tokens := 4097
 	used_tokens := 0
 	left_tokens := max_tokens - used_tokens
@@ -89,15 +91,15 @@ func main() {
 	liner := liner.NewLiner()
 	defer liner.Close()
 	if f, err := os.Open(".history"); err == nil {
-	 liner.ReadHistory(f)
-	 f.Close()
+		liner.ReadHistory(f)
+		f.Close()
 	}
-	 /////
+	/////
 
 	for {
-	 /////
-	        promp := strconv.Itoa(left_tokens) + role + "> "
-	        userInput, _:= liner.Prompt(promp)
+		/////
+		promp := strconv.Itoa(left_tokens) + role + "> "
+		userInput, _ := liner.Prompt(promp)
 		liner.AppendHistory(userInput)
 		//fmt.Print(left_tokens, role, "> ")
 
@@ -105,8 +107,9 @@ func main() {
 		//scanner.Scan()
 		//userInput := scanner.Text()
 
-                // remove space after .xxx  
-	        userInput = strings.Trim(userInput, " ")
+		// remove space after .xxx
+		userInput = strings.Trim(userInput, " ")
+		clipb := ""
 		switch userInput {
 		case "":
 			continue
@@ -196,6 +199,9 @@ func main() {
 		case ".update":
 			role = ".update"
 			continue
+		case ".code":
+			role = ".code"
+			continue
 		}
 
 		if role == ".update" {
@@ -222,6 +228,7 @@ func main() {
 			datetime := time.Now().Format("2006-01-02")
 			key_ = key_ + ", " + datetime
 			cc.Println("Key:", key_)
+			clipb += fmt.Sprintln("Key:", key_)
 			// Search in google
 			results := make([]googlesearch.Result, 0)
 			ops1 := googlesearch.SearchOptions{Limit: 12}
@@ -232,10 +239,14 @@ func main() {
 				results, _ = googlesearch.Search(nil, key_, ops1)
 			}
 			cc.Println("------up-to-date------")
+			clipb += fmt.Sprintln("------up-to-date------")
 			for index, i := range results {
 				cc.Print("[", index, "] ")
 				cc.Println(i.URL)
 				cc.Println(i.Title)
+				clipb += fmt.Sprintln("[", index, "]")
+				clipb += fmt.Sprintln(i.URL)
+				clipb += fmt.Sprintln(i.Title)
 			}
 
 			var wg sync.WaitGroup
@@ -339,6 +350,29 @@ func main() {
 			cc.Println("------summary------")
 			cc.Println(summary_total)
 			cc.Println("-------------------")
+
+			clipb += fmt.Sprintln("------summary------")
+			clipb += fmt.Sprintln(summary_total)
+			clipb += fmt.Sprintln("-------------------")
+		}
+
+		if role == ".code" {
+			res_code, err := cursor.Conv(userInput)
+			if err != nil {
+				panic(err)
+				return
+			}
+			cg := color.New(color.FgGreen)
+			cg.Println(res_code)
+
+			// write to clipboard
+			err = clipboard.WriteAll(res_code)
+			if err != nil {
+				panic(err)
+				return
+			}
+			continue
+
 		}
 
 		// Porcess input
@@ -367,6 +401,14 @@ func main() {
 		used_tokens = resp.Usage.TotalTokens
 		left_tokens = max_tokens - used_tokens
 		c.Println(cnt)
+
+		// write to clipboard
+		clipb += fmt.Sprintln(cnt)
+		err = clipboard.WriteAll(clipb)
+		if err != nil {
+			panic(err)
+			return
+		}
 
 		// Speak the response using the "say" command
 		if speak == 1 {

@@ -1,8 +1,11 @@
-# Aih: realtime & up-to-date ChatGPT
+# Aih: realtime & up-to-date ChatGPT & Cursor
 
-Use ChatGPT in terminal with contextual-sensitivity and realtime up-to-date dataset after 2021 in a single binary file.
+Use ChatGPT & Cursor in terminal with contextual-sensitivity and realtime up-to-date dataset after 2021 in a single binary file.
 
+Access realtime date:
 ![screenshot](aih_update.png)
+Code creation by Cursor:
+![screenshot](aih_code.png)
 ![screenshot](aih.gif)
 
 ## Usage
@@ -25,6 +28,7 @@ Use ChatGPT in terminal with contextual-sensitivity and realtime up-to-date data
 |.quiet     | Quiet not speak |
 |.clear     | Clear screen|
 |.update    | Inquery up-to-date dataset|
+|.code      | Code creating by Cursor.so API|
 |.exit      | Exit|
 |-----------|----------|
 |.prompt    | Role of Assistant for create precise prompt|
@@ -36,6 +40,7 @@ Use ChatGPT in terminal with contextual-sensitivity and realtime up-to-date data
 3. Assist you create precise prompt sequentially by type .prompt
 4. Assist you create well-expressed sentences sequentially by type .writer
 5. Inquery up-to-date dataset by type .update
+6. Code creation by Cursor.so API
 
 ## Up-to-date feature:
 In `.update` model Aih will use ChatGPT to 
@@ -58,7 +63,7 @@ $ cd aih && go mod tidy && go build
 1. Tidy code.
 2. ~More roles such as cowriter?~
 3. ~Add command history recall by UP and DOWN arrow pressing~
-4. Add Cursor AI Coding assentant mode .code
+4. ~Add Cursor AI Coding assentant mode .code~
 5. Waiting reflections.
 
 ## About Suggestions
