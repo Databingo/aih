@@ -59,6 +59,8 @@ In `.update` model Aih will use ChatGPT to
 $ git clone https://github.com/Databingo/aih
 $ cd aih && go mod tidy && go build 
 ```
+## Binaries on macOS, Linux, Windows
+Download it from [Github Releases](https://github.com/Databingo/aih/release), unzip and put any directory you would like.
 
 ## Todo
 1. Tidy code.
