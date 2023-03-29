@@ -32,11 +32,15 @@ func main() {
 
 	// Read json configure
 	data, err := ioutil.ReadFile("aih.json")
+	////
+	liner := liner.NewLiner()
+	defer liner.Close()
+	/////
 	if err != nil {
 		//if err == nil {
-		var okey string
+		//var okey string
 		fmt.Println("Please input your OpenAI Key: ")
-		fmt.Scanln(&okey)
+	        okey, _  := liner.Prompt("")
 		conf := `{"key":"` + okey + `"}`
 		//fmt.Println(conf)
 		err := ioutil.WriteFile("aih.json", []byte(conf), 0644)
@@ -88,8 +92,6 @@ func main() {
 	role := ""
 
 	////
-	liner := liner.NewLiner()
-	defer liner.Close()
 	if f, err := os.Open(".history"); err == nil {
 		liner.ReadHistory(f)
 		f.Close()
@@ -117,9 +119,8 @@ func main() {
 			fmt.Println("Byebye")
 			return
 		case ".proxy":
-			var proxy string
 			fmt.Println("Please input your proxy: ")
-			fmt.Scanln(&proxy)
+		        proxy, _  := liner.Prompt("")
 			data, err := ioutil.ReadFile("aih.json")
 			sdata := string(data)
 			njs, _ := sjson.Set(sdata, "proxy", proxy)
@@ -130,12 +131,12 @@ func main() {
 			fmt.Println("Please restart aih")
 			continue
 		case ".key":
-			var proxy string
 			fmt.Println("Please input your OpenAI key: ")
-			fmt.Scanln(&proxy)
+		//	fmt.Scanln(&k)
+		        k, _  := liner.Prompt("")
 			data, err := ioutil.ReadFile("aih.json")
 			sdata := string(data)
-			nnjs, _ := sjson.Set(sdata, "key", proxy)
+			nnjs, _ := sjson.Set(sdata, "key", k)
 			err = ioutil.WriteFile("aih.json", []byte(nnjs), 0644)
 			if err != nil {
 				fmt.Println("Save failed.")
