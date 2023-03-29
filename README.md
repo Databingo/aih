@@ -24,7 +24,7 @@ Use ChatGPT & Cursor in terminal with contextual-sensitivity and realtime up-to-
 |.key       | Set key|
 |.proxy     | Set proxy for example: socks5://127.0.0.1:7890|
 |.new       | New conversation|
-|.speak     | Voice speak context|
+|.speak     | Voice speak context(macos)|
 |.quiet     | Quiet not speak |
 |.clear     | Clear screen|
 |.update    | Inquery up-to-date dataset|
@@ -37,7 +37,7 @@ Use ChatGPT & Cursor in terminal with contextual-sensitivity and realtime up-to-
 
 ## Current functions:
 1. Escape the frequent "An error occurred" of OpenAI's website.
-2. Automatic voice reading AI returns text. 
+2. Automatic voice reading AI returns text(Mac only). 
 3. Assist you create precise prompt sequentially by type .prompt
 4. Assist you create well-expressed sentences sequentially by type .writer
 5. Inquery up-to-date dataset by type .update
