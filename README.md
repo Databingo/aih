@@ -58,7 +58,7 @@ $ cd aih && go mod tidy && go build
 1. Tidy code.
 2. ~More roles such as cowriter?~
 3. ~Add command history recall by UP and DOWN arrow pressing~
-4. Add Cursor AI Coding assentant node .code
+4. Add Cursor AI Coding assentant mode .code
 5. Waiting reflections.
 
 ## About Suggestions
