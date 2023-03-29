@@ -1,11 +1,10 @@
 # Aih: realtime & up-to-date ChatGPT & Cursor
 
 Use ChatGPT & Cursor in terminal with contextual-sensitivity and realtime up-to-date dataset after 2021 in a single binary file.
-
-.update mode: Access realtime date<br>
-![screenshot](aih_update.png)
-.code mode: Code creation by Cursor<br>
-![screenshot](aih_code.png)
+|.update mode|.code mode|
+|-------|---------|
+|Access realtime date|Code creation by Cursor|
+|![screenshot](aih_update.png)| ![screenshot](aih_code.png)|
 ![screenshot](aih.gif)
 
 ## Usage
