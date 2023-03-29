@@ -33,6 +33,7 @@ Use ChatGPT & Cursor in terminal with contextual-sensitivity and realtime up-to-
 |-----------|----------|
 |.prompt    | Role of Assistant for create precise prompt|
 |.writer    | Role of Checker for create well sentences|
+|notice:    | Control_c to past response to you file|
 
 ## Current functions:
 1. Escape the frequent "An error occurred" of OpenAI's website.
@@ -41,6 +42,7 @@ Use ChatGPT & Cursor in terminal with contextual-sensitivity and realtime up-to-
 4. Assist you create well-expressed sentences sequentially by type .writer
 5. Inquery up-to-date dataset by type .update
 6. Code creation by Cursor.so API
+7. Control_c to past response to you file
 
 ## Up-to-date feature:
 In `.update` model Aih will use ChatGPT to 
