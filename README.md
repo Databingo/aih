@@ -4,7 +4,7 @@ Use ChatGPT & Cursor in terminal with contextual-sensitivity and realtime up-to-
 |.update mode|.code mode|
 |-------|---------|
 |Access realtime date|Code creation by Cursor|
-|![screenshot](aih_update.png)| ![screenshot](aih_code.png)|
+|![screenshot](aih_update.png)|![screenshot](aih_code.png)|
 
 ![screenshot](aih.gif)
 
