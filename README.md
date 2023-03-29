@@ -5,6 +5,7 @@ Use ChatGPT & Cursor in terminal with contextual-sensitivity and realtime up-to-
 |-------|---------|
 |Access realtime date|Code creation by Cursor|
 |![screenshot](aih_update.png)| ![screenshot](aih_code.png)|
+
 ![screenshot](aih.gif)
 
 ## Usage
