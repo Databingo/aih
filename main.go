@@ -103,8 +103,10 @@ func main() {
 
 		// Parse the command line arguments to get the prompt
 		//scanner.Scan()
-	//	userInput := scanner.Text()
+		//userInput := scanner.Text()
 
+                // remove space after .xxx  
+	        userInput = strings.Trim(userInput, " ")
 		switch userInput {
 		case "":
 			continue
