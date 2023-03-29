@@ -39,8 +39,8 @@ func main() {
 	if err != nil {
 		//if err == nil {
 		//var okey string
-		fmt.Println("Please input your OpenAI Key: ")
-	        okey, _  := liner.Prompt("")
+		//fmt.Println("Please input your OpenAI Key: ")
+	        okey, _  := liner.Prompt("Please input your OpenAI Key: ")
 		conf := `{"key":"` + okey + `"}`
 		//fmt.Println(conf)
 		err := ioutil.WriteFile("aih.json", []byte(conf), 0644)
@@ -119,8 +119,8 @@ func main() {
 			fmt.Println("Byebye")
 			return
 		case ".proxy":
-			fmt.Println("Please input your proxy: ")
-		        proxy, _  := liner.Prompt("")
+			//fmt.Println("Please input your proxy: ")
+		        proxy, _  := liner.Prompt("Please input your proxy: ")
 			data, err := ioutil.ReadFile("aih.json")
 			sdata := string(data)
 			njs, _ := sjson.Set(sdata, "proxy", proxy)
@@ -131,9 +131,9 @@ func main() {
 			fmt.Println("Please restart aih")
 			continue
 		case ".key":
-			fmt.Println("Please input your OpenAI key: ")
+		//	fmt.Println("Please input your OpenAI key: ")
 		//	fmt.Scanln(&k)
-		        k, _  := liner.Prompt("")
+		        k, _  := liner.Prompt("Please input your OpenAI key: ")
 			data, err := ioutil.ReadFile("aih.json")
 			sdata := string(data)
 			nnjs, _ := sjson.Set(sdata, "key", k)
