@@ -152,6 +152,7 @@ func main() {
 			fmt.Println(".quiet       Quiet not speak")
 			fmt.Println(".clear       Clear screen")
 			fmt.Println(".update      Inquery up-to-date question")
+			fmt.Println(".code        Code creation by Cursor")
 			fmt.Println(".exit        Exit")
 			fmt.Println(" ------roles------")
 			fmt.Println(".prompt      Role of Assistant for create precise prompt")
