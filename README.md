@@ -42,7 +42,7 @@ Use ChatGPT & Cursor in terminal with contextual-sensitivity and realtime up-to-
 4. Assist you create well-expressed sentences sequentially by type .writer
 5. Inquery up-to-date dataset by type .update
 6. Code creation by Cursor.so API
-7. Control_c to past response to you file
+7. Control_c to past response to you file espetially useful in .code mode
 
 ## Up-to-date feature:
 In `.update` model Aih will use ChatGPT to 
