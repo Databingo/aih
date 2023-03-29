@@ -57,7 +57,8 @@ $ cd aih && go mod tidy && go build
 ## Todo
 1. Tidy code.
 2. ~More roles such as cowriter?~
-3. Waiting reflections.
+3. ~Qdd command history recall by UP and DOWN arrow pressing~
+4. Waiting reflections.
 
 ## About Suggestions
 This is an open plan based on the idea of "Co-relation's enhancement of AI and human beings".
