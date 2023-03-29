@@ -33,7 +33,6 @@ Use ChatGPT & Cursor in terminal with contextual-sensitivity and realtime up-to-
 |-----------|----------|
 |.prompt    | Role of Assistant for create precise prompt|
 |.writer    | Role of Checker for create well sentences|
-|notice:    | Control_c to past response to you file|
 
 ## Current functions:
 1. Escape the frequent "An error occurred" of OpenAI's website.
