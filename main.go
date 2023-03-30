@@ -57,7 +57,7 @@ func main() {
 	proxy := gjson.Get(string(data), "proxy")
 	Proxy := proxy.String()
 
-	// Set up the OpenAI API client
+	// Set up the OpenAI API client config
 	config := openai.DefaultConfig(OpenAI_Key)
 
 	// for normal page
@@ -79,12 +79,11 @@ func main() {
 		bow.SetTransport(transport)
 	}
 
+	// Set pup OpenAI API client
 	client := openai.NewClientWithConfig(config)
 	messages := make([]openai.ChatCompletionMessage, 0)
 
 	fmt.Println("Welcome to aih v0.1.0\nType \".help\" for more information.")
-	// Start loop to read user input and setn API requests
-	//	scanner := bufio.NewScanner(os.Stdin)
 	max_tokens := 4097
 	used_tokens := 0
 	left_tokens := max_tokens - used_tokens
@@ -98,20 +97,16 @@ func main() {
 	}
 	/////
 
+	// Start loop to read user input and setn API requests
 	for {
 		/////
 		promp := strconv.Itoa(left_tokens) + role + "> "
 		userInput, _ := liner.Prompt(promp)
 		liner.AppendHistory(userInput)
-		//fmt.Print(left_tokens, role, "> ")
 
-		// Parse the command line arguments to get the prompt
-		//scanner.Scan()
-		//userInput := scanner.Text()
+		userInput = strings.Trim(userInput, " ") // remove space after .xxx
+		clipb := "" // for save to system clipboard
 
-		// remove space after .xxx
-		userInput = strings.Trim(userInput, " ")
-		clipb := ""
 		switch userInput {
 		case "":
 			continue
@@ -119,28 +114,21 @@ func main() {
 			fmt.Println("Byebye")
 			return
 		case ".proxy":
-			//fmt.Println("Please input your proxy: ")
 		        proxy, _  := liner.Prompt("Please input your proxy: ")
 			data, err := ioutil.ReadFile("aih.json")
 			sdata := string(data)
 			njs, _ := sjson.Set(sdata, "proxy", proxy)
 			err = ioutil.WriteFile("aih.json", []byte(njs), 0644)
-			if err != nil {
-				fmt.Println("Save failed.")
-			}
+			if err != nil { fmt.Println("Save failed.") }
 			fmt.Println("Please restart aih")
 			continue
 		case ".key":
-		//	fmt.Println("Please input your OpenAI key: ")
-		//	fmt.Scanln(&k)
 		        k, _  := liner.Prompt("Please input your OpenAI key: ")
 			data, err := ioutil.ReadFile("aih.json")
 			sdata := string(data)
 			nnjs, _ := sjson.Set(sdata, "key", k)
 			err = ioutil.WriteFile("aih.json", []byte(nnjs), 0644)
-			if err != nil {
-				fmt.Println("Save failed.")
-			}
+			if err != nil { fmt.Println("Save failed.") }
 			fmt.Println("Please restart aih")
 			continue
 		case ".help":
@@ -329,7 +317,6 @@ func main() {
 				pages = pages[:7000]
 			}
 
-			//fmt.Println(">>", pages)
 			prompt_ps := "Please well manage information from message below, for precise conscise, ignore useless answer, only useful answer: " + pages
 			resps, err := client.CreateChatCompletion(
 				context.Background(),
@@ -430,6 +417,7 @@ func main() {
 			}()
 		}
 
+		// record in coversation context
 		messages = append(messages, openai.ChatCompletionMessage{
 			Role:    openai.ChatMessageRoleUser,
 			Content: cnt,
