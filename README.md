@@ -1,6 +1,6 @@
 # Aih: realtime & up-to-date ChatGPT & Cursor
 
-Use ChatGPT & Cursor in terminal with contextual-sensitivity and realtime up-to-date dataset after 2021 in a single binary file.
+Use ChatGPT ~& Cursor~ in terminal with contextual-sensitivity and realtime up-to-date dataset after 2021 in a single binary file.
 |.update mode|.code mode|
 |-------|---------|
 |Access realtime date|Code creation by Cursor|
@@ -28,7 +28,7 @@ Use ChatGPT & Cursor in terminal with contextual-sensitivity and realtime up-to-
 |.quiet     | Quiet not speak |
 |.clear     | Clear screen|
 |.update    | Inquery up-to-date dataset|
-|.code      | Code creating by Cursor.so API|
+|~.code~    | ~Code creating by Cursor.so API~|
 |.exit      | Exit|
 |-----------|----------|
 |.prompt    | Role of Assistant for create precise prompt|
