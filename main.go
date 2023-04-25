@@ -26,6 +26,8 @@ import (
 	openai "github.com/sashabaranov/go-openai"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
+	"github.com/CNZeroY/googleBard/bard"
+	"github.com/Databingo/aih/bard"
 )
 
 func main() {
@@ -79,7 +81,7 @@ func main() {
 		bow.SetTransport(transport)
 	}
 
-	// Set pup OpenAI API client
+	// Set up OpenAI API client
 	client := openai.NewClientWithConfig(config)
 	messages := make([]openai.ChatCompletionMessage, 0)
 
