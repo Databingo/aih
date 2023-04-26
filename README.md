@@ -26,7 +26,7 @@
 - For GoogleBard you should in the waitlist on https://bard.google.com "Join Waitlist". 
 - For GoogleBard you should login and add [Cookie-Editor](https://cookie-editor.cgagnier.ca) extension then Click it to copy __Secure-lPSID value.
 - For BingChat you should in the waitlist on https://bing.com/new "Join Waitlist".
-- For BingChat you should login and add [Cookie-Editor](https://cookie-editor.cgagnier.ca) extension then click the Icon on the right-top conner then click "Export" then click "Export as JSON"(This saves your cookies to clipboard), then type .bing in aih, paste in terminal and hit Enter, then hit Ctrl+D.
+- For BingChat you should login and add [Cookie-Editor](https://cookie-editor.cgagnier.ca) extension then click the Icon on the right-top corner then click "Export" then click "Export as JSON"(This saves your cookies to clipboard), then type .bing in aih, paste in terminal and hit Enter, then hit Ctrl+D.
 
 ## Support OS
 - Mac
