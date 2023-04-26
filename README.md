@@ -1,4 +1,4 @@
-# Aih: use chatGPT, bard in terminal. 
+# Aih: use chatGPT, bard, bing-chat in terminal. 
 
 ![screenshot](aih.gif)
 
@@ -11,6 +11,7 @@
 |----------|----------|
 |.bard      | Bard|
 |.chat      | ChatGPT|
+|.bing      | Bing Chat|
 |.proxy     | Set proxy for example: socks5://127.0.0.1:7890|
 |.key       | Set ChatGPT key|
 |.new       | New conversation of ChatGPT|
@@ -24,6 +25,8 @@
 - For ChatGPT you should have an account with payed API on [Billing](https://platform.openai.com/account/billing/overview). 
 - For GoogleBard you should in the waitlist on https://bard.google.com "Join Waitlist". 
 - For GoogleBard you should login and add [Cookie-Editor](https://cookie-editor.cgagnier.ca) extension then Click it to copy __Secure-lPSID value.
+- For BingChat you should in the waitlist on https://bing.com/new "Join Waitlist".
+- For BingChat you should login and add [Cookie-Editor](https://cookie-editor.cgagnier.ca) extension then click the Icon on the right-top conner then click "Export" then click "Export as JSON"(This saves your cookies to clipboard), then type .bing in aih, paste in terminal and hit Enter, then hit Ctrl+D.
 
 ## Support OS
 - Mac
@@ -42,3 +45,4 @@ If you have any suggestions please write in Issues.
 ## Acknowledge
 - github.com/sashabaranov/go-openai 
 - github.com/CNZeroY/googleBard
+- github.com/pavel-one/EdgeGPT-Go
