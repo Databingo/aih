@@ -16,7 +16,7 @@
 |.key       | Set ChatGPT key|
 |.new       | New conversation of ChatGPT|
 |.speak     | Voice speak context(macos)|
-|.quiet     | Quiet no speak |
+|.quiet     | No speak |
 |.clear     | Clear screen|
 |.exit      | Exit|
 
