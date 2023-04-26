@@ -9,6 +9,7 @@ import (
 	"github.com/atotto/clipboard"
 	"github.com/fatih/color"
 	"github.com/headzoo/surf"
+	"github.com/pavel-one/EdgeGPT-Go"
 	"github.com/peterh/liner"
 	"github.com/rocketlaunchr/google-search"
 	openai "github.com/sashabaranov/go-openai"
@@ -17,7 +18,7 @@ import (
 	"github.com/tidwall/sjson"
 	"io/ioutil"
 	"net/http"
-	"net/url"
+	//	"net/url"
 	"os"
 	"os/exec"
 	"runtime"
@@ -32,25 +33,42 @@ func main() {
 	// Read json configure
 	data, err := ioutil.ReadFile("aih.json")
 	////
-	liner := liner.NewLiner()
-	defer liner.Close()
-	/////
-	if err != nil {
-		//if err == nil {
-		//var okey string
-		//fmt.Println("Please input your OpenAI Key: ")
-		okey, _ := liner.Prompt("Please input your OpenAI Key: ")
-		conf := `{"key":"` + okey + `"}`
-		//fmt.Println(conf)
-		err := ioutil.WriteFile("aih.json", []byte(conf), 0644)
-		if err != nil {
-			fmt.Println("Save failed.")
-		}
-	}
 
 	//Read Proxy
 	proxy := gjson.Get(string(data), "proxy")
 	Proxy := proxy.String()
+
+	if Proxy != "" {
+		os.Setenv("https_proxy", "http://127.0.0.1:7890")
+		os.Setenv("http_proxy", "http://127.0.0.1:7890")
+		//proxyUrl, err := url.Parse(Proxy)
+		//if err != nil {
+		//	panic(err)
+		//}
+		//transport := &http.Transport{Proxy: http.ProxyURL(proxyUrl)}
+		//// for openai api
+		//config.HTTPClient = &http.Client{Transport: transport}
+		//// for normal page
+		//client_n.Transport = transport
+		//bow.SetTransport(transport)
+	}
+
+	liner := liner.NewLiner()
+	defer liner.Close()
+	/////
+	//	if err != nil {
+	//		//if err == nil {
+	//		//var okey string
+	//		//fmt.Println("Please input your OpenAI Key: ")
+	//		okey, _ := liner.Prompt("Please input your OpenAI Key: ")
+	//		conf := `{"key":"` + okey + `"}`
+	//		//fmt.Println(conf)
+	//		err := ioutil.WriteFile("aih.json", []byte(conf), 0644)
+	//		if err != nil {
+	//			fmt.Println("Save failed.")
+	//		}
+	//	}
+	//
 
 	//Read OpenAI_Key
 	key := gjson.Get(string(data), "key")
@@ -68,19 +86,6 @@ func main() {
 	client_n.Timeout = time.Second * 10
 	bow := surf.NewBrowser()
 
-	if Proxy != "" {
-		proxyUrl, err := url.Parse(Proxy)
-		if err != nil {
-			panic(err)
-		}
-		transport := &http.Transport{Proxy: http.ProxyURL(proxyUrl)}
-		// for openai api
-		config.HTTPClient = &http.Client{Transport: transport}
-		// for normal page
-		client_n.Transport = transport
-		bow.SetTransport(transport)
-	}
-
 	// Set up client for OpenAI API
 	client := openai.NewClientWithConfig(config)
 	messages := make([]openai.ChatCompletionMessage, 0)
@@ -93,6 +98,14 @@ func main() {
 		ChoiceID:       "",
 	}
 	printer_bard := color.New(color.FgGreen).Add(color.Bold)
+
+	// Set up client for bing chat
+	s := EdgeGPT.NewStorage()
+	gpt, err := s.GetOrSet("any-key")
+	if err != nil {
+		panic(err)
+	}
+	printer_bing := color.New(color.FgBlue).Add(color.Bold)
 
 	fmt.Println("Welcome to aih v0.1.0\nType \".help\" for more information.")
 	max_tokens := 4097
@@ -222,12 +235,16 @@ func main() {
 					fmt.Println("Save failed.")
 				}
 				// renew bard client with session id
-	                        bard_client = bard.NewBard(bard_session_id, Proxy)
-                                left_tokens = 0
+				bard_client = bard.NewBard(bard_session_id, Proxy)
+				left_tokens = 0
 				role = ".bard"
 				continue
 			}
-                        left_tokens = 0
+			left_tokens = 0
+			continue
+		case ".bing":
+			role = ".bing"
+			left_tokens = 0
 			continue
 		}
 
@@ -425,6 +442,15 @@ func main() {
 			bardOptions.ResponseID = response.ResponseID
 			bardOptions.ChoiceID = response.Choices[0].ChoiceID
 
+			continue
+
+		}
+		if role == ".bing" {
+			as, err := gpt.AskSync("creative", userInput)
+			if err != nil {
+				panic(err)
+			}
+			printer_bing.Println(as.Answer.GetAnswer())
 			continue
 
 		}
