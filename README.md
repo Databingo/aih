@@ -31,9 +31,6 @@
 $ git clone https://github.com/Databingo/aih
 $ cd aih && go mod tidy && go build 
 ```
-## Binaries on macOS, Linux, Windows
-Download it from [Github Releases](https://github.com/Databingo/aih/releases), unzip and put any directory you would like.
-
 ## About Suggestions
 This is an open plan based on the idea of "Co-relation's enhancement of AI and human beings".
 If you have any suggestions please write in Issues.
