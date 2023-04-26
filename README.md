@@ -1,6 +1,6 @@
-# Aih: use chatGPT, bard, bing-chat in terminal. 
+# Aih: use chatGPT, google-bard, bing-chat in terminal. 
 
-![screenshot](aih.gif)
+![screenshot](aih2.png)
 
 ## Usage
 ```bash
@@ -10,8 +10,8 @@
 |command   | operation|
 |----------|----------|
 |.bard      | Bard|
-|.chat      | ChatGPT|
 |.bing      | Bing Chat|
+|.chat      | ChatGPT|
 |.proxy     | Set proxy for example: socks5://127.0.0.1:7890|
 |.key       | Set ChatGPT key|
 |.new       | New conversation of ChatGPT|
