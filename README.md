@@ -21,9 +21,8 @@
 |.exit      | Exit|
 
 ## Pre-requests
-- For ChatGPT you should have a account with payed API on [Billing](https://platform.openai.com/account/billing/overview). 
-- For GooleBard you should in the waitlist on https://bard.google.com "Join Waitlist".
-- For GooleBard you should have the __Secure-lPSID value after login by add [Cookie-Editor](https://cookie-editor.cgagnier.ca) extension and Click it to copy __Secure-lPSID value.
+- For ChatGPT you should have an account with payed API on [Billing](https://platform.openai.com/account/billing/overview). 
+- For GooleBard you should in the waitlist on https://bard.google.com "Join Waitlist" then login, add [Cookie-Editor](https://cookie-editor.cgagnier.ca) extension and Click it to copy __Secure-lPSID value.
 
 ## Support OS
 - Mac
