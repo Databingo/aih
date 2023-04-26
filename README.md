@@ -36,4 +36,5 @@ This is an open plan based on the idea of "Co-relation's enhancement of AI and h
 If you have any suggestions please write in Issues.
 
 ## Acknowledge
+github.com/sashabaranov/go-openai
 github.com/CNZeroY/googleBard
