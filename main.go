@@ -4,12 +4,17 @@ import (
 	//	"bufio"
 	"context"
 	"fmt"
+	"github.com/CNZeroY/googleBard/bard"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/atotto/clipboard"
 	"github.com/fatih/color"
 	"github.com/headzoo/surf"
 	"github.com/peterh/liner"
+	"github.com/rocketlaunchr/google-search"
+	openai "github.com/sashabaranov/go-openai"
 	"github.com/sohaha/cursor"
+	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -20,14 +25,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-	//	"github.com/eiannone/keyboard"
-	//	"github.com/nsf/termbox-go"
-	"github.com/rocketlaunchr/google-search"
-	openai "github.com/sashabaranov/go-openai"
-	"github.com/tidwall/gjson"
-	"github.com/tidwall/sjson"
-	"github.com/CNZeroY/googleBard/bard"
-	"github.com/Databingo/aih/bard"
 )
 
 func main() {
@@ -42,7 +39,7 @@ func main() {
 		//if err == nil {
 		//var okey string
 		//fmt.Println("Please input your OpenAI Key: ")
-	        okey, _  := liner.Prompt("Please input your OpenAI Key: ")
+		okey, _ := liner.Prompt("Please input your OpenAI Key: ")
 		conf := `{"key":"` + okey + `"}`
 		//fmt.Println(conf)
 		err := ioutil.WriteFile("aih.json", []byte(conf), 0644)
@@ -51,18 +48,22 @@ func main() {
 		}
 	}
 
-	//Read OpenAI_Key
-	key := gjson.Get(string(data), "key")
-	OpenAI_Key := key.String()
-
 	//Read Proxy
 	proxy := gjson.Get(string(data), "proxy")
 	Proxy := proxy.String()
 
-	// Set up the OpenAI API client config
+	//Read OpenAI_Key
+	key := gjson.Get(string(data), "key")
+	OpenAI_Key := key.String()
+
+	//Read Google Cookie of __Secure-lPSID
+	__Secure_lPSID := gjson.Get(string(data), "__Secure-lPSID")
+	bard_session_id := __Secure_lPSID.String()
+
+	// Set up client config of OpenAI API
 	config := openai.DefaultConfig(OpenAI_Key)
 
-	// for normal page
+	// Set up client for normal page
 	client_n := &http.Client{}
 	client_n.Timeout = time.Second * 10
 	bow := surf.NewBrowser()
@@ -76,14 +77,22 @@ func main() {
 		// for openai api
 		config.HTTPClient = &http.Client{Transport: transport}
 		// for normal page
-		//client_n := &http.Client{Transport: transport}
 		client_n.Transport = transport
 		bow.SetTransport(transport)
 	}
 
-	// Set up OpenAI API client
+	// Set up client for OpenAI API
 	client := openai.NewClientWithConfig(config)
 	messages := make([]openai.ChatCompletionMessage, 0)
+
+	// Set up client for google_bard
+	bard_client := bard.NewBard(bard_session_id, Proxy)
+	bardOptions := bard.Options{
+		ConversationID: "",
+		ResponseID:     "",
+		ChoiceID:       "",
+	}
+	printer_bard := color.New(color.FgGreen).Add(color.Bold)
 
 	fmt.Println("Welcome to aih v0.1.0\nType \".help\" for more information.")
 	max_tokens := 4097
@@ -107,7 +116,7 @@ func main() {
 		liner.AppendHistory(userInput)
 
 		userInput = strings.Trim(userInput, " ") // remove space after .xxx
-		clipb := "" // for save to system clipboard
+		clipb := ""                              // for save to system clipboard
 
 		switch userInput {
 		case "":
@@ -116,21 +125,25 @@ func main() {
 			fmt.Println("Byebye")
 			return
 		case ".proxy":
-		        proxy, _  := liner.Prompt("Please input your proxy: ")
+			proxy, _ := liner.Prompt("Please input your proxy: ")
 			data, err := ioutil.ReadFile("aih.json")
 			sdata := string(data)
 			njs, _ := sjson.Set(sdata, "proxy", proxy)
 			err = ioutil.WriteFile("aih.json", []byte(njs), 0644)
-			if err != nil { fmt.Println("Save failed.") }
+			if err != nil {
+				fmt.Println("Save failed.")
+			}
 			fmt.Println("Please restart aih")
 			continue
 		case ".key":
-		        k, _  := liner.Prompt("Please input your OpenAI key: ")
+			k, _ := liner.Prompt("Please input your OpenAI key: ")
 			data, err := ioutil.ReadFile("aih.json")
 			sdata := string(data)
 			nnjs, _ := sjson.Set(sdata, "key", k)
 			err = ioutil.WriteFile("aih.json", []byte(nnjs), 0644)
-			if err != nil { fmt.Println("Save failed.") }
+			if err != nil {
+				fmt.Println("Save failed.")
+			}
 			fmt.Println("Please restart aih")
 			continue
 		case ".help":
@@ -193,6 +206,28 @@ func main() {
 			continue
 		case ".code":
 			role = ".code"
+			continue
+		case ".bard":
+			role = ".bard"
+
+			data, err := ioutil.ReadFile("aih.json")
+			__Secure_lPSID := gjson.Get(string(data), "__Secure-lPSID")
+			bard_session_id := __Secure_lPSID.String()
+			if bard_session_id == "" {
+				bard_session_id, _ := liner.Prompt("Please input your cookie value of __Secure-lPSID: ")
+				sdata := string(data)
+				njs, _ := sjson.Set(sdata, "__Secure-lPSID", bard_session_id)
+				err = ioutil.WriteFile("aih.json", []byte(njs), 0644)
+				if err != nil {
+					fmt.Println("Save failed.")
+				}
+				// renew bard client with session id
+	                        bard_client = bard.NewBard(bard_session_id, Proxy)
+                                left_tokens = 0
+				role = ".bard"
+				continue
+			}
+                        left_tokens = 0
 			continue
 		}
 
@@ -362,6 +397,34 @@ func main() {
 				panic(err)
 				return
 			}
+			continue
+
+		}
+
+		if role == ".bard" {
+
+			response, err := bard_client.SendMessage(userInput, bardOptions)
+			if err != nil {
+				panic(err)
+			}
+
+			all_resp := response
+			if all_resp != nil {
+				resp := response.Choices[0].Answer
+				printer_bard.Println(resp)
+				// write to clipboard
+				err = clipboard.WriteAll(resp)
+				if err != nil {
+					panic(err)
+					return
+				}
+			} else {
+				break
+			}
+			bardOptions.ConversationID = response.ConversationID
+			bardOptions.ResponseID = response.ResponseID
+			bardOptions.ChoiceID = response.Choices[0].ChoiceID
+
 			continue
 
 		}

@@ -3,12 +3,12 @@ module aih
 go 1.19
 
 require (
+	github.com/CNZeroY/googleBard v1.0.1-0.20230425151705-9f6f6af323e4
 	github.com/PuerkitoBio/goquery v1.5.1
 	github.com/atotto/clipboard v0.1.4
 	github.com/fatih/color v1.15.0
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/headzoo/surf v1.0.1
-	github.com/nsf/termbox-go v1.1.1
 	github.com/peterh/liner v1.2.2
 	github.com/rocketlaunchr/google-search v1.1.5
 	github.com/sashabaranov/go-openai v1.5.3
