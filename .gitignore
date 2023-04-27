@@ -1,8 +1,8 @@
 aih
 aih.json
 aih.mov
-release
 release/*
+!release/upload.go
 cookies
 cookies/*
 cookies/1.json
