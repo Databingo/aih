@@ -13,7 +13,7 @@
 |.bing      | Bing Chat|
 |.chat      | ChatGPT|
 |.proxy     | Set proxy for example: socks5://127.0.0.1:7890|
-|.key       | Set ChatGPT key|
+|.chatkey   | Set ChatGPT key|
 |.new       | New conversation of ChatGPT|
 |.speak     | Voice speak context(macos)|
 |.quiet     | No speak |
