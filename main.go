@@ -15,14 +15,12 @@ import (
 	"github.com/tidwall/sjson"
 	"io"
 	"io/ioutil"
-	"net/http"
 	"os"
 	"os/exec"
 	"runtime"
 	"strconv"
 	"strings"
 	"syscall"
-	"time"
 )
 
 func clear() {
@@ -377,7 +375,7 @@ func main() {
 						fmt.Println(err)
 					}
 				case "windows":
-				        // to do
+					// to do
 					_ = 1 + 1
 
 				}
