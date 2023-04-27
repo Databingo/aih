@@ -1,28 +1,28 @@
 package main
 
 import (
-	"io"
-	"os"
-	"fmt"
-	"time"
 	"context"
+	"fmt"
+	"github.com/CNZeroY/googleBard/bard"
+	"github.com/atotto/clipboard"
+	"github.com/fatih/color"
+	"github.com/pavel-one/EdgeGPT-Go"
+	"github.com/peterh/liner"
+	"github.com/rocketlaunchr/google-search"
+	openai "github.com/sashabaranov/go-openai"
+	"github.com/sohaha/cursor"
+	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
+	"io"
+	"io/ioutil"
 	"net/http"
+	"os"
 	"os/exec"
 	"runtime"
 	"strconv"
 	"strings"
 	"syscall"
-	"io/ioutil"
-	"github.com/fatih/color"
-	"github.com/peterh/liner"
-	"github.com/sohaha/cursor"
-	"github.com/tidwall/gjson"
-	"github.com/tidwall/sjson"
-	"github.com/atotto/clipboard"
-	"github.com/pavel-one/EdgeGPT-Go"
-	"github.com/CNZeroY/googleBard/bard"
-	"github.com/rocketlaunchr/google-search"
-	openai "github.com/sashabaranov/go-openai"
+	"time"
 )
 
 func clear() {
@@ -90,7 +90,7 @@ func main() {
 	config := openai.DefaultConfig(OpenAI_Key)
 	client := openai.NewClientWithConfig(config)
 	messages := make([]openai.ChatCompletionMessage, 0)
-        printer_chat := color.New(color.FgWhite)
+	printer_chat := color.New(color.FgWhite)
 
 	// Set up client for GoogleGard
 	bard_session_id := gjson.Get(string(aih_json), "__Secure-lPSID").String()
@@ -148,16 +148,18 @@ func main() {
 			Liner.Close()
 			syscall.Exit(0)
 		case ".chatkey":
-                        OpenAI_Key = ""
+			OpenAI_Key = ""
 			role = ".chat"
 			continue
-	        case ".bardkey":		
-                        bard_session_id = "" 
+		case ".bardkey":
+			bard_session_id = ""
 			role = ".bard"
 			continue
-	        case ".bingkey":		
+		case ".bingkey":
 			err := os.Remove("./cookies/1.json")
-			if err != nil {panic(err)}
+			if err != nil {
+				panic(err)
+			}
 			role = ".bing"
 			continue
 		case ".help":
@@ -311,7 +313,7 @@ func main() {
 
 		}
 		if role == ".chat" {
-		        // Check ChatGPT Key
+			// Check ChatGPT Key
 			if OpenAI_Key == "" {
 				OpenAI_Key, _ = Liner.Prompt("Please input your OpenAI Key: ")
 				aihj, err := ioutil.ReadFile("aih.json")
@@ -351,7 +353,7 @@ func main() {
 			RESP = strings.TrimSpace(resp.Choices[0].Message.Content)
 			used_tokens = resp.Usage.TotalTokens
 			left_tokens = max_tokens - used_tokens
-		        printer_chat.Println(RESP)
+			printer_chat.Println(RESP)
 
 			// Write to clipboard
 			err = clipboard.WriteAll(fmt.Sprintln(RESP))
@@ -367,24 +369,25 @@ func main() {
 
 		}
 
-			// Speak the response using the "say" command
-			if speak == 1 {
+		// Speak all the response RESP using the "say" command
+		if speak == 1 {
 
-			 fmt.Println("speaking")
-				go func() {
-					switch runtime.GOOS {
-					case "linux", "darwin":
-						cmd := exec.Command("say", RESP)
-						err = cmd.Run()
-						if err != nil {
-							fmt.Println(err)
-						}
-					case "windows":
-						_ = 1 + 1
-
+			fmt.Println("speaking")
+			go func() {
+				switch runtime.GOOS {
+				case "linux", "darwin":
+					cmd := exec.Command("say", RESP)
+					err = cmd.Run()
+					if err != nil {
+						fmt.Println(err)
 					}
+				case "windows":
+				        // to do
+					_ = 1 + 1
 
-				}()
-			}
+				}
+
+			}()
+		}
 	}
 }
