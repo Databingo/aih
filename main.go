@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	//"sync"
 	"context"
 	"github.com/fatih/color"
 	"github.com/peterh/liner"
@@ -16,12 +15,10 @@ import (
 	"strings"
 	"syscall"
 	"time"
-	//"github.com/headzoo/surf"
 	"github.com/atotto/clipboard"
 	"github.com/sohaha/cursor"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
-	//"github.com/PuerkitoBio/goquery"
 	"github.com/CNZeroY/googleBard/bard"
 	"github.com/pavel-one/EdgeGPT-Go"
 	"github.com/rocketlaunchr/google-search"
@@ -125,7 +122,7 @@ func main() {
 	used_tokens := 0
 	left_tokens := max_tokens - used_tokens
 	speak := 0
-	role := ".chat"
+	role := ".bard"
 
 	// Start loop to read user input
 	for {
@@ -148,7 +145,7 @@ func main() {
 			if err != nil {
 				fmt.Println("Save failed.")
 			}
-			fmt.Println("Please restart aih for using proxy")
+			fmt.Println("Please restart Aih for using proxy")
 			Liner.Close()
 			syscall.Exit(0)
 		case ".chatkey":
@@ -159,7 +156,7 @@ func main() {
 			if err != nil {
 				fmt.Println("Save failed.")
 			}
-			fmt.Println("Please restart aih for using key")
+			fmt.Println("Please restart Aih for using key")
 			continue
 		case ".help":
 			fmt.Println(".bard        Bard")
@@ -187,11 +184,11 @@ func main() {
 		case ".exit":
 			return
 		case ".new":
+			role = "chat"
 			messages = make([]openai.ChatCompletionMessage, 0)
 			max_tokens = 4097
 			used_tokens = 0
 			left_tokens = max_tokens - used_tokens
-			role = "chat"
 			continue
 		//case ".code":
 		//	role = ".code"
@@ -206,12 +203,14 @@ func main() {
 			continue
 		case ".chat":
 			role = ".chat"
+			left_tokens = max_tokens - used_tokens
 			continue
 		}
 
 		// Record user input without Aih commands
 		Liner.AppendHistory(userInput)
 
+		var RESP string
 		// Check role for currect actions
 		if role == ".code" {
 			res_code, err := cursor.Conv(userInput)
@@ -254,10 +253,10 @@ func main() {
 
 			all_resp := response
 			if all_resp != nil {
-				resp := response.Choices[0].Answer
-				printer_bard.Println(resp)
+				RESP = response.Choices[0].Answer
+				printer_bard.Println(RESP)
 				// Write to clipboard
-				err = clipboard.WriteAll(resp)
+				err = clipboard.WriteAll(RESP)
 				if err != nil {
 					panic(err)
 					return
@@ -268,7 +267,7 @@ func main() {
 			bardOptions.ConversationID = response.ConversationID
 			bardOptions.ResponseID = response.ResponseID
 			bardOptions.ChoiceID = response.Choices[0].ChoiceID
-			continue
+			//continue
 
 		}
 
@@ -303,9 +302,9 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
-			resp := strings.TrimSpace(as.Answer.GetAnswer())
-			printer_bing.Println(resp)
-			continue
+			RESP = strings.TrimSpace(as.Answer.GetAnswer())
+			printer_bing.Println(RESP)
+			//continue
 
 		}
 		if role == ".chat" {
@@ -348,25 +347,35 @@ func main() {
 
 			// Print the response to the terminal
 			c := color.New(color.FgWhite)
-			cnt := strings.TrimSpace(resp.Choices[0].Message.Content)
+			RESP = strings.TrimSpace(resp.Choices[0].Message.Content)
 			used_tokens = resp.Usage.TotalTokens
 			left_tokens = max_tokens - used_tokens
-			c.Println(cnt)
+			c.Println(RESP)
 
-			// write to clipboard
-			clipb += fmt.Sprintln(cnt)
+			// Write to clipboard
+			clipb += fmt.Sprintln(RESP)
 			err = clipboard.WriteAll(clipb)
 			if err != nil {
 				panic(err)
 				return
 			}
 
+			// Record in coversation context
+			messages = append(messages, openai.ChatCompletionMessage{
+				Role:    openai.ChatMessageRoleUser,
+				Content: RESP,
+			})
+
+		}
+
 			// Speak the response using the "say" command
 			if speak == 1 {
+
+			 fmt.Println("speaking")
 				go func() {
 					switch runtime.GOOS {
 					case "linux", "darwin":
-						cmd := exec.Command("say", cnt)
+						cmd := exec.Command("say", RESP)
 						err = cmd.Run()
 						if err != nil {
 							fmt.Println(err)
@@ -378,13 +387,5 @@ func main() {
 
 				}()
 			}
-
-			// record in coversation context
-			messages = append(messages, openai.ChatCompletionMessage{
-				Role:    openai.ChatMessageRoleUser,
-				Content: cnt,
-			})
-
-		}
 	}
 }
