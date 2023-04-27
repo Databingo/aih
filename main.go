@@ -1,26 +1,26 @@
 package main
 
 import (
-	"fmt"
 	"io"
 	"os"
+	"fmt"
+	"time"
 	"context"
-	"github.com/fatih/color"
-	"github.com/peterh/liner"
-	"io/ioutil"
 	"net/http"
 	"os/exec"
 	"runtime"
 	"strconv"
 	"strings"
 	"syscall"
-	"time"
-	"github.com/atotto/clipboard"
+	"io/ioutil"
+	"github.com/fatih/color"
+	"github.com/peterh/liner"
 	"github.com/sohaha/cursor"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
-	"github.com/CNZeroY/googleBard/bard"
+	"github.com/atotto/clipboard"
 	"github.com/pavel-one/EdgeGPT-Go"
+	"github.com/CNZeroY/googleBard/bard"
 	"github.com/rocketlaunchr/google-search"
 	openai "github.com/sashabaranov/go-openai"
 )
@@ -120,7 +120,8 @@ func main() {
 	fmt.Println("---------------------")
 	max_tokens := 4097
 	used_tokens := 0
-	left_tokens := max_tokens - used_tokens
+	//left_tokens := max_tokens - used_tokens
+	left_tokens := 0
 	speak := 0
 	role := ".bard"
 
@@ -149,14 +150,25 @@ func main() {
 			Liner.Close()
 			syscall.Exit(0)
 		case ".chatkey":
-			k, _ := Liner.Prompt("Please input your OpenAI key: ")
-			aihj, err := ioutil.ReadFile("aih.json")
-			new_aihj, _ := sjson.Set(string(aihj), "key", k)
-			err = ioutil.WriteFile("aih.json", []byte(new_aihj), 0644)
-			if err != nil {
-				fmt.Println("Save failed.")
-			}
-			fmt.Println("Please restart Aih for using key")
+			//k, _ := Liner.Prompt("Please input your OpenAI key: ")
+			//aihj, err := ioutil.ReadFile("aih.json")
+			//new_aihj, _ := sjson.Set(string(aihj), "key", k)
+			//err = ioutil.WriteFile("aih.json", []byte(new_aihj), 0644)
+			//if err != nil {
+			//	fmt.Println("Save failed.")
+			//}
+			//fmt.Println("Please restart Aih for using key")
+                        OpenAI_Key = ""
+			role = ".chat"
+			continue
+	        case ".bardkey":		
+                        bard_session_id = "" 
+			role = ".bard"
+			continue
+	        case ".bingkey":		
+			err := os.Remove("./cookies/1.json")
+			if err != nil {panic(err)}
+			role = ".bing"
 			continue
 		case ".help":
 			fmt.Println(".bard        Bard")
@@ -234,9 +246,9 @@ func main() {
 			// Check GoogleBard session
 			if bard_session_id == "" {
 				bard_session_id, _ = Liner.Prompt("Please input your cookie value of __Secure-lPSID: ")
-				data, err := ioutil.ReadFile("aih.json")
-				njs, _ := sjson.Set(string(data), "__Secure-lPSID", bard_session_id)
-				err = ioutil.WriteFile("aih.json", []byte(njs), 0644)
+				aihj, err := ioutil.ReadFile("aih.json")
+				nj, _ := sjson.Set(string(aihj), "__Secure-lPSID", bard_session_id)
+				err = ioutil.WriteFile("aih.json", []byte(nj), 0644)
 				if err != nil {
 					fmt.Println("Save failed.")
 				}
@@ -309,12 +321,11 @@ func main() {
 		}
 		if role == ".chat" {
 		        // Check ChatGPT Key
-			key := gjson.Get(string(aih_json), "key")
-			OpenAI_Key := key.String()
 			if OpenAI_Key == "" {
-				okey, _ := Liner.Prompt("Please input your OpenAI Key: ")
-				conf := `{"key":"` + okey + `"}`
-				err := ioutil.WriteFile("aih.json", []byte(conf), 0644)
+				OpenAI_Key, _ = Liner.Prompt("Please input your OpenAI Key: ")
+				aihj, err := ioutil.ReadFile("aih.json")
+				new_aihj, _ := sjson.Set(string(aihj), "key", OpenAI_Key)
+				err = ioutil.WriteFile("aih.json", []byte(new_aihj), 0644)
 				if err != nil {
 					fmt.Println("Save failed.")
 				}
