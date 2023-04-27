@@ -73,7 +73,7 @@ func main() {
 		if err != nil {
 			fmt.Println("Save failed.")
 		}
-		fmt.Println("Please restart aih for using proxy...")
+		fmt.Println("Please restart Aih for using proxy...")
 		Liner.Close()
 		syscall.Exit(0)
 
