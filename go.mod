@@ -4,11 +4,9 @@ go 1.19
 
 require (
 	github.com/CNZeroY/googleBard v1.0.1-0.20230425151705-9f6f6af323e4
-	github.com/PuerkitoBio/goquery v1.5.1
 	github.com/atotto/clipboard v0.1.4
 	github.com/fatih/color v1.15.0
 	github.com/google/go-github v17.0.0+incompatible
-	github.com/headzoo/surf v1.0.1
 	github.com/pavel-one/EdgeGPT-Go v1.3.0
 	github.com/peterh/liner v1.2.2
 	github.com/rocketlaunchr/google-search v1.1.5
@@ -20,6 +18,7 @@ require (
 )
 
 require (
+	github.com/PuerkitoBio/goquery v1.5.1 // indirect
 	github.com/andybalholm/cascadia v1.2.0 // indirect
 	github.com/antchfx/htmlquery v1.2.3 // indirect
 	github.com/antchfx/xmlquery v1.2.4 // indirect
@@ -32,7 +31,6 @@ require (
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
-	github.com/headzoo/ut v0.0.0-20181013193318-a13b5a7a02ca // indirect
 	github.com/kennygrant/sanitize v1.2.4 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.18 // indirect
