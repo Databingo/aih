@@ -119,7 +119,9 @@ func main() {
 	clear()
 
 	// Welcome to Aih
-	fmt.Println("Welcome to Aih v0.1.0\nType \".help\" for more information.")
+	fmt.Println("---------------------")
+	fmt.Println("Welcome to Aih v0.1.0\nType \".help\" for help")
+	fmt.Println("---------------------")
 	max_tokens := 4097
 	used_tokens := 0
 	left_tokens := max_tokens - used_tokens
@@ -168,7 +170,7 @@ func main() {
 			fmt.Println(".bard        Bard")
 			fmt.Println(".bing        Bing")
 			fmt.Println(".chat        ChatGPT")
-			fmt.Println(".help        Show help")
+			fmt.Println(".help        Help")
 			fmt.Println(".key         Set key")
 			fmt.Println(".proxy       Set proxy")
 			fmt.Println(".new         New conversation of ChatGPT")
