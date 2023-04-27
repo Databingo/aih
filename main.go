@@ -15,9 +15,9 @@ import (
 	"github.com/sohaha/cursor"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
+	"io"
 	"io/ioutil"
 	"net/http"
-	"io"
 	"os"
 	"os/exec"
 	"runtime"
@@ -29,16 +29,45 @@ import (
 
 func main() {
 
+	// Create prompt for user input
+	Liner := liner.NewLiner()
+	defer Liner.Close()
+	if f, err := os.Open(".history"); err == nil {
+		Liner.ReadHistory(f)
+		f.Close()
+	}
 	// Read json configure
 	aih_json, err := ioutil.ReadFile("aih.json")
+	if err != nil {
+		err = ioutil.WriteFile("aih.json", []byte(""), 0644)
+	}
 
 	// Read Proxy
-	proxy := gjson.Get(string(aih_json), "proxy")
-	Proxy := proxy.String()
+	Proxy := gjson.Get(string(aih_json), "proxy").String()
 
 	// Set proxy for system of current program
 	os.Setenv("http_proxy", Proxy)
 	os.Setenv("https_proxy", Proxy)
+
+	// Test proxy
+	fmt.Println("Checking network accessing...")
+	ops1 := googlesearch.SearchOptions{Limit: 12}
+	_, err = googlesearch.Search(nil, "BTC", ops1)
+	if err != nil {
+		fmt.Println("Need setting proxy to access bard, bing, chatGPT")
+		proxy, _ := Liner.Prompt("Please input your proxy: ")
+		data, err := ioutil.ReadFile("aih.json")
+		sdata := string(data)
+		njs, _ := sjson.Set(sdata, "proxy", proxy)
+		err = ioutil.WriteFile("aih.json", []byte(njs), 0644)
+		if err != nil {
+			fmt.Println("Save failed.")
+		}
+		fmt.Println("Please restart aih for using proxy")
+		Liner.Close()
+		os.Exit(1)
+
+	}
 
 	// Set up client for normal_page
 	client_n := &http.Client{}
@@ -53,9 +82,8 @@ func main() {
 	messages := make([]openai.ChatCompletionMessage, 0)
 
 	// Set up client for google_bard
-	__Secure_lPSID := gjson.Get(string(aih_json), "__Secure-lPSID")
-	bard_session_id := __Secure_lPSID.String()
-	bard_client := bard.NewBard(bard_session_id, Proxy)
+	bard_session_id := gjson.Get(string(aih_json), "__Secure-lPSID").String()
+	bard_client := bard.NewBard(bard_session_id, "")
 	bardOptions := bard.Options{
 		ConversationID: "",
 		ResponseID:     "",
@@ -69,20 +97,21 @@ func main() {
 	if err == nil {
 		s := EdgeGPT.NewStorage()
 		gpt, err = s.GetOrSet("any-key")
-		if err != nil {
-			panic(err)
-		}
 	}
 	printer_bing := color.New(color.FgCyan).Add(color.Bold)
 
-	// Create prompt for user input
-	Liner := liner.NewLiner()
-	defer Liner.Close()
-	if f, err := os.Open(".history"); err == nil {
-		Liner.ReadHistory(f)
-		f.Close()
+	// Clean screen
+	switch runtime.GOOS {
+	case "linux", "darwin":
+		cmd := exec.Command("clear")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+	case "windows":
+		cmd := exec.Command("cmd", "/c", "cls")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
 	}
-        
+
 	// Welcome to aih
 	fmt.Println("Welcome to aih v0.1.0\nType \".help\" for more information.")
 	max_tokens := 4097
@@ -91,15 +120,16 @@ func main() {
 	speak := 0
 	role := ".chat"
 
-
 	// Start loop to read user input
 	for {
 		promp := strconv.Itoa(left_tokens) + role + "> "
 		userInput, _ := Liner.Prompt(promp)
 		Liner.AppendHistory(userInput)
 
-		userInput = strings.Trim(userInput, " ") // remove space after .xxx
-		clipb := ""                              // for save to system clipboard
+		// remove space
+		userInput = strings.Trim(userInput, " ")
+		// for save to system clipboard
+		clipb := ""
 
 		switch userInput {
 		case "":
@@ -116,9 +146,9 @@ func main() {
 			if err != nil {
 				fmt.Println("Save failed.")
 			}
-	                // Set proxy for system of current program
-                	os.Setenv("http_proxy", sdata)
-	                os.Setenv("https_proxy", sdata)
+			// Set proxy for system of current program
+			os.Setenv("http_proxy", sdata)
+			os.Setenv("https_proxy", sdata)
 			fmt.Println("Set proxy readly")
 			continue
 		case ".key":
@@ -196,11 +226,9 @@ func main() {
 		case ".bard":
 			role = ".bard"
 
-			data, err := ioutil.ReadFile("aih.json")
-			__Secure_lPSID := gjson.Get(string(data), "__Secure-lPSID")
-			bard_session_id := __Secure_lPSID.String()
 			if bard_session_id == "" {
-				bard_session_id, _ := Liner.Prompt("Please input your cookie value of __Secure-lPSID: ")
+				bard_session_id, _ = Liner.Prompt("Please input your cookie value of __Secure-lPSID: ")
+				data, err := ioutil.ReadFile("aih.json")
 				sdata := string(data)
 				njs, _ := sjson.Set(sdata, "__Secure-lPSID", bard_session_id)
 				err = ioutil.WriteFile("aih.json", []byte(njs), 0644)
@@ -208,10 +236,12 @@ func main() {
 					fmt.Println("Save failed.")
 				}
 				// renew bard client with session id
-				bard_client = bard.NewBard(bard_session_id, Proxy)
+				bard_client = bard.NewBard(bard_session_id, "")
+				fmt.Println("Renew bard client with session id ready")
 				left_tokens = 0
 				continue
 			}
+
 			left_tokens = 0
 			continue
 		case ".bing":
@@ -238,13 +268,21 @@ func main() {
 				// renew bing client with cookie
 				s := EdgeGPT.NewStorage()
 				gpt, err = s.GetOrSet("any-key")
-				if err != nil {
-					panic(err)
+				// Clean screen
+				switch runtime.GOOS {
+				case "linux", "darwin":
+					cmd := exec.Command("clear")
+					cmd.Stdout = os.Stdout
+					cmd.Run()
+				case "windows":
+					cmd := exec.Command("cmd", "/c", "cls")
+					cmd.Stdout = os.Stdout
+					cmd.Run()
 				}
-
-				left_tokens = 0
-				continue
 			}
+
+			left_tokens = 0
+			continue
 
 			left_tokens = 0
 			continue
@@ -418,7 +456,6 @@ func main() {
 		}
 
 		if role == ".bard" {
-
 			response, err := bard_client.SendMessage(userInput, bardOptions)
 			if err != nil {
 				panic(err)
