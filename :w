@@ -26,21 +26,7 @@ import (
 	"github.com/CNZeroY/googleBard/bard"
 	"github.com/rocketlaunchr/google-search"
 	openai "github.com/sashabaranov/go-openai"
-
-       )
-
-func clear(){
-	switch runtime.GOOS {
-	case "linux", "darwin":
-		cmd := exec.Command("clear")
-		cmd.Stdout = os.Stdout
-		cmd.Run()
-	case "windows":
-		cmd := exec.Command("cmd", "/c", "cls")
-		cmd.Stdout = os.Stdout
-		cmd.Run()
-	}
-       }
+)
 
 func main() {
 
@@ -116,15 +102,24 @@ func main() {
 	printer_bing := color.New(color.FgCyan).Add(color.Bold)
 
 	// Clean screen
-	clear()
+	switch runtime.GOOS {
+	case "linux", "darwin":
+		cmd := exec.Command("clear")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+	case "windows":
+		cmd := exec.Command("cmd", "/c", "cls")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+	}
 
 	// Welcome to Aih
-	fmt.Println("Welcome to Aih v0.1.0\nType \".help\" for more information.")
+	fmt.Println("Welcome to aih v0.1.0\nType \".help\" for more information.")
 	max_tokens := 4097
 	used_tokens := 0
 	left_tokens := max_tokens - used_tokens
 	speak := 0
-	role := ".bard"
+	role := ".chat"
 
 	// Start loop to read user input
 	for {
@@ -193,17 +188,16 @@ func main() {
 			speak = 0
 			continue
 		case ".clear":
-		        clear()
-			//switch runtime.GOOS {
-			//case "linux", "darwin":
-			//	cmd := exec.Command("clear")
-			//	cmd.Stdout = os.Stdout
-			//	cmd.Run()
-			//case "windows":
-			//	cmd := exec.Command("cmd", "/c", "cls")
-			//	cmd.Stdout = os.Stdout
-			//	cmd.Run()
-			//}
+			switch runtime.GOOS {
+			case "linux", "darwin":
+				cmd := exec.Command("clear")
+				cmd.Stdout = os.Stdout
+				cmd.Run()
+			case "windows":
+				cmd := exec.Command("cmd", "/c", "cls")
+				cmd.Stdout = os.Stdout
+				cmd.Run()
+			}
 			continue
 		//case ".prompt":
 		//	messages = make([]openai.ChatCompletionMessage, 0)
@@ -246,7 +240,6 @@ func main() {
 
 			left_tokens = 0
 			continue
-
 		case ".bing":
 			role = ".bing"
 
@@ -287,6 +280,8 @@ func main() {
 			left_tokens = 0
 			continue
 
+			left_tokens = 0
+			continue
 		case ".chat":
 			role = ".chat"
 
@@ -485,7 +480,6 @@ func main() {
 			continue
 
 		}
-
 		if role == ".bing" {
 			as, err := gpt.AskSync("creative", userInput)
 			if err != nil {
@@ -559,3 +553,6 @@ func main() {
 	}
 }
 
+var prompt_prove = `I want you to become my Prompt Creator. Your goal is to help me craft the best possible prompt for my needs. The prompt will be used by you, ChatGPT. You will follow the following process: 1. Your first response will be to ask me what the prompt should be about. I will provide my answer, but we will need to improve it through continual iterations by going through the next steps. 2. Based on my input, you will generate 3 sections. a) Revised prompt (provide your rewritten prompt. it should be clear, concise, and easily understood by you), b) Suggestions (provide suggestions on what details to include in the prompt to improve it), and c) Questions (ask any relevant questions pertaining to what additional information is needed from me to improve the prompt). 3. We will continue this iterative process with me providing additional information to you and you updating the prompt in the Revised prompt section until it's complete.`
+
+var write_prove = `I want you to become my Write Checker. Your goal is to help me craft the best possible sentences for my needs. You will follow the following process: 1. Your first response will be to ask me what is the sentences. I will provide my answer, but we will need to improve it through continual iterations by going through the next steps. 2. Based on my input, you will generate 3 sections. a) Revised sentences (provide your rewritten sentences. it should be clear, concise, and easily understood), b) Suggestions (provide suggestions on what details to include in the sentence to improve it), and c) Questions (ask any relevant questions pertaining to what additional information is needed from me to improve the sentence). 3. We will continue this iterative process with me providing additional information to you and you updating the sentence in the Revised sentences section until it's complete.`
