@@ -155,16 +155,18 @@ func main() {
 			continue
 		case ".help":
 			fmt.Println(".bard        Bard")
-			fmt.Println(".bing        Bing")
+			fmt.Println(".bing        Bing Chat")
 			fmt.Println(".chat        ChatGPT")
-			fmt.Println(".help        Help")
 			fmt.Println(".proxy       Set proxy")
+			fmt.Println(".bardkey     Set GoogleBard cookie")
+			fmt.Println(".bingkey     Set BingChat coolie")
 			fmt.Println(".chatkey     Set ChatGPT key")
 			fmt.Println(".new         New conversation of ChatGPT")
 			fmt.Println(".speak       Voice speak context")
 			fmt.Println(".quiet       Not speak")
 			fmt.Println(".clear       Clear screen")
 			//fmt.Println(".code        Code creation by Cursor")
+			fmt.Println(".help        Help")
 			fmt.Println(".exit        Exit")
 			continue
 		case ".speak":
