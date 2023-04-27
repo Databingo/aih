@@ -1,30 +1,31 @@
 package main
 
 import (
-	"context"
-	"fmt"
-	"github.com/CNZeroY/googleBard/bard"
-	"github.com/PuerkitoBio/goquery"
-	"github.com/atotto/clipboard"
-	"github.com/fatih/color"
-	"github.com/headzoo/surf"
-	"github.com/pavel-one/EdgeGPT-Go"
-	"github.com/peterh/liner"
-	"github.com/rocketlaunchr/google-search"
-	openai "github.com/sashabaranov/go-openai"
-	"github.com/sohaha/cursor"
-	"github.com/tidwall/gjson"
-	"github.com/tidwall/sjson"
-	"io"
-	"io/ioutil"
-	"net/http"
 	"os"
+	"io"
+	"fmt"
+	"sync"
+	"time"
+	"syscall"
+	"context"
 	"os/exec"
 	"runtime"
 	"strconv"
 	"strings"
-	"sync"
-	"time"
+	"net/http"
+	"io/ioutil"
+	"github.com/fatih/color"
+	"github.com/peterh/liner"
+	"github.com/headzoo/surf"
+	"github.com/sohaha/cursor"
+	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
+	"github.com/atotto/clipboard"
+	"github.com/PuerkitoBio/goquery"
+	"github.com/pavel-one/EdgeGPT-Go"
+	"github.com/CNZeroY/googleBard/bard"
+	"github.com/rocketlaunchr/google-search"
+	openai "github.com/sashabaranov/go-openai"
 )
 
 func main() {
@@ -65,7 +66,7 @@ func main() {
 		}
 		fmt.Println("Please restart aih for using proxy")
 		Liner.Close()
-		os.Exit(1)
+		syscall.Exit(0)
 
 	}
 
@@ -124,10 +125,8 @@ func main() {
 	for {
 		promp := strconv.Itoa(left_tokens) + role + "> "
 		userInput, _ := Liner.Prompt(promp)
-		Liner.AppendHistory(userInput)
+		userInput = strings.Trim(userInput, " ") // remove side space
 
-		// remove space
-		userInput = strings.Trim(userInput, " ")
 		// for save to system clipboard
 		clipb := ""
 
@@ -135,28 +134,25 @@ func main() {
 		case "":
 			continue
 		case ".exit":
-			fmt.Println("Byebye")
 			return
 		case ".proxy":
-			proxy, _ := Liner.Prompt("Please input your proxy: ")
-			data, err := ioutil.ReadFile("aih.json")
-			sdata := string(data)
-			njs, _ := sjson.Set(sdata, "proxy", proxy)
-			err = ioutil.WriteFile("aih.json", []byte(njs), 0644)
+			proxy, _ := Liner.Prompt("Please input your proxy:")
+			aihj, err := ioutil.ReadFile("aih.json")
+			str_aihj := string(aihj)
+			new_aihj, _ := sjson.Set(str_aihj, "proxy", proxy)
+			err = ioutil.WriteFile("aih.json", []byte(new_aihj), 0644)
 			if err != nil {
 				fmt.Println("Save failed.")
 			}
-			// Set proxy for system of current program
-			os.Setenv("http_proxy", sdata)
-			os.Setenv("https_proxy", sdata)
-			fmt.Println("Set proxy readly")
-			continue
+		        fmt.Println("Please restart aih for using proxy")
+		        Liner.Close()
+		        syscall.Exit(0)
 		case ".key":
 			k, _ := Liner.Prompt("Please input your OpenAI key: ")
-			data, err := ioutil.ReadFile("aih.json")
-			sdata := string(data)
-			nnjs, _ := sjson.Set(sdata, "key", k)
-			err = ioutil.WriteFile("aih.json", []byte(nnjs), 0644)
+			aihj, err := ioutil.ReadFile("aih.json")
+			str_aihj := string(aihj)
+			new_aihj, _ := sjson.Set(str_aihj, "key", k)
+			err = ioutil.WriteFile("aih.json", []byte(new_aihj), 0644)
 			if err != nil {
 				fmt.Println("Save failed.")
 			}
@@ -164,19 +160,19 @@ func main() {
 			continue
 		case ".help":
 			//fmt.Println(".info      Print the information")
+			fmt.Println(".bard        Bard")
+			fmt.Println(".bing        Bing")
+			fmt.Println(".chat        ChatGPT")
 			fmt.Println(".help        Show help")
 			fmt.Println(".key         Set key")
 			fmt.Println(".proxy       Set proxy")
-			fmt.Println(".new         New conversation")
+			fmt.Println(".new         New conversation of ChatGPT")
 			fmt.Println(".speak       Voice speak context")
-			fmt.Println(".quiet       Quiet not speak")
+			fmt.Println(".quiet       Not speak")
 			fmt.Println(".clear       Clear screen")
-			fmt.Println(".update      Inquery up-to-date question")
-			fmt.Println(".code        Code creation by Cursor")
+			//fmt.Println(".update      Inquery up-to-date question")
+			//fmt.Println(".code        Code creation by Cursor")
 			fmt.Println(".exit        Exit")
-			fmt.Println(" ------roles------")
-			fmt.Println(".prompt      Role of Assistant for create precise prompt")
-			fmt.Println(".writer      Role of Checker for create well sentences")
 			continue
 		case ".speak":
 			speak = 1
@@ -203,20 +199,20 @@ func main() {
 				cmd.Run()
 			}
 			continue
-		case ".prompt":
-			messages = make([]openai.ChatCompletionMessage, 0)
-			max_tokens = 4097
-			used_tokens = 0
-			left_tokens = max_tokens - used_tokens
-			userInput = prompt_prove
-			role = ".prompt"
-		case ".writer":
-			messages = make([]openai.ChatCompletionMessage, 0)
-			max_tokens = 4097
-			used_tokens = 0
-			left_tokens = max_tokens - used_tokens
-			userInput = write_prove
-			role = ".writer"
+		//case ".prompt":
+		//	messages = make([]openai.ChatCompletionMessage, 0)
+		//	max_tokens = 4097
+		//	used_tokens = 0
+		//	left_tokens = max_tokens - used_tokens
+		//	userInput = prompt_prove
+		//	role = ".prompt"
+		//case ".writer":
+		//	messages = make([]openai.ChatCompletionMessage, 0)
+		//	max_tokens = 4097
+		//	used_tokens = 0
+		//	left_tokens = max_tokens - used_tokens
+		//	userInput = write_prove
+		//	role = ".writer"
 		case ".update":
 			role = ".update"
 			continue
@@ -307,6 +303,9 @@ func main() {
 			}
 			continue
 		}
+
+		Liner.AppendHistory(userInput)
+
 		if role == ".update" {
 			// Generate a abstract response from ChatGPT
 			prompt := "Please abstract or extent keywords from this message for precise information on search engine in one line separate by ',' : " + userInput
@@ -486,7 +485,8 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
-			printer_bing.Println(as.Answer.GetAnswer())
+		        res := strings.TrimSpace(as.Answer.GetAnswer())
+			printer_bing.Println(res)
 			continue
 
 		}
