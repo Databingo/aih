@@ -10,7 +10,6 @@ import (
 	"github.com/peterh/liner"
 	"github.com/rocketlaunchr/google-search"
 	openai "github.com/sashabaranov/go-openai"
-	"github.com/sohaha/cursor"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 	"io"
@@ -85,7 +84,7 @@ func main() {
 	messages := make([]openai.ChatCompletionMessage, 0)
 	printer_chat := color.New(color.FgWhite)
 
-	// Set up client for GoogleGard
+	// Set up client for GoogleBard
 	bard_session_id := gjson.Get(string(aih_json), "__Secure-lPSID").String()
 	bard_client := bard.NewBard(bard_session_id, "")
 	bardOptions := bard.Options{
@@ -114,7 +113,6 @@ func main() {
 	fmt.Println("---------------------")
 	max_tokens := 4097
 	used_tokens := 0
-	//left_tokens := max_tokens - used_tokens
 	left_tokens := 0
 	speak := 0
 	role := ".bard"
@@ -209,24 +207,17 @@ func main() {
 
 		var RESP string
 
-		// Check role for currect actions
-		if role == ".code" {
-			res_code, err := cursor.Conv(userInput)
-			if err != nil {
-				panic(err)
-				return
-			}
-			cg := color.New(color.FgGreen)
-			cg.Println(res_code)
+		// Check role for correct actions
 
-			// Write to clipboard
-			err = clipboard.WriteAll(res_code)
-			if err != nil {
-				panic(err)
-				return
-			}
-			continue
-		}
+		//if role == ".code" {
+		//	res_code, err := cursor.Conv(userInput)
+		//	if err != nil {
+		//		panic(err)
+		//		return
+		//	}
+		//	cg := color.New(color.FgGreen)
+		//	cg.Println(res_code)
+		//}
 
 		if role == ".bard" {
 			// Check GoogleBard session
@@ -253,20 +244,12 @@ func main() {
 			if all_resp != nil {
 				RESP = response.Choices[0].Answer
 				printer_bard.Println(RESP)
-				// Write to clipboard
-				err = clipboard.WriteAll(RESP)
-				if err != nil {
-					panic(err)
-					return
-				}
 			} else {
 				break
 			}
 			bardOptions.ConversationID = response.ConversationID
 			bardOptions.ResponseID = response.ResponseID
 			bardOptions.ChoiceID = response.Choices[0].ChoiceID
-			//continue
-
 		}
 
 		if role == ".bing" {
@@ -302,9 +285,8 @@ func main() {
 			}
 			RESP = strings.TrimSpace(as.Answer.GetAnswer())
 			printer_bing.Println(RESP)
-			//continue
-
 		}
+
 		if role == ".chat" {
 			// Check ChatGPT Key
 			if OpenAI_Key == "" {
@@ -348,18 +330,18 @@ func main() {
 			left_tokens = max_tokens - used_tokens
 			printer_chat.Println(RESP)
 
-			// Write to clipboard
-			err = clipboard.WriteAll(fmt.Sprintln(RESP))
-			if err != nil {
-				panic(err)
-			}
-
 			// Record in coversation context
 			messages = append(messages, openai.ChatCompletionMessage{
 				Role:    openai.ChatMessageRoleUser,
 				Content: RESP,
 			})
 
+		}
+
+		// Write response RESP to clipboard
+		err = clipboard.WriteAll(RESP)
+		if err != nil {
+			panic(err)
 		}
 
 		// Speak all the response RESP using the "say" command
