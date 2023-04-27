@@ -18,7 +18,7 @@
 |.speak     | Voice speak context(macos)|
 |.quiet     | No speak |
 |.clear     | Clear screen|
-|.help      | Show help|
+|.help      | Help|
 |.exit      | Exit|
 
 ## Pre-requests
