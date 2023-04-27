@@ -1,6 +1,6 @@
 # Aih: use ChatGPT, GoogleBard, BingChat in terminal. 
 
-![screenshot](aih.png)
+![screenshot](aih2.png)
 
 ## Usage
 ```bash
