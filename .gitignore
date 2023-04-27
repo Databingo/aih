@@ -2,7 +2,6 @@ aih
 aih.json
 aih.mov
 release/*
-!release/upload.go
 cookies
 cookies/*
 cookies/1.json
