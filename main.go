@@ -69,16 +69,15 @@ func main() {
 	ops1 := googlesearch.SearchOptions{Limit: 12}
 	_, err = googlesearch.Search(nil, "BTC", ops1)
 	if err != nil {
-		fmt.Println("Need setting proxy to access bard, bing, chatGPT")
-		proxy, _ := Liner.Prompt("Please input your proxy: ")
-		data, err := ioutil.ReadFile("aih.json")
-		sdata := string(data)
-		njs, _ := sjson.Set(sdata, "proxy", proxy)
-		err = ioutil.WriteFile("aih.json", []byte(njs), 0644)
+		fmt.Println("Need proxy to access GoogleBard, BingChat, ChatGPT")
+		proxy, _ := Liner.Prompt("Please input proxy: ")
+		aihj, err := ioutil.ReadFile("aih.json")
+		new_aihj, _ := sjson.Set(string(aihj), "proxy", proxy)
+		err = ioutil.WriteFile("aih.json", []byte(new_aihj), 0644)
 		if err != nil {
 			fmt.Println("Save failed.")
 		}
-		fmt.Println("Please restart aih for using proxy")
+		fmt.Println("Please restart aih for using proxy...")
 		Liner.Close()
 		syscall.Exit(0)
 
@@ -120,7 +119,8 @@ func main() {
 
 	// Welcome to Aih
 	fmt.Println("---------------------")
-	fmt.Println("Welcome to Aih v0.1.0\nType \".help\" for help")
+	fmt.Println("Welcome to Aih v0.1.0")
+	fmt.Println("Type .help for help")
 	fmt.Println("---------------------")
 	max_tokens := 4097
 	used_tokens := 0
@@ -140,13 +140,10 @@ func main() {
 		switch userInput {
 		case "":
 			continue
-		case ".exit":
-			return
 		case ".proxy":
 			proxy, _ := Liner.Prompt("Please input your proxy:")
 			aihj, err := ioutil.ReadFile("aih.json")
-			str_aihj := string(aihj)
-			new_aihj, _ := sjson.Set(str_aihj, "proxy", proxy)
+			new_aihj, _ := sjson.Set(string(aihj), "proxy", proxy)
 			err = ioutil.WriteFile("aih.json", []byte(new_aihj), 0644)
 			if err != nil {
 				fmt.Println("Save failed.")
@@ -157,8 +154,7 @@ func main() {
 		case ".key":
 			k, _ := Liner.Prompt("Please input your OpenAI key: ")
 			aihj, err := ioutil.ReadFile("aih.json")
-			str_aihj := string(aihj)
-			new_aihj, _ := sjson.Set(str_aihj, "key", k)
+			new_aihj, _ := sjson.Set(string(aihj), "key", k)
 			err = ioutil.WriteFile("aih.json", []byte(new_aihj), 0644)
 			if err != nil {
 				fmt.Println("Save failed.")
@@ -166,7 +162,6 @@ func main() {
 			fmt.Println("Please restart aih")
 			continue
 		case ".help":
-			//fmt.Println(".info      Print the information")
 			fmt.Println(".bard        Bard")
 			fmt.Println(".bing        Bing")
 			fmt.Println(".chat        ChatGPT")
@@ -181,114 +176,35 @@ func main() {
 			//fmt.Println(".code        Code creation by Cursor")
 			fmt.Println(".exit        Exit")
 			continue
-		case ".speak":
-			speak = 1
+		case ".speak": speak = 1
 			continue
+		case ".quiet": speak = 0
+			continue
+		case ".clear": clear()
+			continue
+		case ".exit":
+			return
 		case ".new":
 			messages = make([]openai.ChatCompletionMessage, 0)
 			max_tokens = 4097
 			used_tokens = 0
 			left_tokens = max_tokens - used_tokens
-			role = ""
+			role = "chat"
 			continue
-		case ".quiet":
-			speak = 0
-			continue
-		case ".clear":
-		        clear()
-			//switch runtime.GOOS {
-			//case "linux", "darwin":
-			//	cmd := exec.Command("clear")
-			//	cmd.Stdout = os.Stdout
-			//	cmd.Run()
-			//case "windows":
-			//	cmd := exec.Command("cmd", "/c", "cls")
-			//	cmd.Stdout = os.Stdout
-			//	cmd.Run()
-			//}
-			continue
-		//case ".prompt":
-		//	messages = make([]openai.ChatCompletionMessage, 0)
-		//	max_tokens = 4097
-		//	used_tokens = 0
-		//	left_tokens = max_tokens - used_tokens
-		//	userInput = prompt_prove
-		//	role = ".prompt"
-		//case ".writer":
-		//	messages = make([]openai.ChatCompletionMessage, 0)
-		//	max_tokens = 4097
-		//	used_tokens = 0
-		//	left_tokens = max_tokens - used_tokens
-		//	userInput = write_prove
-		//	role = ".writer"
 		case ".update":
 			role = ".update"
 			continue
-		case ".code":
-			role = ".code"
-			continue
+		//case ".code":
+		//	role = ".code"
+		//	continue
 		case ".bard":
 			role = ".bard"
-
-			if bard_session_id == "" {
-				bard_session_id, _ = Liner.Prompt("Please input your cookie value of __Secure-lPSID: ")
-				data, err := ioutil.ReadFile("aih.json")
-				sdata := string(data)
-				njs, _ := sjson.Set(sdata, "__Secure-lPSID", bard_session_id)
-				err = ioutil.WriteFile("aih.json", []byte(njs), 0644)
-				if err != nil {
-					fmt.Println("Save failed.")
-				}
-				// renew bard client with session id
-				bard_client = bard.NewBard(bard_session_id, "")
-				fmt.Println("Renew bard client with session id ready")
-				left_tokens = 0
-				continue
-			}
-
 			left_tokens = 0
 			continue
-
 		case ".bing":
 			role = ".bing"
-
-			_, err := ioutil.ReadFile("./cookies/1.json")
-			if err != nil {
-				var lines []string
-				fmt.Println("Please paste bing cookie here then press Enter then Ctrl+D:")
-				for {
-					line, err := Liner.Prompt("")
-					if err == io.EOF {
-						break
-					}
-					lines = append(lines, line)
-				}
-				longString := strings.Join(lines, "\n")
-				_ = os.MkdirAll("./cookies", 0755)
-				err = ioutil.WriteFile("./cookies/1.json", []byte(longString), 0644)
-				if err != nil {
-					fmt.Println("Save failed.")
-				}
-
-				// renew bing client with cookie
-				s := EdgeGPT.NewStorage()
-				gpt, err = s.GetOrSet("any-key")
-				// Clean screen
-				switch runtime.GOOS {
-				case "linux", "darwin":
-					cmd := exec.Command("clear")
-					cmd.Stdout = os.Stdout
-					cmd.Run()
-				case "windows":
-					cmd := exec.Command("cmd", "/c", "cls")
-					cmd.Stdout = os.Stdout
-					cmd.Run()
-				}
-			}
-
 			left_tokens = 0
 			continue
-
 		case ".chat":
 			role = ".chat"
 
@@ -462,6 +378,19 @@ func main() {
 		}
 
 		if role == ".bard" {
+			if bard_session_id == "" {
+				bard_session_id, _ = Liner.Prompt("Please input your cookie value of __Secure-lPSID: ")
+				data, err := ioutil.ReadFile("aih.json")
+				njs, _ := sjson.Set(string(data), "__Secure-lPSID", bard_session_id)
+				err = ioutil.WriteFile("aih.json", []byte(njs), 0644)
+				if err != nil {
+					fmt.Println("Save failed.")
+				}
+				// renew bard client with session id
+				bard_client = bard.NewBard(bard_session_id, "")
+				//fmt.Println("Renew bard client with session id ready")
+				continue
+			}
 			response, err := bard_client.SendMessage(userInput, bardOptions)
 			if err != nil {
 				panic(err)
@@ -489,6 +418,32 @@ func main() {
 		}
 
 		if role == ".bing" {
+			_, err := ioutil.ReadFile("./cookies/1.json")
+			if err != nil {
+				var lines []string
+				fmt.Println("Please paste bing cookie here then press Enter then Ctrl+D:")
+				for {
+					line, err := Liner.Prompt("")
+					if err == io.EOF {
+						break
+					}
+					lines = append(lines, line)
+				}
+				longString := strings.Join(lines, "\n")
+				_ = os.MkdirAll("./cookies", 0755)
+				err = ioutil.WriteFile("./cookies/1.json", []byte(longString), 0644)
+				if err != nil {
+					fmt.Println("Save failed.")
+				}
+
+				// renew bing client with cookie
+				s := EdgeGPT.NewStorage()
+				gpt, err = s.GetOrSet("any-key")
+				// Clear screen
+				clear()
+				continue
+			}
+
 			as, err := gpt.AskSync("creative", userInput)
 			if err != nil {
 				panic(err)
