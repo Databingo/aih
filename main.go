@@ -79,11 +79,6 @@ func main() {
 
 	}
 
-	// Set up client for normal_page
-	client_n := &http.Client{}
-	client_n.Timeout = time.Second * 10
-	//bow := surf.NewBrowser()
-
 	// Set up client for OpenAI_API
 	key := gjson.Get(string(aih_json), "key")
 	OpenAI_Key := key.String()
