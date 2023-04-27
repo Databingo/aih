@@ -13,6 +13,8 @@
 |.bing      | Bing Chat|
 |.chat      | ChatGPT|
 |.proxy     | Set proxy for example: socks5://127.0.0.1:7890|
+|.bardkey   | Set GoogleBard cookie|
+|.bingkey   | Set BingChat coolie|
 |.chatkey   | Set ChatGPT key|
 |.new       | New conversation of ChatGPT|
 |.speak     | Voice speak context(macos)|
