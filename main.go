@@ -131,9 +131,6 @@ func main() {
 		userInput, _ := Liner.Prompt(promp)
 		userInput = strings.Trim(userInput, " ") // remove side space
 
-		// for save to system clipboard
-		clipb := ""
-
 		// Check Aih commands
 		switch userInput {
 		case "":
@@ -150,14 +147,6 @@ func main() {
 			Liner.Close()
 			syscall.Exit(0)
 		case ".chatkey":
-			//k, _ := Liner.Prompt("Please input your OpenAI key: ")
-			//aihj, err := ioutil.ReadFile("aih.json")
-			//new_aihj, _ := sjson.Set(string(aihj), "key", k)
-			//err = ioutil.WriteFile("aih.json", []byte(new_aihj), 0644)
-			//if err != nil {
-			//	fmt.Println("Save failed.")
-			//}
-			//fmt.Println("Please restart Aih for using key")
                         OpenAI_Key = ""
 			role = ".chat"
 			continue
@@ -364,11 +353,9 @@ func main() {
 			c.Println(RESP)
 
 			// Write to clipboard
-			clipb += fmt.Sprintln(RESP)
-			err = clipboard.WriteAll(clipb)
+			err = clipboard.WriteAll(fmt.Sprintln(RESP))
 			if err != nil {
 				panic(err)
-				return
 			}
 
 			// Record in coversation context
