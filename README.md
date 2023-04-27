@@ -1,4 +1,4 @@
-# Aih: use chatGPT, google-bard, bing-chat in terminal. 
+# Aih: use ChatGPT, GoogleBard, BingChat in terminal. 
 
 ![screenshot](aih2.png)
 
