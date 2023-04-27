@@ -90,6 +90,7 @@ func main() {
 	config := openai.DefaultConfig(OpenAI_Key)
 	client := openai.NewClientWithConfig(config)
 	messages := make([]openai.ChatCompletionMessage, 0)
+        printer_chat := color.New(color.FgWhite)
 
 	// Set up client for GoogleGard
 	bard_session_id := gjson.Get(string(aih_json), "__Secure-lPSID").String()
@@ -212,6 +213,7 @@ func main() {
 		Liner.AppendHistory(userInput)
 
 		var RESP string
+
 		// Check role for currect actions
 		if role == ".code" {
 			res_code, err := cursor.Conv(userInput)
@@ -222,7 +224,7 @@ func main() {
 			cg := color.New(color.FgGreen)
 			cg.Println(res_code)
 
-			// write to clipboard
+			// Write to clipboard
 			err = clipboard.WriteAll(res_code)
 			if err != nil {
 				panic(err)
@@ -346,11 +348,10 @@ func main() {
 			}
 
 			// Print the response to the terminal
-			c := color.New(color.FgWhite)
 			RESP = strings.TrimSpace(resp.Choices[0].Message.Content)
 			used_tokens = resp.Usage.TotalTokens
 			left_tokens = max_tokens - used_tokens
-			c.Println(RESP)
+		        printer_chat.Println(RESP)
 
 			// Write to clipboard
 			err = clipboard.WriteAll(fmt.Sprintln(RESP))
