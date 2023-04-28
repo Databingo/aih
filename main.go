@@ -168,7 +168,7 @@ func main() {
 
 	// Start loop to read user input
 	for {
-		prompt := strconv.Itoa(left_tokens) + role + ">"
+		prompt := strconv.Itoa(left_tokens) + role + "> "
 		userInput := multiln_input(Liner, prompt)
 
 		// Check Aih commands
