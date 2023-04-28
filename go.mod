@@ -11,7 +11,6 @@ require (
 	github.com/peterh/liner v1.2.2
 	github.com/rocketlaunchr/google-search v1.1.5
 	github.com/sashabaranov/go-openai v1.5.3
-	github.com/sohaha/cursor v0.0.0-20230327082739-39ba241d6341
 	github.com/tidwall/gjson v1.14.4
 	github.com/tidwall/sjson v1.2.5
 	golang.org/x/oauth2 v0.0.0-20180821212333-d2e6202438be
@@ -37,14 +36,12 @@ require (
 	github.com/mattn/go-runewidth v0.0.14 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/saintfish/chardet v0.0.0-20120816061221-3af4cd4741ca // indirect
-	github.com/sohaha/zlsgo v1.5.1 // indirect
 	github.com/temoto/robotstxt v1.1.1 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.24.0 // indirect
-	golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b // indirect
 	golang.org/x/net v0.9.0 // indirect
 	golang.org/x/sys v0.7.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
