@@ -35,7 +35,7 @@ func clear() {
 }
 
 func multiln_input(Liner *liner.State, prompt string) string {
-	// For recognize multipile lines input modele or normal.
+	// For recognize multipile lines input module
 	// |-------------------|------
 	// |recording && input | action
 	// |-------------------|------
