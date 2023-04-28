@@ -12,7 +12,6 @@ import (
 	openai "github.com/sashabaranov/go-openai"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
-	//"io"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -37,36 +36,44 @@ func clear() {
 
 func multiln_input(Liner *liner.State, prompt string) string {
 	// For recognize multipile lines input modele or normal.
+	// |-------------------|------
 	// |recording && input | action
+	// |-------------------|------
+	// |false && == ""     | break
 	// |false && != "<"    | break
 	// |false && == "<"    | true; rm <
+	// |true  && == ""     | ..
 	// |true  && != ">"    | ..
 	// |true  && == ">"    | break; rm >
+	// |-------------------|------
 
 	var ln string
 	var lns []string
 	recording := false
-	i := 0
 	for {
-		i++
-		if i == 1 {
+		if ln == "" && !recording {
 			ln, _ = Liner.Prompt(prompt)
 		} else {
 			ln, _ = Liner.Prompt("")
 		}
 		ln = strings.Trim(ln, " ")
-		if recording == false && ln[:1] != "<" {
+		if !recording && ln == "" {
 			lns = append(lns, ln)
 			break
-		} else if recording == false && ln[:1] == "<" {
-			lns = append(lns, ln[1:])
+		} else if !recording && ln[:1] != "<" {
+			lns = append(lns, ln)
+			break
+		} else if !recording && ln[:1] == "<" {
 			recording = true
-		} else if recording == true && len(ln) > 0 && ln[len(ln)-1:] == ">" {
-			lns = append(lns, ln[:len(ln)-1])
-			recording = false
-			break
-		} else {
+			lns = append(lns, ln[1:])
+		} else if recording && ln == "" {
 			lns = append(lns, ln)
+		} else if recording == true && ln[len(ln)-1:] != ">" {
+			lns = append(lns, ln)
+		} else if recording == true && ln[len(ln)-1:] == ">" {
+			recording = false
+			lns = append(lns, ln[:len(ln)-1])
+			break
 		}
 	}
 
@@ -309,9 +316,9 @@ func main() {
 			_, err := ioutil.ReadFile("./cookies/1.json")
 			if err != nil {
 				prom := "Please type < then paste Bing cookie then type > then press Enter: "
-		                userInput := multiln_input(Liner, prom)
-                                userInput = strings.Replace(userInput , "\r", "", -1)
-                                userInput = strings.Replace(userInput , "\n", "", -1)
+				userInput := multiln_input(Liner, prom)
+				userInput = strings.Replace(userInput, "\r", "", -1)
+				userInput = strings.Replace(userInput, "\n", "", -1)
 				_ = os.MkdirAll("./cookies", 0755)
 				err = ioutil.WriteFile("./cookies/1.json", []byte(userInput), 0644)
 				if err != nil {
