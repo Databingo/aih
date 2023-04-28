@@ -262,6 +262,8 @@ func main() {
 		}
 
 		// Record user input without Aih commands
+		userInput = strings.Replace(userInput, "\r", "\n", -1)
+		userInput = strings.Replace(userInput, "\n", " ", -1)
 		Liner.AppendHistory(userInput)
 
 		var RESP string
@@ -296,7 +298,8 @@ func main() {
 			// Send message
 			response, err := bard_client.SendMessage(userInput, bardOptions)
 			if err != nil {
-				panic(err)
+				fmt.Println(err)
+				continue
 			}
 
 			all_resp := response
@@ -316,11 +319,11 @@ func main() {
 			_, err := ioutil.ReadFile("./cookies/1.json")
 			if err != nil {
 				prom := "Please type < then paste Bing cookie then type > then press Enter: "
-				userInput := multiln_input(Liner, prom)
-				userInput = strings.Replace(userInput, "\r", "", -1)
-				userInput = strings.Replace(userInput, "\n", "", -1)
+				ck := multiln_input(Liner, prom)
+				ck  = strings.Replace(ck, "\r", "", -1)
+				ck  = strings.Replace(ck, "\n", "", -1)
 				_ = os.MkdirAll("./cookies", 0755)
-				err = ioutil.WriteFile("./cookies/1.json", []byte(userInput), 0644)
+				err = ioutil.WriteFile("./cookies/1.json", []byte(ck), 0644)
 				if err != nil {
 					fmt.Println("Save failed.")
 				}
@@ -334,7 +337,8 @@ func main() {
 			// Send message
 			as, err := gpt.AskSync("creative", userInput)
 			if err != nil {
-				panic(err)
+				fmt.Println(err)
+				continue
 			}
 			RESP = strings.TrimSpace(as.Answer.GetAnswer())
 			printer_bing.Println(RESP)
