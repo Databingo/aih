@@ -35,11 +35,51 @@ func clear() {
 	}
 }
 
+func multiln_input(Liner *liner.State, prompt string) string {
+	// For recognize multipile lines input modele or normal.
+	// |recording && input | action
+	// |false && != "<"    | break
+	// |false && == "<"    | true; rm <
+	// |true  && != ">"    | ..
+	// |true  && == ">"    | break; rm >
+
+	var ln string
+	var lns []string
+	recording := false
+	i := 0
+	for {
+		i++
+		if i == 1 {
+			ln, _ = Liner.Prompt(prompt)
+		} else {
+			ln, _ = Liner.Prompt("")
+		}
+		ln = strings.Trim(ln, " ")
+		if recording == false && ln[:1] != "<" {
+			lns = append(lns, ln)
+			break
+		} else if recording == false && ln[:1] == "<" {
+			lns = append(lns, ln[1:])
+			recording = true
+		} else if recording == true && len(ln) > 0 && ln[len(ln)-1:] == ">" {
+			lns = append(lns, ln[:len(ln)-1])
+			recording = false
+			break
+		} else {
+			lns = append(lns, ln)
+		}
+	}
+
+	long_str := strings.Join(lns, "\n")
+	return long_str
+}
+
 func main() {
 
 	// Create prompt for user input
 	Liner := liner.NewLiner()
 	defer Liner.Close()
+
 	if f, err := os.Open(".history"); err == nil {
 		Liner.ReadHistory(f)
 		f.Close()
@@ -100,6 +140,9 @@ func main() {
 	if err == nil {
 		s := EdgeGPT.NewStorage()
 		gpt, err = s.GetOrSet("any-key")
+		if err != nil {
+			fmt.Println("Please reset bing cookie")
+		}
 	}
 	printer_bing := color.New(color.FgCyan).Add(color.Bold)
 
@@ -119,9 +162,8 @@ func main() {
 
 	// Start loop to read user input
 	for {
-		promp := strconv.Itoa(left_tokens) + role + "> "
-		userInput, _ := Liner.Prompt(promp)
-		userInput = strings.Trim(userInput, " ") // remove side space
+		prompt := strconv.Itoa(left_tokens) + role + "> "
+		userInput := multiln_input(Liner, prompt)
 
 		// Check Aih commands
 		switch userInput {
@@ -161,6 +203,8 @@ func main() {
 			fmt.Println(".bardkey     Set GoogleBard cookie")
 			fmt.Println(".bingkey     Set BingChat coolie")
 			fmt.Println(".chatkey     Set ChatGPT key")
+			fmt.Println("<            Start multiple lines input")
+			fmt.Println(">            End multiple lines input")
 			fmt.Println(".new         New conversation of ChatGPT")
 			fmt.Println(".speak       Voice speak context")
 			fmt.Println(".quiet       Not speak")

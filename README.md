@@ -16,6 +16,8 @@
 |.bardkey   | Set GoogleBard cookie|
 |.bingkey   | Set BingChat cookie|
 |.chatkey   | Set ChatGPT key|
+|<          | Start multiple lines input|
+|>          | End multiple lines input|
 |.new       | New conversation of ChatGPT|
 |.speak     | Voice speak context(macos)|
 |.quiet     | No speak |
