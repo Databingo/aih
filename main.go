@@ -12,7 +12,7 @@ import (
 	openai "github.com/sashabaranov/go-openai"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
-	"io"
+	//"io"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -150,10 +150,16 @@ func main() {
 	clear()
 
 	// Welcome to Aih
-	fmt.Println("---------------------")
-	fmt.Println("Welcome to Aih v0.1.0")
-	fmt.Println("Type .help for help")
-	fmt.Println("---------------------")
+	//fmt.Println("---------------------")
+	//fmt.Println("Welcome to Aih v0.1.0")
+	//fmt.Println("Type .help for help")
+	//fmt.Println("---------------------")
+	welcome := `╭ ────────────────────────────── ╮
+│    Welcome to Aih              │ 
+│    Type .help for help         │ 
+╰ ────────────────────────────── ╯`
+	fmt.Println(welcome)
+
 	max_tokens := 4097
 	used_tokens := 0
 	left_tokens := 0
@@ -162,7 +168,7 @@ func main() {
 
 	// Start loop to read user input
 	for {
-		prompt := strconv.Itoa(left_tokens) + role + "> "
+		prompt := strconv.Itoa(left_tokens) + role + ">"
 		userInput := multiln_input(Liner, prompt)
 
 		// Check Aih commands
@@ -302,18 +308,12 @@ func main() {
 			// Check BingChat cookie
 			_, err := ioutil.ReadFile("./cookies/1.json")
 			if err != nil {
-				var lines []string
-				fmt.Println("Please paste bing cookie here then press Enter then Ctrl+D:")
-				for {
-					line, err := Liner.Prompt("")
-					if err == io.EOF {
-						break
-					}
-					lines = append(lines, line)
-				}
-				longString := strings.Join(lines, "\n")
+				prom := "Please type > then paste Bing cookie then type > then press Enter: "
+		                userInput := multiln_input(Liner, prom)
+                                userInput = strings.Replace(userInput , "\r", "", -1)
+                                userInput = strings.Replace(userInput , "\n", "", -1)
 				_ = os.MkdirAll("./cookies", 0755)
-				err = ioutil.WriteFile("./cookies/1.json", []byte(longString), 0644)
+				err = ioutil.WriteFile("./cookies/1.json", []byte(userInput), 0644)
 				if err != nil {
 					fmt.Println("Save failed.")
 				}
