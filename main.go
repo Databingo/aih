@@ -218,6 +218,8 @@ func main() {
 			fmt.Println(".chatkey     Set ChatGPT key")
 			fmt.Println("<            Start multiple lines input")
 			fmt.Println(">            End multiple lines input")
+			fmt.Println("↑            Previous input value")
+			fmt.Println("↓            Next input value")
 			fmt.Println(".new         New conversation of ChatGPT")
 			fmt.Println(".speak       Voice speak context")
 			fmt.Println(".quiet       Not speak")

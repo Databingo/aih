@@ -18,6 +18,8 @@
 |.chatkey   | Set ChatGPT key|
 |<          | Start multiple lines input|
 |>          | End multiple lines input|
+|↑          | Previous input value|
+|↓          | Next input value|
 |.new       | New conversation of ChatGPT|
 |.speak     | Voice speak context(macos)|
 |.quiet     | No speak |
