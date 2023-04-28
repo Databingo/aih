@@ -308,7 +308,7 @@ func main() {
 			// Check BingChat cookie
 			_, err := ioutil.ReadFile("./cookies/1.json")
 			if err != nil {
-				prom := "Please type > then paste Bing cookie then type > then press Enter: "
+				prom := "Please type < then paste Bing cookie then type > then press Enter: "
 		                userInput := multiln_input(Liner, prom)
                                 userInput = strings.Replace(userInput , "\r", "", -1)
                                 userInput = strings.Replace(userInput , "\n", "", -1)
