@@ -43,8 +43,6 @@
 $ git clone https://github.com/Databingo/aih
 $ cd aih && go mod tidy && go build 
 ```
-Or download release binary file according to your operation system.
-
 ## About Suggestions
 This is an open plan based on the idea of "Co-relation's enhancement of AI and human beings".
 If you have any suggestions please write in Issues.
