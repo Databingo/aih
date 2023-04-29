@@ -3,14 +3,14 @@ module aih
 go 1.19
 
 require (
-	github.com/CNZeroY/googleBard v1.0.1-0.20230425151705-9f6f6af323e4
+	github.com/Databingo/googleBard v0.0.0-20230429071020-6c29ba10f104
 	github.com/atotto/clipboard v0.1.4
 	github.com/fatih/color v1.15.0
 	github.com/google/go-github v17.0.0+incompatible
-	github.com/pavel-one/EdgeGPT-Go v1.3.0
+	github.com/pavel-one/EdgeGPT-Go v1.3.1
 	github.com/peterh/liner v1.2.2
 	github.com/rocketlaunchr/google-search v1.1.5
-	github.com/sashabaranov/go-openai v1.5.3
+	github.com/sashabaranov/go-openai v1.9.0
 	github.com/tidwall/gjson v1.14.4
 	github.com/tidwall/sjson v1.2.5
 	golang.org/x/oauth2 v0.0.0-20180821212333-d2e6202438be

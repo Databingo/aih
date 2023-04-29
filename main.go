@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/CNZeroY/googleBard/bard"
+	"github.com/Databingo/googleBard/bard"
 	"github.com/atotto/clipboard"
 	"github.com/fatih/color"
 	"github.com/pavel-one/EdgeGPT-Go"
@@ -264,9 +264,9 @@ func main() {
 		}
 
 		// Record user input without Aih commands
-		userInput = strings.Replace(userInput, "\r", "\n", -1)
-		userInput = strings.Replace(userInput, "\n", " ", -1)
-		Liner.AppendHistory(userInput)
+		uInput := strings.Replace(userInput, "\r", "\n", -1)
+		uInput  = strings.Replace(uInput, "\n", " ", -1)
+		Liner.AppendHistory(uInput)
 
 		var RESP string
 
@@ -305,6 +305,7 @@ func main() {
 			}
 
 			all_resp := response
+			//fmt.Println("response:", response)
 			if all_resp != nil {
 				RESP = response.Choices[0].Answer
 				printer_bard.Println(RESP)
