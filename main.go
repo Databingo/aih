@@ -40,11 +40,11 @@ func multiln_input(Liner *liner.State, prompt string) string {
 	// |recording && input | action
 	// |-------------------|------
 	// |false && == ""     | break
-	// |false && != "<"    | break
-	// |false && == "<"    | true; rm <
+	// |false && != "<<"    | break
+	// |false && == "<<"    | true; rm <<
 	// |true  && == ""     | ..
-	// |true  && != ">"    | ..
-	// |true  && == ">"    | break; rm >
+	// |true  && != ">>"    | ..
+	// |true  && == ">>"    | break; rm >>
 	// |-------------------|------
 
 	var ln string
@@ -60,19 +60,19 @@ func multiln_input(Liner *liner.State, prompt string) string {
 		if !recording && ln == "" {
 			lns = append(lns, ln)
 			break
-		} else if !recording && ln[:1] != "<" {
+		} else if !recording && ln[:2] != "<<" {
 			lns = append(lns, ln)
 			break
-		} else if !recording && ln[:1] == "<" {
+		} else if !recording && ln[:2] == "<<" {
 			recording = true
-			lns = append(lns, ln[1:])
+			lns = append(lns, ln[2:])
 		} else if recording && ln == "" {
 			lns = append(lns, ln)
-		} else if recording == true && ln[len(ln)-1:] != ">" {
+		} else if recording == true && ln[len(ln)-2:] != ">>" {
 			lns = append(lns, ln)
-		} else if recording == true && ln[len(ln)-1:] == ">" {
+		} else if recording == true && ln[len(ln)-2:] == ">>" {
 			recording = false
-			lns = append(lns, ln[:len(ln)-1])
+			lns = append(lns, ln[:len(ln)-2])
 			break
 		}
 	}
@@ -216,8 +216,8 @@ func main() {
 			fmt.Println(".bardkey     Set GoogleBard cookie")
 			fmt.Println(".bingkey     Set BingChat coolie")
 			fmt.Println(".chatkey     Set ChatGPT key")
-			fmt.Println("<            Start multiple lines input")
-			fmt.Println(">            End multiple lines input")
+			fmt.Println("<<            Start multiple lines input")
+			fmt.Println(">>            End multiple lines input")
 			fmt.Println("↑            Previous input value")
 			fmt.Println("↓            Next input value")
 			fmt.Println(".new         New conversation of ChatGPT")
@@ -321,7 +321,7 @@ func main() {
 			// Check BingChat cookie
 			_, err := ioutil.ReadFile("./cookies/1.json")
 			if err != nil {
-				prom := "Please type < then paste Bing cookie then type > then press Enter: "
+				prom := "Please type << then paste Bing cookie then type >> then press Enter: "
 				ck := multiln_input(Liner, prom)
 				ck  = strings.Replace(ck, "\r", "", -1)
 				ck  = strings.Replace(ck, "\n", "", -1)
