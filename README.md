@@ -1,4 +1,4 @@
-# Aih: use GoogleBard, BingChat, ChatGPT in terminal.
+# Aih: Use GoogleBard, BingChat, ChatGPT in terminal.
 ![screenshot](aih.png)
 
 ## Usage
@@ -28,25 +28,25 @@
 |.help      | Help|
 |.exit      | Exit|
 
-## Pre-requests
-- For ChatGPT Web (free) you should have an `account` and a logined `accessToken` from [OpenAI](https://chat.openai.com/api/auth/session).
+## Prerequisites:
+- For ChatGPT Web (free) you should have an `account` and a logged-in `accessToken` from [OpenAI](https://chat.openai.com/api/auth/session).
 - For ChatGPT API (pay) you should have a payed API on [Billing](https://platform.openai.com/account/billing/overview). 
 - For GoogleBard you should [Join Waitlist](https://bard.google.com) and a cookie value of `__Secure-lPSID`.
 - For BingChat you should [Apply Waitlist](https://bing.com/new) and a `cookie`.
 
-## How to get Cookies
-- For GoogleBard cookie you could login then add [Cookie-Editor](https://cookie-editor.cgagnier.ca) extension then Click it on the right-top corner to copy `__Secure-lPSID` value.
+## How to get Cookies:
+- For GoogleBard cookie, you could log in, then add [Cookie-Editor](https://cookie-editor.cgagnier.ca) extension. Click it on the right-top corner to copy the `__Secure-lPSID` value.
 - For BingChat cookie you could login then use Cookie-Editor -> click Cookie-Editor icon -> click "Export" -> click "Export as JSON" (This saves your cookies to clipboard), then type `.bingkey` in Aih, you will see a prompt **"Please type << then paste Bing cookie then type >> then press Enter"**, by doing so you could set BingChat cookie via multiple lines input model.
 
-## Tips
-- The returned text would be auotmatically saved in your system clipboard, so paste it to any where directly.
+## Tips:
+- The returned text would be auotmatically saved in your system clipboard, so you can paste it anywhere directly.
 
-## Support OS
+## Supported Operating Systems:
 - Mac
 - Linux
 - Windows
 
-## Installation
+## Installation:
 
 - Bash
 ```
@@ -54,13 +54,13 @@ $ git clone https://github.com/Databingo/aih
 $ go clean -cache && go clean -modcache 
 $ cd aih && go mod tidy && go build 
 ```
-- Or download executable [Binary file](https://github.com/Databingo/aih/releases/tag/v0.1.0) according to your operating system.
+- Or, download executable [Binary file](https://github.com/Databingo/aih/releases/tag/v0.1.0) according to your operating system.
 
-## About Suggestions
+## About Suggestions:
 This is an open plan based on the idea of "Co-relation's enhancement of AI and human beings".
 If you have any suggestions please write in Issues.
 
-## Acknowledge
+## Acknowledgements:
 - github.com/rocketlaunchr/google-search
 - github.com/sashabaranov/go-openai 
 - github.com/CNZeroY/googleBard
