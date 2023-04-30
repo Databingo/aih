@@ -58,3 +58,4 @@ If you have any suggestions please write in Issues.
 - github.com/sashabaranov/go-openai 
 - github.com/CNZeroY/googleBard
 - github.com/pavel-one/EdgeGPT-Go
+- github.com/pengzhile/pandora
