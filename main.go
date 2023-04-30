@@ -19,6 +19,9 @@ import (
 	"strconv"
 	"strings"
 	"syscall"
+	"bytes"
+	"github.com/google/uuid"
+	"net/http"
 )
 
 func clear() {
@@ -40,11 +43,11 @@ func multiln_input(Liner *liner.State, prompt string) string {
 	// |recording && input | action
 	// |-------------------|------
 	// |false && == ""     | break
-	// |false && != "<<"    | break
-	// |false && == "<<"    | true; rm <<
+	// |false && != "<<"   | break
+	// |false && == "<<"   | true; rm <<
 	// |true  && == ""     | ..
-	// |true  && != ">>"    | ..
-	// |true  && == ">>"    | break; rm >>
+	// |true  && != ">>"   | ..
+	// |true  && == ">>"   | break; rm >>
 	// |-------------------|------
 
 	var ln string
@@ -131,6 +134,12 @@ func main() {
 	messages := make([]openai.ChatCompletionMessage, 0)
 	printer_chat := color.New(color.FgWhite)
 
+	// Set up client for ChatGPT Web
+	chat_access_token := gjson.Get(string(aih_json), "chat_access_token").String()
+	var client_chat = &http.Client{}
+        var conversation_id string
+        var parent_id string
+
 	// Set up client for GoogleBard
 	bard_session_id := gjson.Get(string(aih_json), "__Secure-lPSID").String()
 	bard_client := bard.NewBard(bard_session_id, "")
@@ -157,14 +166,13 @@ func main() {
 	clear()
 
 	// Welcome to Aih
-	//fmt.Println("---------------------")
-	//fmt.Println("Welcome to Aih v0.1.0")
-	//fmt.Println("Type .help for help")
-	//fmt.Println("---------------------")
-	welcome := `╭ ────────────────────────────── ╮
+	welcome := `
+╭ ────────────────────────────── ╮
 │    Welcome to Aih              │ 
 │    Type .help for help         │ 
-╰ ────────────────────────────── ╯`
+╰ ────────────────────────────── ╯
+`
+	//fmt.Println(strings.Replace(welcome, "\n", "", -1))
 	fmt.Println(welcome)
 
 	max_tokens := 4097
@@ -194,8 +202,12 @@ func main() {
 			Liner.Close()
 			syscall.Exit(0)
 		case ".chatkey":
-			OpenAI_Key = ""
+			chat_access_token = ""
 			role = ".chat"
+			continue
+		case ".chatapikey":
+			OpenAI_Key = ""
+			role = ".chatapi"
 			continue
 		case ".bardkey":
 			bard_session_id = ""
@@ -211,11 +223,13 @@ func main() {
 		case ".help":
 			fmt.Println(".bard        Bard")
 			fmt.Println(".bing        Bing Chat")
-			fmt.Println(".chat        ChatGPT")
+			fmt.Println(".chat        ChatGPT Web(free)")
+			fmt.Println(".chatapi     ChatGPT Api(pay)")
 			fmt.Println(".proxy       Set proxy")
 			fmt.Println(".bardkey     Set GoogleBard cookie")
 			fmt.Println(".bingkey     Set BingChat coolie")
-			fmt.Println(".chatkey     Set ChatGPT key")
+			fmt.Println(".chatkey     Set ChatGPT Web accessToken")
+			fmt.Println(".chatapikey  Set ChatGPT Api key")
 			fmt.Println("<<            Start multiple lines input")
 			fmt.Println(">>            End multiple lines input")
 			fmt.Println("↑            Previous input value")
@@ -240,11 +254,14 @@ func main() {
 		case ".exit":
 			return
 		case ".new":
-			role = "chat"
+			// for role chatapi
 			messages = make([]openai.ChatCompletionMessage, 0)
 			max_tokens = 4097
 			used_tokens = 0
 			left_tokens = max_tokens - used_tokens
+			// for role chat
+			conversation_id = ""
+			parent_id = ""
 			continue
 		//case ".code":
 		//	role = ".code"
@@ -259,6 +276,9 @@ func main() {
 			continue
 		case ".chat":
 			role = ".chat"
+			continue
+		case ".chatapi":
+			role = ".chatapi"
 			left_tokens = max_tokens - used_tokens
 			continue
 		}
@@ -348,7 +368,27 @@ func main() {
 		}
 
 		if role == ".chat" {
-			// Check ChatGPT Key
+			if chat_access_token == "" {
+				chat_access_token, _ = Liner.Prompt("Please input your ChatGPT accessToken: ")
+				aihj, err := ioutil.ReadFile("aih.json")
+				nj, _ := sjson.Set(string(aihj), "chat_access_token", chat_access_token)
+				err = ioutil.WriteFile("aih.json", []byte(nj), 0644)
+				if err != nil {
+					fmt.Println("Save failed.")
+				}
+				// Renew GoogleBard client with __Secure-lPSID
+				//bard_client = bard.NewBard(bard_session_id, "")
+				continue
+			}
+
+			// Send message
+                        RESP = chatgpt_web(client_chat, &chat_access_token, &userInput, &conversation_id, &parent_id)
+
+
+		}
+
+		if role == ".chatapi" {
+			// Check ChatGPT API Key
 			if OpenAI_Key == "" {
 				OpenAI_Key, _ = Liner.Prompt("Please input your OpenAI Key: ")
 				aihj, err := ioutil.ReadFile("aih.json")
@@ -425,4 +465,75 @@ func main() {
 			}()
 		}
 	}
+}
+
+func chatgpt_web(c *http.Client, chat_access_token, prompt, c_id, p_id *string) string {
+	// Set the endpoint URL.
+        var api = "https://ai.fakeopen.com/api"
+	url := api + "/conversation"
+	fmt.Println("url:", url)
+
+	x := `{"action": "next", "messages": [{"id": null, "role": "user", "author": {"role": "user"}, "content": {"content_type": "text", "parts": [""]}}], 
+                             "conversation_id": null, 
+			     "parent_message_id": "", 
+			     "model": "text-davinci-002-render-sha"}`
+
+	x, _ = sjson.Set(x, "messages.0.content.parts.0", *prompt)
+
+	m_id := uuid.New().String()
+	x, _ = sjson.Set(x, "messages.0.id", m_id)
+
+	if *p_id == "" {
+		*p_id = uuid.New().String()
+	}
+	x, _ = sjson.Set(x, "parent_message_id", *p_id)
+
+	if *c_id != "" {
+		x, _ = sjson.Set(x, "conversation_id", *c_id)
+	}
+
+	fmt.Println(x)
+
+	// Create a new request.
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(x)))
+	if err != nil {
+		panic(err)
+	}
+
+	// Set the headers.
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", *chat_access_token))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "text/event-stream")
+
+	// Send the request.
+	resp, err := c.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response status code.
+	if resp.StatusCode != 200 {
+		panic(resp.Status)
+	}
+
+	// Read the response body.
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		panic(err)
+	}
+	// Find the whole response
+	long_str := string(body)
+	lines := strings.Split(long_str, "\n")
+	long_str = lines[len(lines)-5]
+
+	fmt.Println(long_str)
+	answer := gjson.Get(long_str[5:], "message.content.parts.0").String()
+	fmt.Println(answer)
+
+	*c_id = gjson.Get(long_str[5:], "conversation_id").String()
+	//fmt.Println("conversation_id:", conversation_id)
+	*p_id = gjson.Get(long_str[5:], "message.id").String()
+	//fmt.Println("parent_id:", parent_id)
+	return answer
 }
