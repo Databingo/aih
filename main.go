@@ -85,7 +85,6 @@ func multiln_input(Liner *liner.State, prompt string) string {
 }
 
 func main() {
-
 	// Create prompt for user input
 	Liner := liner.NewLiner()
 	defer Liner.Close()
@@ -94,6 +93,10 @@ func main() {
 		Liner.ReadHistory(f)
 		f.Close()
 	}
+
+	// Use RESP for record response per time per time
+	var RESP string
+
 	// Read Aih Configure
 	aih_json, err := ioutil.ReadFile("aih.json")
 	if err != nil {
@@ -178,6 +181,7 @@ func main() {
 	left_tokens := 0
 	speak := 0
 	role := ".bard"
+	uInput := ""
 
 	// Start loop to read user input
 	for {
@@ -202,22 +206,23 @@ func main() {
 		case ".bardkey":
 			bard_session_id = ""
 			role = ".bard"
-			continue
+			goto BARD
+			//continue
 		case ".chatkey":
 			chat_access_token = ""
 			role = ".chat"
-			continue
+			goto CHART
+			//continue
 		case ".chatapikey":
 			OpenAI_Key = ""
 			role = ".chatapi"
-			continue
+			goto CHARTAPI
+			//continue
 		case ".bingkey":
-			err := os.Remove("./cookies/1.json")
-			if err != nil {
-				panic(err)
-			}
+			_ = os.Remove("./cookies/1.json")
 			role = ".bing"
-			continue
+			goto BING
+			//continue
 		case ".help":
 			fmt.Println(".bard        Bard")
 			fmt.Println(".bing        Bing Chat")
@@ -276,16 +281,16 @@ func main() {
 			role = ".chatapi"
 			left_tokens = max_tokens - used_tokens
 			continue
+		default:
+			// Record user input without Aih commands
+			uInput = strings.Replace(userInput, "\r", "\n", -1)
+			uInput = strings.Replace(uInput, "\n", " ", -1)
+			Liner.AppendHistory(uInput)
+
 		}
 
-		// Record user input without Aih commands
-		uInput := strings.Replace(userInput, "\r", "\n", -1)
-		uInput = strings.Replace(uInput, "\n", " ", -1)
-		Liner.AppendHistory(uInput)
-
-		var RESP string
-
 		// Check role for correct actions
+	BARD:
 		if role == ".bard" {
 			// Check GoogleBard session
 			if bard_session_id == "" {
@@ -323,6 +328,7 @@ func main() {
 			bardOptions.ChoiceID = response.Choices[0].ChoiceID
 		}
 
+	BING:
 		if role == ".bing" {
 			// Check BingChat cookie
 			_, err := ioutil.ReadFile("./cookies/1.json")
@@ -356,6 +362,7 @@ func main() {
 			printer_bing.Println(RESP)
 		}
 
+	CHART:
 		if role == ".chat" {
 			if chat_access_token == "" {
 				chat_access_token, _ = Liner.Prompt("Please input your ChatGPT accessToken: ")
@@ -377,6 +384,7 @@ func main() {
 
 		}
 
+	CHARTAPI:
 		if role == ".chatapi" {
 			// Check ChatGPT API Key
 			if OpenAI_Key == "" {
@@ -498,7 +506,7 @@ func chatgpt_web(c *http.Client, chat_access_token, prompt, c_id, p_id *string) 
 	// Send the request.
 	resp, err := c.Do(req)
 	if err != nil {
-		panic(err)
+		fmt.Println(err, "service not work, please try again ...")
 	}
 	defer resp.Body.Close()
 
