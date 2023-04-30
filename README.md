@@ -35,7 +35,7 @@
 - For GoogleBard you should [Join Waitlist](https://bard.google.com) and a logined cookie value of `__Secure-lPSID`.
 - For BingChat you should [Apply Waitlist](https://bing.com/new) and a logined `cookie`.
 
-## How to get cookes
+## How to get Cookies
 - For GoogleBard cookie you could use [Cookie-Editor](https://cookie-editor.cgagnier.ca) extension then Click it on the right-top corner to copy __Secure-lPSID value.
 - For BingChat cookie you could use Cookie-Editor -> click Cookie-Editor icon -> click "Export" -> click "Export as JSON"(This saves your cookies to clipboard), then type .bing in Aih, when you type in something then hit Enter, you will see a prompt "Please type << then paste Bing cookie then type >> then press Enter", by doing these you could set BingChat cookie via multiple lines input model.
 
