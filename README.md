@@ -38,8 +38,8 @@
 - For BingChat, you should [Apply Waitlist](https://bing.com/new) and get a cookie.
 
 ## How to get Cookies
-- For GoogleBard cookie, you could log in, then add [Cookie-Editor](https://cookie-editor.cgagnier.ca) extension. Click it on the right-top corner to copy the `__Secure-lPSID` value.
-- For BingChat cookie you could login then use Cookie-Editor -> click Cookie-Editor icon -> click "Export" -> click "Export as JSON" (This saves your cookies to clipboard), then type `.bingkey` in Aih, you will see a prompt **"Please type << then paste Bing cookie then type >> then press Enter"**, by doing so you could set BingChat cookie via multiple lines input model.
+- For GoogleBard cookie, you can log in and then add the [Cookie-Editor](https://cookie-editor.cgagnier.ca) extension. Click it on the top-right corner to copy the `__Secure-lPSID` value.
+- For BingChat cookie you can log in and then use Cookie-Editor -> click Cookie-Editor icon -> click "Export" -> click "Export as JSON" (This saves your cookies to the clipboard), then type `.bingkey` in Aih, you will see a prompt that says **"Please type << then paste Bing cookie then type >> then press Enter"**, by doing so you can set BingChat cookie via multiple lines input mode.
 
 ## Tips
 - The returned text will be auotmatically saved in your system clipboard, so you can paste it anywhere directly.
