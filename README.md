@@ -38,6 +38,9 @@
 - For GoogleBard cookie you could login then add [Cookie-Editor](https://cookie-editor.cgagnier.ca) extension then Click it on the right-top corner to copy `__Secure-lPSID` value.
 - For BingChat cookie you could login then use Cookie-Editor -> click Cookie-Editor icon -> click "Export" -> click "Export as JSON" (This saves your cookies to clipboard), then type `.bing` in Aih, when you type in something then hit Enter, you will see a prompt **"Please type << then paste Bing cookie then type >> then press Enter"**, by doing so you could set BingChat cookie via multiple lines input model.
 
+## Tips
+- The returned text would be auotmatically saved in your system clipboard, so paste it to any where directly.
+
 ## Support OS
 - Mac
 - Linux
