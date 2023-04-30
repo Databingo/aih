@@ -471,7 +471,6 @@ func chatgpt_web(c *http.Client, chat_access_token, prompt, c_id, p_id *string) 
 	// Set the endpoint URL.
         var api = "https://ai.fakeopen.com/api"
 	url := api + "/conversation"
-	//fmt.Println("url:", url)
 
 	x := `{"action": "next", "messages": [{"id": null, "role": "user", "author": {"role": "user"}, "content": {"content_type": "text", "parts": [""]}}], 
                              "conversation_id": null, 
@@ -526,11 +525,8 @@ func chatgpt_web(c *http.Client, chat_access_token, prompt, c_id, p_id *string) 
 	lines := strings.Split(long_str, "\n")
 	long_str = lines[len(lines)-5]
 
-	//fmt.Println(long_str)
 	answer := gjson.Get(long_str[5:], "message.content.parts.0").String()
 	*c_id = gjson.Get(long_str[5:], "conversation_id").String()
-	//fmt.Println("conversation_id:", conversation_id)
 	*p_id = gjson.Get(long_str[5:], "message.id").String()
-	//fmt.Println("parent_id:", parent_id)
 	return answer
 }
