@@ -200,6 +200,10 @@ func main() {
 			fmt.Println("Please restart Aih for using proxy")
 			Liner.Close()
 			syscall.Exit(0)
+		case ".bardkey":
+			bard_session_id = ""
+			role = ".bard"
+			continue
 		case ".chatkey":
 			chat_access_token = ""
 			role = ".chat"
@@ -207,10 +211,6 @@ func main() {
 		case ".chatapikey":
 			OpenAI_Key = ""
 			role = ".chatapi"
-			continue
-		case ".bardkey":
-			bard_session_id = ""
-			role = ".bard"
 			continue
 		case ".bingkey":
 			err := os.Remove("./cookies/1.json")
@@ -225,17 +225,17 @@ func main() {
 			fmt.Println(".chat        ChatGPT Web (free)")
 			fmt.Println(".chatapi     ChatGPT Api (pay)")
 			fmt.Println(".proxy       Set proxy")
-			fmt.Println("<<            Start multiple lines input")
-			fmt.Println(">>            End multiple lines input")
+			fmt.Println("<<           Start multiple lines input")
+			fmt.Println(">>           End multiple lines input")
 			fmt.Println("↑            Previous input value")
 			fmt.Println("↓            Next input value")
 			fmt.Println(".new         New conversation of ChatGPT")
 			fmt.Println(".speak       Voice speak context")
 			fmt.Println(".quiet       Not speak")
-			fmt.Println(".bardkey     Set GoogleBard cookie")
-			fmt.Println(".bingkey     Set BingChat coolie")
-			fmt.Println(".chatkey     Set ChatGPT Web accessToken")
-			fmt.Println(".chatapikey  Set ChatGPT Api key")
+			fmt.Println(".bardkey     Reset GoogleBard cookie")
+			fmt.Println(".bingkey     Reset BingChat coolie")
+			fmt.Println(".chatkey     Reset ChatGPT Web accessToken")
+			fmt.Println(".chatapikey  Reset ChatGPT Api key")
 			fmt.Println(".clear       Clear screen")
 			//fmt.Println(".code        Code creation by Cursor")
 			fmt.Println(".help        Help")
@@ -253,12 +253,12 @@ func main() {
 		case ".exit":
 			return
 		case ".new":
-			// for role chatapi
+			// For role chatapi
 			messages = make([]openai.ChatCompletionMessage, 0)
 			max_tokens = 4097
 			used_tokens = 0
 			left_tokens = max_tokens - used_tokens
-			// for role chat
+			// For role chat
 			conversation_id = ""
 			parent_id = ""
 			continue
@@ -275,6 +275,7 @@ func main() {
 			continue
 		case ".chat":
 			role = ".chat"
+			left_tokens = 0
 			continue
 		case ".chatapi":
 			role = ".chatapi"
@@ -305,6 +306,7 @@ func main() {
 			// Check GoogleBard session
 			if bard_session_id == "" {
 				bard_session_id, _ = Liner.Prompt("Please input your cookie value of __Secure-lPSID: ")
+				if bard_session_id == "" { continue }
 				aihj, err := ioutil.ReadFile("aih.json")
 				nj, _ := sjson.Set(string(aihj), "__Secure-lPSID", bard_session_id)
 				err = ioutil.WriteFile("aih.json", []byte(nj), 0644)
@@ -344,6 +346,7 @@ func main() {
 				ck := multiln_input(Liner, prom)
 				ck  = strings.Replace(ck, "\r", "", -1)
 				ck  = strings.Replace(ck, "\n", "", -1)
+				if len(ck) < 10 { continue }
 				_ = os.MkdirAll("./cookies", 0755)
 				err = ioutil.WriteFile("./cookies/1.json", []byte(ck), 0644)
 				if err != nil {
@@ -369,6 +372,7 @@ func main() {
 		if role == ".chat" {
 			if chat_access_token == "" {
 				chat_access_token, _ = Liner.Prompt("Please input your ChatGPT accessToken: ")
+				if chat_access_token == "" { continue }
 				aihj, err := ioutil.ReadFile("aih.json")
 				nj, _ := sjson.Set(string(aihj), "chat_access_token", chat_access_token)
 				err = ioutil.WriteFile("aih.json", []byte(nj), 0644)
@@ -391,6 +395,7 @@ func main() {
 			// Check ChatGPT API Key
 			if OpenAI_Key == "" {
 				OpenAI_Key, _ = Liner.Prompt("Please input your OpenAI Key: ")
+				if OpenAI_Key == "" { continue }
 				aihj, err := ioutil.ReadFile("aih.json")
 				new_aihj, _ := sjson.Set(string(aihj), "key", OpenAI_Key)
 				err = ioutil.WriteFile("aih.json", []byte(new_aihj), 0644)
