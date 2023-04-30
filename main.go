@@ -6,7 +6,7 @@ import (
 	"github.com/Databingo/googleBard/bard"
 	"github.com/atotto/clipboard"
 	"github.com/fatih/color"
-	"github.com/pavel-one/EdgeGPT-Go"
+	"github.com/Databingo/EdgeGPT-Go"
 	"github.com/peterh/liner"
 	"github.com/rocketlaunchr/google-search"
 	openai "github.com/sashabaranov/go-openai"
@@ -42,12 +42,12 @@ func multiln_input(Liner *liner.State, prompt string) string {
 	// |-------------------|------
 	// |recording && input | action
 	// |-------------------|------
-	// |false && == ""     | break
-	// |false && != "<<"   | break
-	// |false && == "<<"   | true; rm <<
-	// |true  && == ""     | ..
-	// |true  && != ">>"   | ..
-	// |true  && == ">>"   | break; rm >>
+	// |false && == "" or x| record; break
+	// |false && != "<<"   | record; break
+	// |false && == "<<"   | record; true; rm <<
+	// |true  && == "" or x| record; 
+	// |true  && != ">>"   | record;
+	// |true  && == ">>"   | record; break; rm >>
 	// |-------------------|------
 
 	var ln string
@@ -60,7 +60,7 @@ func multiln_input(Liner *liner.State, prompt string) string {
 			ln, _ = Liner.Prompt("")
 		}
 		ln = strings.Trim(ln, " ")
-		if !recording && ln == "" {
+		if !recording && (ln == "" || len(ln) == 1) {
 			lns = append(lns, ln)
 			break
 		} else if !recording && ln[:2] != "<<" {
@@ -69,7 +69,7 @@ func multiln_input(Liner *liner.State, prompt string) string {
 		} else if !recording && ln[:2] == "<<" {
 			recording = true
 			lns = append(lns, ln[2:])
-		} else if recording && ln == "" {
+		} else if recording && (ln == "" || len(ln) == 1) {
 			lns = append(lns, ln)
 		} else if recording == true && ln[len(ln)-2:] != ">>" {
 			lns = append(lns, ln)
@@ -170,8 +170,7 @@ func main() {
 ╭ ────────────────────────────── ╮
 │    Welcome to Aih              │ 
 │    Type .help for help         │ 
-╰ ────────────────────────────── ╯
-`
+╰ ────────────────────────────── ╯ `
 	//fmt.Println(strings.Replace(welcome, "\n", "", -1))
 	fmt.Println(welcome)
 

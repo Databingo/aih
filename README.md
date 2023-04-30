@@ -47,6 +47,7 @@
 ## Installation
 ```bash
 $ git clone https://github.com/Databingo/aih
+$ go clean -cache && go clean -modcache 
 $ cd aih && go mod tidy && go build 
 ```
 ## About Suggestions
