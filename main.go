@@ -1,27 +1,27 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"github.com/Databingo/EdgeGPT-Go"
 	"github.com/Databingo/googleBard/bard"
 	"github.com/atotto/clipboard"
 	"github.com/fatih/color"
-	"github.com/Databingo/EdgeGPT-Go"
+	"github.com/google/uuid"
 	"github.com/peterh/liner"
 	"github.com/rocketlaunchr/google-search"
 	openai "github.com/sashabaranov/go-openai"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"os/exec"
 	"runtime"
 	"strconv"
 	"strings"
 	"syscall"
-	"bytes"
-	"github.com/google/uuid"
-	"net/http"
 )
 
 func clear() {
@@ -45,7 +45,7 @@ func multiln_input(Liner *liner.State, prompt string) string {
 	// |false && == "" or x| record; break
 	// |false && != "<<"   | record; break
 	// |false && == "<<"   | record; true; rm <<
-	// |true  && == "" or x| record; 
+	// |true  && == "" or x| record;
 	// |true  && != ">>"   | record;
 	// |true  && == ">>"   | record; break; rm >>
 	// |-------------------|------
@@ -137,8 +137,8 @@ func main() {
 	// Set up client for ChatGPT Web
 	chat_access_token := gjson.Get(string(aih_json), "chat_access_token").String()
 	var client_chat = &http.Client{}
-        var conversation_id string
-        var parent_id string
+	var conversation_id string
+	var parent_id string
 
 	// Set up client for GoogleBard
 	bard_session_id := gjson.Get(string(aih_json), "__Secure-lPSID").String()
@@ -171,7 +171,6 @@ func main() {
 │    Welcome to Aih              │ 
 │    Type .help for help         │ 
 ╰ ────────────────────────────── ╯ `
-	//fmt.Println(strings.Replace(welcome, "\n", "", -1))
 	fmt.Println(welcome)
 
 	max_tokens := 4097
@@ -237,7 +236,6 @@ func main() {
 			fmt.Println(".chatkey     Reset ChatGPT Web accessToken")
 			fmt.Println(".chatapikey  Reset ChatGPT Api key")
 			fmt.Println(".clear       Clear screen")
-			//fmt.Println(".code        Code creation by Cursor")
 			fmt.Println(".help        Help")
 			fmt.Println(".exit        Exit")
 			continue
@@ -253,18 +251,15 @@ func main() {
 		case ".exit":
 			return
 		case ".new":
-			// For role chatapi
+			// For role .chat
+			conversation_id = ""
+			parent_id = ""
+			// For role .chatapi
 			messages = make([]openai.ChatCompletionMessage, 0)
 			max_tokens = 4097
 			used_tokens = 0
 			left_tokens = max_tokens - used_tokens
-			// For role chat
-			conversation_id = ""
-			parent_id = ""
 			continue
-		//case ".code":
-		//	role = ".code"
-		//	continue
 		case ".bard":
 			role = ".bard"
 			left_tokens = 0
@@ -285,28 +280,19 @@ func main() {
 
 		// Record user input without Aih commands
 		uInput := strings.Replace(userInput, "\r", "\n", -1)
-		uInput  = strings.Replace(uInput, "\n", " ", -1)
+		uInput = strings.Replace(uInput, "\n", " ", -1)
 		Liner.AppendHistory(uInput)
 
 		var RESP string
 
 		// Check role for correct actions
-
-		//if role == ".code" {
-		//	res_code, err := cursor.Conv(userInput)
-		//	if err != nil {
-		//		panic(err)
-		//		return
-		//	}
-		//	cg := color.New(color.FgGreen)
-		//	cg.Println(res_code)
-		//}
-
 		if role == ".bard" {
 			// Check GoogleBard session
 			if bard_session_id == "" {
 				bard_session_id, _ = Liner.Prompt("Please input your cookie value of __Secure-lPSID: ")
-				if bard_session_id == "" { continue }
+				if bard_session_id == "" {
+					continue
+				}
 				aihj, err := ioutil.ReadFile("aih.json")
 				nj, _ := sjson.Set(string(aihj), "__Secure-lPSID", bard_session_id)
 				err = ioutil.WriteFile("aih.json", []byte(nj), 0644)
@@ -326,7 +312,6 @@ func main() {
 			}
 
 			all_resp := response
-			//fmt.Println("response:", response)
 			if all_resp != nil {
 				RESP = response.Choices[0].Answer
 				printer_bard.Println(RESP)
@@ -344,9 +329,11 @@ func main() {
 			if err != nil {
 				prom := "Please type << then paste Bing cookie then type >> then press Enter: "
 				ck := multiln_input(Liner, prom)
-				ck  = strings.Replace(ck, "\r", "", -1)
-				ck  = strings.Replace(ck, "\n", "", -1)
-				if len(ck) < 10 { continue }
+				ck = strings.Replace(ck, "\r", "", -1)
+				ck = strings.Replace(ck, "\n", "", -1)
+				if len(ck) < 10 {
+					continue
+				}
 				_ = os.MkdirAll("./cookies", 0755)
 				err = ioutil.WriteFile("./cookies/1.json", []byte(ck), 0644)
 				if err != nil {
@@ -372,22 +359,21 @@ func main() {
 		if role == ".chat" {
 			if chat_access_token == "" {
 				chat_access_token, _ = Liner.Prompt("Please input your ChatGPT accessToken: ")
-				if chat_access_token == "" { continue }
+				if chat_access_token == "" {
+					continue
+				}
 				aihj, err := ioutil.ReadFile("aih.json")
 				nj, _ := sjson.Set(string(aihj), "chat_access_token", chat_access_token)
 				err = ioutil.WriteFile("aih.json", []byte(nj), 0644)
 				if err != nil {
 					fmt.Println("Save failed.")
 				}
-				// Renew GoogleBard client with __Secure-lPSID
-				//bard_client = bard.NewBard(bard_session_id, "")
 				continue
 			}
 
 			// Send message
-                        RESP = chatgpt_web(client_chat, &chat_access_token, &userInput, &conversation_id, &parent_id)
-                        printer_chat.Println(RESP)
-
+			RESP = chatgpt_web(client_chat, &chat_access_token, &userInput, &conversation_id, &parent_id)
+			printer_chat.Println(RESP)
 
 		}
 
@@ -395,7 +381,9 @@ func main() {
 			// Check ChatGPT API Key
 			if OpenAI_Key == "" {
 				OpenAI_Key, _ = Liner.Prompt("Please input your OpenAI Key: ")
-				if OpenAI_Key == "" { continue }
+				if OpenAI_Key == "" {
+					continue
+				}
 				aihj, err := ioutil.ReadFile("aih.json")
 				new_aihj, _ := sjson.Set(string(aihj), "key", OpenAI_Key)
 				err = ioutil.WriteFile("aih.json", []byte(new_aihj), 0644)
@@ -474,7 +462,7 @@ func main() {
 
 func chatgpt_web(c *http.Client, chat_access_token, prompt, c_id, p_id *string) string {
 	// Set the endpoint URL.
-        var api = "https://ai.fakeopen.com/api"
+	var api = "https://ai.fakeopen.com/api"
 	url := api + "/conversation"
 
 	x := `{"action": "next", "messages": [{"id": null, "role": "user", "author": {"role": "user"}, "content": {"content_type": "text", "parts": [""]}}], 
@@ -495,7 +483,6 @@ func chatgpt_web(c *http.Client, chat_access_token, prompt, c_id, p_id *string) 
 	if *c_id != "" {
 		x, _ = sjson.Set(x, "conversation_id", *c_id)
 	}
-	//fmt.Println(x)
 
 	// Create a new request.
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(x)))
