@@ -54,7 +54,7 @@ $ git clone https://github.com/Databingo/aih
 $ go clean -cache && go clean -modcache 
 $ cd aih && go mod tidy && go build 
 ```
-- Download executable [binary file](https://github.com/Databingo/aih/releases/tag/v0.1.0) according to your operating system.
+- Or download executable [binary file](https://github.com/Databingo/aih/releases/tag/v0.1.0) according to your operating system.
 
 ## About Suggestions
 This is an open plan based on the idea of "Co-relation's enhancement of AI and human beings".
