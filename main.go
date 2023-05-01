@@ -89,6 +89,7 @@ func main() {
 	Liner := liner.NewLiner()
 	defer Liner.Close()
 
+	// Read user input history
 	if f, err := os.Open(".history"); err == nil {
 		Liner.ReadHistory(f)
 		f.Close()
@@ -286,6 +287,11 @@ func main() {
 			uInput = strings.Replace(userInput, "\r", "\n", -1)
 			uInput = strings.Replace(uInput, "\n", " ", -1)
 			Liner.AppendHistory(uInput)
+			// Persistent 
+	                if f, err := os.Create(".history"); err == nil {
+			        Liner.WriteHistory(f)
+	                	f.Close()
+	                }
 
 		}
 
