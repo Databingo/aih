@@ -232,7 +232,7 @@ TEST_PROXY:
 			goto BING
 			//continue
 		case ".help":
-			fmt.Println(".bard        Bard")
+			fmt.Println(".bard        Google Bard")
 			fmt.Println(".bing        Bing Chat")
 			fmt.Println(".chat        ChatGPT Web (free)")
 			fmt.Println(".chatapi     ChatGPT Api (pay)")
@@ -244,11 +244,11 @@ TEST_PROXY:
 			fmt.Println(".new         New conversation of ChatGPT")
 			fmt.Println(".speak       Voice speak context")
 			fmt.Println(".quiet       Not speak")
-			fmt.Println(".bardkey     Reset GoogleBard cookie")
-			fmt.Println(".bingkey     Reset BingChat coolie")
+			fmt.Println(".bardkey     Reset Google Bard cookie")
+			fmt.Println(".bingkey     Reset Bing Chat coolie")
 			fmt.Println(".chatkey     Reset ChatGPT Web accessToken")
 			fmt.Println(".chatapikey  Reset ChatGPT Api key")
-			fmt.Println(".clear       Clear screen")
+			fmt.Println(".clear or .c Clear screen")
 			fmt.Println(".help        Help")
 			fmt.Println(".exit        Exit")
 			continue
@@ -259,6 +259,9 @@ TEST_PROXY:
 			speak = 0
 			continue
 		case ".clear":
+			clear()
+			continue
+		case ".c":
 			clear()
 			continue
 		case ".exit":

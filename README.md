@@ -9,27 +9,27 @@
 ```
 
 ## Command list
-| Command   | Operation|
-|-----------|----------|
-|.bard      | Google Bard|
-|.bing      | Bing Chat|
-|.chat      | ChatGPT Web (free)|
-|.chatapi   | ChatGPT API (pay) |
-|.proxy     | Set proxy, for example: socks5://127.0.0.1:7890|
-|<<         | Start multiple lines input mode|
-|>>         | End multiple lines input mode|
-|↑          | Previous input value|
-|↓          | Next input value|
-|.new       | Start a new conversation on ChatGPT|
-|.speak     | Voice speak context(macOS only)|
-|.quiet     | Disable voice output |
-|.bardkey   | Set Google Bard cookie|
-|.bingkey   | Set Bing Chat cookie|
-|.chatkey   | Set ChatGPT Web access token|
-|.chatapikey| Set ChatGPT API key|
-|.clear     | Clear the screen|
-|.help      | Show help|
-|.exit      | Exit Aih|
+| Command    | Operation|
+|------------|----------|
+|.bard       | Google Bard|
+|.bing       | Bing Chat|
+|.chat       | ChatGPT Web (free)|
+|.chatapi    | ChatGPT API (pay) |
+|.proxy      | Set proxy, for example: socks5://127.0.0.1:7890|
+|<<          | Start multiple lines input mode|
+|>>          | End multiple lines input mode|
+|↑           | Previous input value|
+|↓           | Next input value|
+|.new        | Start a new conversation on ChatGPT|
+|.speak      | Voice speak context(macOS only)|
+|.quiet      | Disable voice output |
+|.bardkey    | Set Google Bard cookie|
+|.bingkey    | Set Bing Chat cookie|
+|.chatkey    | Set ChatGPT Web access token|
+|.chatapikey | Set ChatGPT API key|
+|.clear or .c| Clear the screen|
+|.help       | Show help|
+|.exit       | Exit Aih|
 
 ## Prerequisites
 - For ChatGPT Web (free) you should have an account and a logged-in `accessToken` from [OpenAI](https://chat.openai.com/api/auth/session).
