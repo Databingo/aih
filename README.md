@@ -3,7 +3,7 @@
 ![screenshot](aih.png)
 
 ## Usage
-
+Download [binary file](https://github.com/Databingo/aih/releases/tag/v0.1.0) then type:
 ```bash
 ./aih
 ```
