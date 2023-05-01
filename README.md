@@ -1,4 +1,4 @@
-# Aih: Use GoogleBard, BingChat, ChatGPT in the terminal.
+# Aih: Ask Google Bard, Bing Chat, ChatGPT in the terminal.
 
 ![screenshot](aih.png)
 
@@ -11,10 +11,10 @@
 ## Command list
 | Command   | Operation|
 |-----------|----------|
-|.bard      | GoogleBard|
-|.bing      | BingChat|
+|.bard      | Google Bard|
+|.bing      | Bing Chat|
 |.chat      | ChatGPT Web (free)|
-|.chatapi   | ChatGPT Api (pay) |
+|.chatapi   | ChatGPT API (pay) |
 |.proxy     | Set proxy, for example: socks5://127.0.0.1:7890|
 |<<         | Start multiple lines input mode|
 |>>         | End multiple lines input mode|
@@ -23,8 +23,8 @@
 |.new       | Start a new conversation on ChatGPT|
 |.speak     | Voice speak context(macOS only)|
 |.quiet     | Disable voice output |
-|.bardkey   | Set GoogleBard cookie|
-|.bingkey   | Set BingChat cookie|
+|.bardkey   | Set Google Bard cookie|
+|.bingkey   | Set Bing Chat cookie|
 |.chatkey   | Set ChatGPT Web access token|
 |.chatapikey| Set ChatGPT API key|
 |.clear     | Clear the screen|
@@ -34,12 +34,12 @@
 ## Prerequisites
 - For ChatGPT Web (free) you should have an account and a logged-in `accessToken` from [OpenAI](https://chat.openai.com/api/auth/session).
 - For ChatGPT API (paid) you should have a paid API on [Billing](https://platform.openai.com/account/billing/overview). 
-- For GoogleBard, you should [Join Waitlist](https://bard.google.com) and get a cookie value of `__Secure-lPSID`.
-- For BingChat, you should [Apply Waitlist](https://bing.com/new) and get a cookie.
+- For Google Bard, you should [Join Waitlist](https://bard.google.com) and get a cookie value of `__Secure-lPSID`.
+- For Bing Chat, you should [Apply Waitlist](https://bing.com/new) and get a cookie.
 
 ## How to get Cookies
-- For GoogleBard cookie, you can log in and then add the [Cookie-Editor](https://cookie-editor.cgagnier.ca) extension. Click it on the top-right corner to copy the `__Secure-lPSID` value.
-- For BingChat cookie you can log in and then use Cookie-Editor -> click Cookie-Editor icon -> click "Export" -> click "Export as JSON" (This saves your cookies to the clipboard), then type `.bingkey` in Aih, you will see a prompt that says **"Please type << then paste Bing cookie then type >> then press Enter"**, by doing so you can set BingChat cookie via multiple lines input mode.
+- For Google Bard cookie, you can log in and then add the [Cookie-Editor](https://cookie-editor.cgagnier.ca) extension. Click it on the top-right corner to copy the `__Secure-lPSID` value.
+- For Bing Chat cookie you can log in and then use Cookie-Editor -> click Cookie-Editor icon -> click "Export" -> click "Export as JSON" (This saves your cookies to the clipboard), then type `.bingkey` in Aih, you will see a prompt that says **"Please type << then paste Bing cookie then type >> then press Enter"**, by doing so you can set Bing Chat cookie via multiple lines input mode.
 
 ## Tips
 - The returned text will be auotmatically saved in your system clipboard, so you can paste it anywhere directly.
