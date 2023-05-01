@@ -34,7 +34,7 @@ func main() {
 		TagName:         github.String("v0.1.0"),
 		TargetCommitish: github.String("master"),
 		Name:            github.String("Release v0.1.0"),
-		Body:            github.String("This is the first release of my project"),
+		Body:            github.String("Welcome to Aih."),
 		Draft:           github.Bool(false),
 		Prerelease:      github.Bool(false),
 	})
