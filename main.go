@@ -112,12 +112,16 @@ func main() {
 	os.Setenv("https_proxy", Proxy)
 
 	// Test Proxy
+TEST_PROXY:
 	fmt.Println("Checking network accessing...")
 	ops1 := googlesearch.SearchOptions{Limit: 12}
 	_, err = googlesearch.Search(nil, "BTC", ops1)
 	if err != nil {
 		fmt.Println("Need proxy to access GoogleBard, BingChat, ChatGPT")
 		proxy, _ := Liner.Prompt("Please input proxy: ")
+		if proxy == "" {
+			goto TEST_PROXY
+		}
 		aihj, err := ioutil.ReadFile("aih.json")
 		new_aihj, _ := sjson.Set(string(aihj), "proxy", proxy)
 		err = ioutil.WriteFile("aih.json", []byte(new_aihj), 0644)
@@ -195,6 +199,9 @@ func main() {
 			continue
 		case ".proxy":
 			proxy, _ := Liner.Prompt("Please input your proxy:")
+			if proxy == "" {
+				continue
+			}
 			aihj, err := ioutil.ReadFile("aih.json")
 			new_aihj, _ := sjson.Set(string(aihj), "proxy", proxy)
 			err = ioutil.WriteFile("aih.json", []byte(new_aihj), 0644)
@@ -287,11 +294,11 @@ func main() {
 			uInput = strings.Replace(userInput, "\r", "\n", -1)
 			uInput = strings.Replace(uInput, "\n", " ", -1)
 			Liner.AppendHistory(uInput)
-			// Persistent 
-	                if f, err := os.Create(".history"); err == nil {
-			        Liner.WriteHistory(f)
-	                	f.Close()
-	                }
+			// Persistent
+			if f, err := os.Create(".history"); err == nil {
+				Liner.WriteHistory(f)
+				f.Close()
+			}
 
 		}
 
