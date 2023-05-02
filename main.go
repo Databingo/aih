@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"github.com/Databingo/aih/eng"
 	"github.com/Databingo/EdgeGPT-Go"
 	"github.com/Databingo/googleBard/bard"
 	"github.com/atotto/clipboard"
@@ -39,16 +40,16 @@ func clear() {
 
 func multiln_input(Liner *liner.State, prompt string) string {
 	// For recognize multipile lines input module
-	// |-------------------|------
-	// |recording && input | action
-	// |-------------------|------
-	// |false && == "" or x| record; break
-	// |false && != "<<"   | record; break
-	// |false && == "<<"   | record; true; rm <<
-	// |true  && == "" or x| record;
-	// |true  && != ">>"   | record;
-	// |true  && == ">>"   | record; break; rm >>
-	// |-------------------|------
+	// |------------------------|------
+	// |recording && input      | action
+	// |------------------------|------
+	// |false && head == "" or x| record; break
+	// |false && head != "<<"   | record; break
+	// |false && head == "<<"   | record; true; rm <<
+	// |true  && head == "" or x| record;
+	// |true  && end  != ">>"   | record;
+	// |true  && end  == ">>"   | record; break; rm >>
+	// |------------------------|------
 
 	var ln string
 	var lns []string
@@ -292,6 +293,10 @@ TEST_PROXY:
 			role = ".chatapi"
 			left_tokens = max_tokens - used_tokens
 			continue
+		case ".eng"
+			role = ".eng"
+			left_tokens = 0
+			continue
 		default:
 			// Record user input without Aih commands
 			uInput = strings.Replace(userInput, "\r", "\n", -1)
@@ -452,6 +457,13 @@ TEST_PROXY:
 				Role:    openai.ChatMessageRoleUser,
 				Content: RESP,
 			})
+
+		}
+
+		if role == ".eng" {
+		 words := []string{"pencel", "paper"}
+		 play(words)
+
 
 		}
 
