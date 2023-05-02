@@ -43,7 +43,7 @@ Download [binary file](https://github.com/Databingo/aih/releases/tag/v0.1.0) the
 
 ## Tips
 - The returned text will be auotmatically saved in your system clipboard, so you can paste it anywhere directly.
-- You can see more usages of command line operation from [here](https://github.com/peterh/liner).
+- You can see more usages of command line operation from [here](https://github.com/peterh/liner#Line-editing).
 
 ## Supported Operating Systems:
 - Mac
