@@ -461,7 +461,7 @@ TEST_PROXY:
 		}
 
 		if role == ".eng" {
-		 words := []string{"pencel", "paper"}
+		 var words [20]string{"pencel", "paper"}
 		 play(words)
 
 

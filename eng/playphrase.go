@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func play(words string) {
+func play(words []string) {
 	caps := selenium.Capabilities{
 		"browserName": "chrome",
 		"chromeOptions": map[string]interface{}{
