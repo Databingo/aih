@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/Databingo/aih/eng"
 	"github.com/Databingo/EdgeGPT-Go"
+	"github.com/Databingo/aih/eng"
 	"github.com/Databingo/googleBard/bard"
 	"github.com/atotto/clipboard"
 	"github.com/fatih/color"
@@ -293,7 +293,7 @@ TEST_PROXY:
 			role = ".chatapi"
 			left_tokens = max_tokens - used_tokens
 			continue
-		case ".eng"
+		case ".eng":
 			role = ".eng"
 			left_tokens = 0
 			continue
@@ -461,9 +461,8 @@ TEST_PROXY:
 		}
 
 		if role == ".eng" {
-		 var words [20]string{"pencel", "paper"}
-		 play(words)
-
+			words := []string{"pencel", "paper"}
+			eng.play(words)
 
 		}
 
