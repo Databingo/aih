@@ -74,13 +74,13 @@ func Play(words []string) {
 		}
 	}
 
-	fmt.Println("clicked start")
+	//fmt.Println("clicked start")
 
 	search_bar, err := webDriver.FindElement(selenium.ByID, "search-input")
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("find search bar")
+	//fmt.Println("find search bar")
 
 	for _, phrase := range words {
 
@@ -104,7 +104,7 @@ func Play(words []string) {
 			}
 		}
 
-		fmt.Println("searching", phrase)
+		//fmt.Println("searching", phrase)
 
 		time.Sleep(2 * time.Second)
 		search_result_count, err := webDriver.FindElement(selenium.ByXPATH, "//li/div[@class='search-result-count']")
@@ -116,7 +116,7 @@ func Play(words []string) {
 			log.Fatal(err)
 		}
 		if text == "1/0" {
-			fmt.Println("Find nothing. Next!")
+			//fmt.Println("Find nothing. Next!")
 			continue
 		}
 
@@ -129,7 +129,7 @@ func Play(words []string) {
 					log.Fatal(err)
 				}
 				if strings.Contains(content, "If you are not a sponsor you have a limit on our site.") {
-					fmt.Println("Played 5 already. Next!")
+					//fmt.Println("Played 5 already. Next!")
 					close(ch)
 					break
 				}
@@ -142,8 +142,7 @@ func Play(words []string) {
 		// Check if the search result count is "1/0"
 
 	}
-	// Print "Program finished"
-	fmt.Println("Program finished")
+	//fmt.Println("Program finished")
 
 	// Close the Chrome browser
 	if err := webDriver.Quit(); err != nil {
