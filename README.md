@@ -30,6 +30,7 @@ Download [binary file](https://github.com/Databingo/aih/releases/tag/v0.1.0) the
 |.clear or .c| Clear the screen|
 |.help       | Show help|
 |.exit       | Exit Aih|
+You can see more usages of command line operation from [here](https://github.com/peterh/liner).
 
 ## Prerequisites
 - For ChatGPT Web (free) you should have an account and a logged-in `accessToken` from [OpenAI](https://chat.openai.com/api/auth/session).
