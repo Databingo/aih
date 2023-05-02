@@ -1,4 +1,4 @@
-module eng
+module github.com/Databingo/aih/eng
 
 go 1.19
 
