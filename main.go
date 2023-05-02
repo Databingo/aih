@@ -188,6 +188,7 @@ TEST_PROXY:
 	speak := 0
 	role := ".bard"
 	uInput := ""
+	eng_mode := false
 
 	// Start loop to read user input
 	for {
@@ -308,6 +309,10 @@ TEST_PROXY:
 				f.Close()
 			}
 
+			if role == ".eng" {
+				userInput = "Please give me 20 single words in python list format of `" + userInput + "`"
+			}
+
 		}
 
 		// Check role for correct actions
@@ -347,6 +352,24 @@ TEST_PROXY:
 			bardOptions.ConversationID = response.ConversationID
 			bardOptions.ResponseID = response.ResponseID
 			bardOptions.ChoiceID = response.Choices[0].ChoiceID
+		}
+
+		if role == ".eng" {
+			goto BARD
+			pattern := regexp.MustCompile(`(?m)^(\s*[a-z]+)\s*=\s*\(\s*(.*?)\s*\)$`)
+
+			// Match the regular expression against the Python list.
+			match := pattern.FindStringSubmatch(RESP)
+
+			// If the regular expression matched, then print the list.
+			if match != nil {
+				fmt.Println(match[2]) // [1, 2, 3]
+				lt_str := match(2)
+				ar := strings.Split(lt_str, ",")
+				fmt.Println(ar)
+			}
+
+			eng.Play([]string{"test"})
 		}
 
 	BING:
@@ -460,12 +483,6 @@ TEST_PROXY:
 
 		}
 
-		if role == ".eng" {
-			words := []string{"pencel", "paper"}
-			eng.play(words)
-
-		}
-
 		// Write response RESP to clipboard
 		err = clipboard.WriteAll(RESP)
 		if err != nil {
@@ -492,6 +509,7 @@ TEST_PROXY:
 
 			}()
 		}
+
 	}
 }
 
