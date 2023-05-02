@@ -63,7 +63,7 @@ func play(words string) {
 	}
 
 	// List of words to search
-	words := []string{"Fingerstyle", "Fingerpaint", "Fingerling potatoes", "Finger food", "Finger cymbals"}
+	//words := []string{"Fingerstyle", "Fingerpaint", "Fingerling potatoes", "Finger food", "Finger cymbals"}
 
 	// Click the body to start play video
 	if body, err := webDriver.FindElement(selenium.ByXPATH, "//body"); err != nil {
