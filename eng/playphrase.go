@@ -1,7 +1,7 @@
 package eng
 
 import (
-	"fmt"
+//	"fmt"
 	"github.com/tebeka/selenium"
 	"github.com/tebeka/selenium/chrome"
 	"log"

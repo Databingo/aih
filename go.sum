@@ -9,8 +9,8 @@ github.com/BurntSushi/xgbutil v0.0.0-20160919175755-f7c97cef3b4e h1:4ZrkT/RzpnRO
 github.com/BurntSushi/xgbutil v0.0.0-20160919175755-f7c97cef3b4e/go.mod h1:uw9h2sd4WWHOPdJ13MQpwK5qYWKYDumDqxWWIknEQ+k=
 github.com/Databingo/EdgeGPT-Go v0.0.0-20230430071734-8b14b987728f h1:n/9R1JsUcbL5NLz/dDjrqCHbAU7/FL+zyvO4vs+oblw=
 github.com/Databingo/EdgeGPT-Go v0.0.0-20230430071734-8b14b987728f/go.mod h1:Tj/mt0gbJwp56Ugo8FIfnxmCY1Qyw7GjYFLGhDgv4cw=
-github.com/Databingo/aih/eng v0.0.0-20230502095312-49e74d9a3a79 h1:9XYhBz/VhTRoNy9KzejmOw7+L0hLwd2D/uQRqd1A/Gs=
-github.com/Databingo/aih/eng v0.0.0-20230502095312-49e74d9a3a79/go.mod h1:Abec9Y1JKmUKJJVsHbTglfwXcTqIehuYZpWSmdO4R3c=
+github.com/Databingo/aih/eng v0.0.0-20230502125814-9639369d3fc6 h1:AEoa9srv1YVHHJaGPrxIdt5C5kvANWzlfnNv/oKvjh8=
+github.com/Databingo/aih/eng v0.0.0-20230502125814-9639369d3fc6/go.mod h1:Abec9Y1JKmUKJJVsHbTglfwXcTqIehuYZpWSmdO4R3c=
 github.com/Databingo/googleBard v0.0.0-20230429071020-6c29ba10f104 h1:BK3PPujPO4FayKgCBsBUQDLE/of52iOXWY6g3xR2DAI=
 github.com/Databingo/googleBard v0.0.0-20230429071020-6c29ba10f104/go.mod h1:Z3do4gQopXRd5gDV8v9wz4bfaGWZVvfPDA2aRYGg2+I=
 github.com/PuerkitoBio/goquery v1.5.1 h1:PSPBGne8NIUWw+/7vFBV+kG2J/5MOjbzc7154OaKCSE=
