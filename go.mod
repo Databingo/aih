@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/Databingo/EdgeGPT-Go v0.0.0-20230430071734-8b14b987728f
-	github.com/Databingo/aih/eng v0.0.0-20230502125814-9639369d3fc6
+	github.com/Databingo/aih/eng v0.0.0-20230502125944-ace6e8bac971
 	github.com/Databingo/googleBard v0.0.0-20230429071020-6c29ba10f104
 	github.com/atotto/clipboard v0.1.4
 	github.com/fatih/color v1.15.0

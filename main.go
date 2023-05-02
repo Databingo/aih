@@ -296,6 +296,7 @@ TEST_PROXY:
 			continue
 		case ".eng":
 			role = ".eng"
+			speak = 0
 			left_tokens = 0
 			continue
 		default:
@@ -312,7 +313,7 @@ TEST_PROXY:
 		}
 
 		if role == ".eng" {
-			userInput = "Please give me 20 independent words in python list format of `" + userInput + "`"
+			userInput = "Please give me 30 single words in python list format that are relate to, opposite of, synonym of, description of, hyponymy or hypernymy of, part or wholes of, or rhythmic with the meaning of `" + userInput + "`"
 			goto BARD
 		}
 	BARD:
