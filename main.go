@@ -3,12 +3,14 @@ package main
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
-	"github.com/Databingo/EdgeGPT-Go"
+	//	"github.com/Databingo/EdgeGPT-Go"
 	"github.com/Databingo/googleBard/bard"
 	"github.com/atotto/clipboard"
 	"github.com/fatih/color"
 	"github.com/google/uuid"
+	"github.com/pavel-one/EdgeGPT-Go"
 	"github.com/peterh/liner"
 	"github.com/rocketlaunchr/google-search"
 	openai "github.com/sashabaranov/go-openai"
@@ -44,6 +46,7 @@ func multiln_input(Liner *liner.State, prompt string) string {
 	// |-------------------|------
 	// |false && == "" or x| record; break
 	// |false && != "<<"   | record; break
+	// |false && == "<<" + ">>"   | record; break; rm << >>
 	// |false && == "<<"   | record; true; rm <<
 	// |true  && == "" or x| record;
 	// |true  && != ">>"   | record;
@@ -65,6 +68,9 @@ func multiln_input(Liner *liner.State, prompt string) string {
 			break
 		} else if !recording && ln[:2] != "<<" {
 			lns = append(lns, ln)
+			break
+		} else if !recording && ln[:2] == "<<" && len(ln) >= 4 && ln[len(ln)-2:] == ">>" {
+			lns = append(lns, ln[2:len(ln)-2])
 			break
 		} else if !recording && ln[:2] == "<<" {
 			recording = true
@@ -159,6 +165,7 @@ TEST_PROXY:
 	printer_bard := color.New(color.FgRed).Add(color.Bold)
 
 	// Set up client for BingChat
+
 	var gpt *EdgeGPT.GPT
 	_, err = ioutil.ReadFile("./cookies/1.json")
 	if err == nil {
@@ -350,14 +357,26 @@ TEST_PROXY:
 			_, err := ioutil.ReadFile("./cookies/1.json")
 			if err != nil {
 				prom := "Please type << then paste Bing cookie then type >> then press Enter: "
-				ck := multiln_input(Liner, prom)
-				ck = strings.Replace(ck, "\r", "", -1)
-				ck = strings.Replace(ck, "\n", "", -1)
-				if len(ck) < 10 {
+				cook := multiln_input(Liner, prom)
+				cook = strings.Replace(cook, "\r", "", -1)
+				cook = strings.Replace(cook, "\n", "", -1)
+				if len(cook) < 100 {
+					fmt.Println("Invalid cookie")
 					continue
 				}
+				isJson := json.Valid([]byte(cook))
+				if !isJson {
+					fmt.Println("Invalid JSON format")
+					continue
+				}
+				if !strings.Contains(cook, ".bing.com") {
+					fmt.Println("Invalid cookie, please make sure the tab is bing.com")
+					continue
+
+				}
+
 				_ = os.MkdirAll("./cookies", 0755)
-				err = ioutil.WriteFile("./cookies/1.json", []byte(ck), 0644)
+				err = ioutil.WriteFile("./cookies/1.json", []byte(cook), 0644)
 				if err != nil {
 					fmt.Println("Save failed.")
 				}

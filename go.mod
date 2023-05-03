@@ -3,12 +3,12 @@ module aih
 go 1.19
 
 require (
-	github.com/Databingo/EdgeGPT-Go v0.0.0-20230430071734-8b14b987728f
 	github.com/Databingo/googleBard v0.0.0-20230429071020-6c29ba10f104
 	github.com/atotto/clipboard v0.1.4
 	github.com/fatih/color v1.15.0
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/google/uuid v1.3.0
+	github.com/pavel-one/EdgeGPT-Go v1.3.3
 	github.com/peterh/liner v1.2.2
 	github.com/rocketlaunchr/google-search v1.1.5
 	github.com/sashabaranov/go-openai v1.9.0

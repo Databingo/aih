@@ -1,7 +1,5 @@
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
-github.com/Databingo/EdgeGPT-Go v0.0.0-20230430071734-8b14b987728f h1:n/9R1JsUcbL5NLz/dDjrqCHbAU7/FL+zyvO4vs+oblw=
-github.com/Databingo/EdgeGPT-Go v0.0.0-20230430071734-8b14b987728f/go.mod h1:Tj/mt0gbJwp56Ugo8FIfnxmCY1Qyw7GjYFLGhDgv4cw=
 github.com/Databingo/googleBard v0.0.0-20230429071020-6c29ba10f104 h1:BK3PPujPO4FayKgCBsBUQDLE/of52iOXWY6g3xR2DAI=
 github.com/Databingo/googleBard v0.0.0-20230429071020-6c29ba10f104/go.mod h1:Z3do4gQopXRd5gDV8v9wz4bfaGWZVvfPDA2aRYGg2+I=
 github.com/PuerkitoBio/goquery v1.5.1 h1:PSPBGne8NIUWw+/7vFBV+kG2J/5MOjbzc7154OaKCSE=
@@ -78,6 +76,8 @@ github.com/mattn/go-isatty v0.0.18/go.mod h1:W+V8PltTTMOvKvAeJH7IuucS94S2C6jfK/D
 github.com/mattn/go-runewidth v0.0.3/go.mod h1:LwmH8dsx7+W8Uxz3IHJYH5QSwggIsqBzpuz5H//U1FU=
 github.com/mattn/go-runewidth v0.0.14 h1:+xnbZSEeDbOIg5/mE6JF0w6n9duR1l3/WmbinWVwUuU=
 github.com/mattn/go-runewidth v0.0.14/go.mod h1:Jdepj2loyihRzMpdS35Xk/zdY8IAYHsh153qUoGf23w=
+github.com/pavel-one/EdgeGPT-Go v1.3.3 h1:eRWN3fhNm048LjO0WD2zxBAOotttnEQ0wCV97uVY8KI=
+github.com/pavel-one/EdgeGPT-Go v1.3.3/go.mod h1:voam1mTgtXbNCHq66/b0qLBKQ20Gr2qukALdYoiCslI=
 github.com/peterh/liner v1.2.2 h1:aJ4AOodmL+JxOZZEL2u9iJf8omNRpqHc/EbrK+3mAXw=
 github.com/peterh/liner v1.2.2/go.mod h1:xFwJyiKIXJZUKItq5dGHZSTBRAuG/CpeNpWLyiNRNwI=
 github.com/pkg/errors v0.8.1 h1:iURUrRGxPUNPdy5/HRSm+Yj6okJ6UtLINN0Q9M4+h3I=
