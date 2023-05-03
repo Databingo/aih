@@ -1,7 +1,7 @@
 package eng
 
 import (
-	"fmt"
+//	"fmt"
 	"github.com/tebeka/selenium"
 	"github.com/tebeka/selenium/chrome"
 	"log"
@@ -142,7 +142,7 @@ func Play(words []string) {
 		// Check if the search result count is "1/0"
 
 	}
-	fmt.Println("Clips playing finished")
+//	fmt.Println("Clips playing finished")
 
 	// Close the Chrome browser
 	if err := webDriver.Quit(); err != nil {
