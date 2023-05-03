@@ -1,6 +1,8 @@
 aih
 aih.json
 aih.mov
+chromedriver
+chromedriver.exe
 release/*
 !release/upload.go
 cookies
