@@ -34,7 +34,7 @@ func main() {
 		TagName:         github.String("v0.1.0"),
 		TargetCommitish: github.String("master"),
 		Name:            github.String("Release v0.1.0"),
-		Body:            github.String("Welcome to Aih."),
+		Body:            github.String("Welcome to Aih, an open plan based on the idea of \"Co-relation's enhancement of AI and human beings\""),
 		Draft:           github.Bool(false),
 		Prerelease:      github.Bool(false),
 	})
