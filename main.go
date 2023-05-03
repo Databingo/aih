@@ -341,9 +341,9 @@ TEST_PROXY:
 				goto CHATAPI
 			}
 		}
+	BARD:
 		// Check role for correct actions
 		if role == ".bard" || (role == ".eng" && last_ask == "bard") {
-	BARD:
 		 {
 			// Check GoogleBard session
 			if bard_session_id == "" {
