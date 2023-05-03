@@ -5,12 +5,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	//	"github.com/Databingo/EdgeGPT-Go"
+	"github.com/Databingo/EdgeGPT-Go"
 	"github.com/Databingo/googleBard/bard"
 	"github.com/atotto/clipboard"
 	"github.com/fatih/color"
 	"github.com/google/uuid"
-	"github.com/pavel-one/EdgeGPT-Go"
 	"github.com/peterh/liner"
 	"github.com/rocketlaunchr/google-search"
 	openai "github.com/sashabaranov/go-openai"
@@ -41,17 +40,17 @@ func clear() {
 
 func multiln_input(Liner *liner.State, prompt string) string {
 	// For recognize multipile lines input module
-	// |-------------------|------
-	// |recording && input | action
-	// |-------------------|------
-	// |false && == "" or x| record; break
-	// |false && != "<<"   | record; break
+	// |--------------------------|------
+	// |recording && input        | action
+	// |--------------------------|------
+	// |false && == "" or x       | record; break
+	// |false && != "<<"          | record; break
 	// |false && == "<<" + ">>"   | record; break; rm << >>
-	// |false && == "<<"   | record; true; rm <<
-	// |true  && == "" or x| record;
-	// |true  && != ">>"   | record;
-	// |true  && == ">>"   | record; break; rm >>
-	// |-------------------|------
+	// |false && == "<<"          | record; true; rm <<
+	// |true  && == "" or x       | record;
+	// |true  && != ">>"          | record;
+	// |true  && == ">>"          | record; break; rm >>
+	// |--------------------------|------
 
 	var ln string
 	var lns []string
@@ -165,16 +164,25 @@ TEST_PROXY:
 	printer_bard := color.New(color.FgRed).Add(color.Bold)
 
 	// Set up client for BingChat
-
 	var gpt *EdgeGPT.GPT
 	_, err = ioutil.ReadFile("./cookies/1.json")
 	if err == nil {
 		s := EdgeGPT.NewStorage()
-		gpt, err = s.GetOrSet("any-key")
-		if err != nil {
-			fmt.Println("Please reset bing cookie")
-		}
+		ch := make(chan bool)
+		go func() {
+			defer func() {
+				if r := recover(); r != nil {
+					_ = os.Remove("./cookies/1.json")
+					ch <- true
+					return
+				}
+			}()
+			gpt, err = s.GetOrSet("any-key")
+			ch <- true
+		}()
+		<-ch
 	}
+
 	printer_bing := color.New(color.FgCyan).Add(color.Bold)
 
 	// Clean screen
@@ -350,7 +358,6 @@ TEST_PROXY:
 			bardOptions.ResponseID = response.ResponseID
 			bardOptions.ChoiceID = response.Choices[0].ChoiceID
 		}
-
 	BING:
 		if role == ".bing" {
 			// Check BingChat cookie
@@ -358,14 +365,18 @@ TEST_PROXY:
 			if err != nil {
 				prom := "Please type << then paste Bing cookie then type >> then press Enter: "
 				cook := multiln_input(Liner, prom)
+
+				// Clear screen of input cookie string
+				clear()
+
+				// Check cookie
 				cook = strings.Replace(cook, "\r", "", -1)
 				cook = strings.Replace(cook, "\n", "", -1)
 				if len(cook) < 100 {
 					fmt.Println("Invalid cookie")
 					continue
 				}
-				isJson := json.Valid([]byte(cook))
-				if !isJson {
+				if !json.Valid([]byte(cook)) {
 					fmt.Println("Invalid JSON format")
 					continue
 				}
@@ -375,18 +386,34 @@ TEST_PROXY:
 
 				}
 
+				// Save cookie
 				_ = os.MkdirAll("./cookies", 0755)
 				err = ioutil.WriteFile("./cookies/1.json", []byte(cook), 0644)
 				if err != nil {
 					fmt.Println("Save failed.")
 				}
+
 				// Renew BingChat client with cookie
 				s := EdgeGPT.NewStorage()
-				gpt, err = s.GetOrSet("any-key")
-				// Clear screen
-				clear()
+				// Test gpt with cookie in gorountine
+				ch := make(chan bool)
+				go func() {
+					// If invalid, remove cookie
+					defer func() {
+						if r := recover(); r != nil {
+							_ = os.Remove("./cookies/1.json")
+							fmt.Println("Invalid cookie value")
+							ch <- true
+							return
+						}
+					}()
+					gpt, err = s.GetOrSet("any-key")
+					ch <- true
+				}()
+				<-ch
 				continue
 			}
+
 			// Send message
 			as, err := gpt.AskSync("creative", userInput)
 			if err != nil {
