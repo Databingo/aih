@@ -49,7 +49,7 @@ Download [binary file](https://github.com/Databingo/aih/releases/tag/v0.1.0) the
 ## Co-relation's Enhancment Function
 | Command    | Operation|
 |------------|----------|
-|.eng        | Play Movie clips about English word, including 30 realted phrases or words|
+|.eng        | Play Movie clips about English word, including 30 related phrases or words|
 
 ## Supported Operating Systems:
 - Mac
