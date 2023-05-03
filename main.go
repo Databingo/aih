@@ -345,41 +345,41 @@ TEST_PROXY:
 	BARD:
 		// Check role for correct actions
 		if role == ".bard" || (role == ".eng" && last_ask == "bard") {
-				// Check GoogleBard session
+			// Check GoogleBard session
+			if bard_session_id == "" {
+				bard_session_id, _ = Liner.Prompt("Please input your cookie value of __Secure-lPSID: ")
 				if bard_session_id == "" {
-					bard_session_id, _ = Liner.Prompt("Please input your cookie value of __Secure-lPSID: ")
-					if bard_session_id == "" {
-						continue
-					}
-					aihj, err := ioutil.ReadFile("aih.json")
-					nj, _ := sjson.Set(string(aihj), "__Secure-lPSID", bard_session_id)
-					err = ioutil.WriteFile("aih.json", []byte(nj), 0644)
-					if err != nil {
-						fmt.Println("Save failed.")
-					}
-					// Renew GoogleBard client with __Secure-lPSID
-					bard_client = bard.NewBard(bard_session_id, "")
 					continue
 				}
-
-				// Send message
-				response, err := bard_client.SendMessage(userInput, bardOptions)
+				aihj, err := ioutil.ReadFile("aih.json")
+				nj, _ := sjson.Set(string(aihj), "__Secure-lPSID", bard_session_id)
+				err = ioutil.WriteFile("aih.json", []byte(nj), 0644)
 				if err != nil {
-					fmt.Println(err)
-					continue
+					fmt.Println("Save failed.")
 				}
+				// Renew GoogleBard client with __Secure-lPSID
+				bard_client = bard.NewBard(bard_session_id, "")
+				continue
+			}
 
-				all_resp := response
-				if all_resp != nil {
-					RESP = response.Choices[0].Answer
-					printer_bard.Println(RESP)
-				} else {
-					break
-				}
-				bardOptions.ConversationID = response.ConversationID
-				bardOptions.ResponseID = response.ResponseID
-				bardOptions.ChoiceID = response.Choices[0].ChoiceID
-				last_ask = "bard"
+			// Send message
+			response, err := bard_client.SendMessage(userInput, bardOptions)
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+
+			all_resp := response
+			if all_resp != nil {
+				RESP = response.Choices[0].Answer
+				printer_bard.Println(RESP)
+			} else {
+				break
+			}
+			bardOptions.ConversationID = response.ConversationID
+			bardOptions.ResponseID = response.ResponseID
+			bardOptions.ChoiceID = response.Choices[0].ChoiceID
+			last_ask = "bard"
 		}
 	BING:
 		if role == ".bing" || (role == ".eng" && last_ask == "bing") {
