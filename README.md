@@ -75,3 +75,4 @@ This is an open plan based on the idea of "Co-relation's enhancement of AI and h
 - github.com/CNZeroY/googleBard
 - github.com/pavel-one/EdgeGPT-Go
 - github.com/pengzhile/pandora
+- github.com/potapenko/playphraseme-site
