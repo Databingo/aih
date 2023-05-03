@@ -46,7 +46,7 @@ Download [binary file](https://github.com/Databingo/aih/releases/tag/v0.1.0) the
 - You can see more usages of command line operation from [here](https://github.com/peterh/liner#Line-editing).
 - You can listen movie clips about English word in `.eng` mode with [Chrome](https://google.com/chrome) installed & the same version of [Chromedriver](https://chromedriver.chromium.org) in the same folder of Aih.
 
-## Co-relation's Enhancment Function
+## Co-relation's Enhancement Function
 | Command    | Operation|
 |------------|----------|
 |.eng        | Play Movie clips about English word, including 30 related phrases or words|
