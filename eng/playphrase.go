@@ -34,7 +34,7 @@ func Play(words []string) {
 
 	ops := []selenium.ServiceOption{}
 	// Set up ChromeDriver service
-	service, err := selenium.NewChromeDriverService("/usr/local/projects/aih/release/chromedriver", 8083, ops...)
+	service, err := selenium.NewChromeDriverService("./chromedriver", 8083, ops...)
 	if err != nil {
 		log.Fatal(err)
 	}
