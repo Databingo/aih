@@ -270,6 +270,7 @@ TEST_PROXY:
 			fmt.Println(".clear or .c Clear screen")
 			fmt.Println(".help        Help")
 			fmt.Println(".exit        Exit")
+			fmt.Println(".eng         Play movie clips")
 			continue
 		case ".speak":
 			speak = 1
