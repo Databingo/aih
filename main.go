@@ -546,7 +546,7 @@ TEST_PROXY:
 			// Match the regular expression against the Python list.
 			match := re.FindAllString(RESP, -1)
 
-			if match != nil {
+			if match != nil && len(match) != 0 {
 				lt_str := match[0]
 				lt_str  = lt_str[1:len(lt_str)-1]
 				lt_str  = strings.Replace(lt_str, `"`, "", -1)
