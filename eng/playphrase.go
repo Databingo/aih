@@ -106,6 +106,7 @@ func Play(words []string) {
 
 		//fmt.Println("searching", phrase)
 
+		// Check if the search result count is "1/0"
 		time.Sleep(2 * time.Second)
 		search_result_count, err := webDriver.FindElement(selenium.ByXPATH, "//li/div[@class='search-result-count']")
 		if err != nil {
@@ -139,7 +140,6 @@ func Play(words []string) {
 
 		<-ch
 
-		// Check if the search result count is "1/0"
 
 	}
 //	fmt.Println("Clips playing finished")
