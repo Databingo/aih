@@ -204,6 +204,7 @@ TEST_PROXY:
 	speak := 0
 	role := ".bard"
 	uInput := ""
+	last_ask := "bard"
 
 	// Start loop to read user input
 	for {
@@ -236,12 +237,12 @@ TEST_PROXY:
 		case ".chatkey":
 			chat_access_token = ""
 			role = ".chat"
-			goto CHART
+			goto CHAT
 			//continue
 		case ".chatapikey":
 			OpenAI_Key = ""
 			role = ".chatapi"
-			goto CHARTAPI
+			goto CHATAPI
 			//continue
 		case ".bingkey":
 			_ = os.Remove("./cookies/1.json")
@@ -329,7 +330,16 @@ TEST_PROXY:
 
 		if role == ".eng" {
 			userInput = "Please give me 30 single words in python list format that are relate to, opposite of, synonym of, description of, hyponymy or hypernymy of, part or wholes of, or rhythmic with the meaning of `" + userInput + "`"
-			goto BARD
+			switch last_ask {
+			case "bard":
+				goto BARD
+			case "bing":
+				goto BING
+			case "chat":
+				goto CHAT
+			case "chatapi":
+				goto CHATAPI
+			}
 		}
 	BARD:
 		// Check role for correct actions
@@ -368,9 +378,10 @@ TEST_PROXY:
 			bardOptions.ConversationID = response.ConversationID
 			bardOptions.ResponseID = response.ResponseID
 			bardOptions.ChoiceID = response.Choices[0].ChoiceID
+			last_ask = "bard"
 		}
 	BING:
-		if role == ".bing" {
+		if role == ".bing" || role == ".eng" {
 			// Check BingChat cookie
 			_, err := ioutil.ReadFile("./cookies/1.json")
 			if err != nil {
@@ -433,10 +444,11 @@ TEST_PROXY:
 			}
 			RESP = strings.TrimSpace(as.Answer.GetAnswer())
 			printer_bing.Println(RESP)
+			last_ask = "bing"
 		}
 
-	CHART:
-		if role == ".chat" {
+	CHAT:
+		if role == ".chat" || role == ".eng" {
 			if chat_access_token == "" {
 				chat_access_token, _ = Liner.Prompt("Please input your ChatGPT accessToken: ")
 				if chat_access_token == "" {
@@ -454,11 +466,12 @@ TEST_PROXY:
 			// Send message
 			RESP = chatgpt_web(client_chat, &chat_access_token, &userInput, &conversation_id, &parent_id)
 			printer_chat.Println(RESP)
+			last_ask = "chat"
 
 		}
 
-	CHARTAPI:
-		if role == ".chatapi" {
+	CHATAPI:
+		if role == ".chatapi" || role == ".eng" {
 			// Check ChatGPT API Key
 			if OpenAI_Key == "" {
 				OpenAI_Key, _ = Liner.Prompt("Please input your OpenAI Key: ")
@@ -510,8 +523,10 @@ TEST_PROXY:
 				Content: RESP,
 			})
 
+			last_ask = "chatapi"
 		}
 
+		// -------------for all AI's RESP---------------
 		// Write response RESP to clipboard
 		err = clipboard.WriteAll(RESP)
 		if err != nil {
@@ -548,11 +563,11 @@ TEST_PROXY:
 
 			if match != nil {
 				lt_str := match[0]
-				lt_str  = lt_str[1:len(lt_str)-1]
-				lt_str  = strings.Replace(lt_str, `"`, "", -1)
-				lt_str  = strings.Replace(lt_str, `'`, "", -1)
+				lt_str = lt_str[1 : len(lt_str)-1]
+				lt_str = strings.Replace(lt_str, `"`, "", -1)
+				lt_str = strings.Replace(lt_str, `'`, "", -1)
 				ar := strings.Split(lt_str, ",")
-			        go eng.Play(ar)
+				go eng.Play(ar)
 			}
 
 		}
