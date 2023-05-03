@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/Databingo/EdgeGPT-Go"
+	"github.com/Databingo/aih/eng"
 	"github.com/Databingo/googleBard/bard"
 	"github.com/atotto/clipboard"
 	"github.com/fatih/color"
@@ -19,6 +20,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"regexp"
 	"runtime"
 	"strconv"
 	"strings"
@@ -307,6 +309,11 @@ TEST_PROXY:
 			role = ".chatapi"
 			left_tokens = max_tokens - used_tokens
 			continue
+		case ".eng":
+			role = ".eng"
+			speak = 0
+			left_tokens = 0
+			continue
 		default:
 			// Record user input without Aih commands
 			uInput = strings.Replace(userInput, "\r", "\n", -1)
@@ -320,9 +327,13 @@ TEST_PROXY:
 
 		}
 
-		// Check role for correct actions
+		if role == ".eng" {
+			userInput = "Please give me 30 single words in python list format that are relate to, opposite of, synonym of, description of, hyponymy or hypernymy of, part or wholes of, or rhythmic with the meaning of `" + userInput + "`"
+			goto BARD
+		}
 	BARD:
-		if role == ".bard" {
+		// Check role for correct actions
+		if role == ".bard" || role == ".eng" {
 			// Check GoogleBard session
 			if bard_session_id == "" {
 				bard_session_id, _ = Liner.Prompt("Please input your cookie value of __Secure-lPSID: ")
@@ -527,6 +538,25 @@ TEST_PROXY:
 
 			}()
 		}
+		// Play video
+		if role == ".eng" {
+
+			re := regexp.MustCompile(`(?s)\[[^\[\]]*\]`)
+
+			// Match the regular expression against the Python list.
+			match := re.FindAllString(RESP, -1)
+
+			if match != nil {
+				lt_str := match[0]
+				lt_str  = lt_str[1:len(lt_str)-1]
+				lt_str  = strings.Replace(lt_str, `"`, "", -1)
+				lt_str  = strings.Replace(lt_str, `'`, "", -1)
+				ar := strings.Split(lt_str, ",")
+			        go eng.Play(ar)
+			}
+
+		}
+
 	}
 }
 

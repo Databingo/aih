@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/Databingo/EdgeGPT-Go v0.0.0-20230430071734-8b14b987728f
+	github.com/Databingo/aih/eng v0.0.0-20230503130206-d5bdf87cf6ef
 	github.com/Databingo/googleBard v0.0.0-20230429071020-6c29ba10f104
 	github.com/atotto/clipboard v0.1.4
 	github.com/fatih/color v1.15.0
@@ -14,7 +15,7 @@ require (
 	github.com/sashabaranov/go-openai v1.9.0
 	github.com/tidwall/gjson v1.14.4
 	github.com/tidwall/sjson v1.2.5
-	golang.org/x/oauth2 v0.0.0-20180821212333-d2e6202438be
+	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
 )
 
 require (
@@ -23,6 +24,7 @@ require (
 	github.com/antchfx/htmlquery v1.2.3 // indirect
 	github.com/antchfx/xmlquery v1.2.4 // indirect
 	github.com/antchfx/xpath v1.1.8 // indirect
+	github.com/blang/semver v3.5.1+incompatible // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/gocolly/colly/v2 v2.1.0 // indirect
@@ -36,6 +38,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.14 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/saintfish/chardet v0.0.0-20120816061221-3af4cd4741ca // indirect
+	github.com/tebeka/selenium v0.9.9 // indirect
 	github.com/temoto/robotstxt v1.1.1 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect

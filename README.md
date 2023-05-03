@@ -44,6 +44,12 @@ Download [binary file](https://github.com/Databingo/aih/releases/tag/v0.1.0) the
 ## Tips
 - The returned text will be auotmatically saved in your system clipboard, so you can paste it anywhere directly.
 - You can see more usages of command line operation from [here](https://github.com/peterh/liner#Line-editing).
+- You can listen movie clips about English word in `.eng` mode with [Chrome](https://google.com/chrome) installed & the same version of [Chromedriver](https://chromedriver.chromium.org) in the same folder of Aih.
+
+## Enhancment function
+| Command    | Operation|
+|------------|----------|
+|.eng        | Play Movie clips about English word|
 
 ## Supported Operating Systems:
 - Mac
