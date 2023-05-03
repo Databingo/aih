@@ -345,7 +345,6 @@ TEST_PROXY:
 	BARD:
 		// Check role for correct actions
 		if role == ".bard" || (role == ".eng" && last_ask == "bard") {
-			{
 				// Check GoogleBard session
 				if bard_session_id == "" {
 					bard_session_id, _ = Liner.Prompt("Please input your cookie value of __Secure-lPSID: ")
@@ -381,7 +380,6 @@ TEST_PROXY:
 				bardOptions.ResponseID = response.ResponseID
 				bardOptions.ChoiceID = response.Choices[0].ChoiceID
 				last_ask = "bard"
-			}
 		}
 	BING:
 		if role == ".bing" || (role == ".eng" && last_ask == "bing") {
