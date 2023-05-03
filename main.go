@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/Databingo/EdgeGPT-Go"
 	"github.com/Databingo/aih/eng"
@@ -41,16 +42,17 @@ func clear() {
 
 func multiln_input(Liner *liner.State, prompt string) string {
 	// For recognize multipile lines input module
-	// |------------------------|------
-	// |recording && input      | action
-	// |------------------------|------
-	// |false && head == "" or x| record; break
-	// |false && head != "<<"   | record; break
-	// |false && head == "<<"   | record; true; rm <<
-	// |true  && head == "" or x| record;
-	// |true  && end  != ">>"   | record;
-	// |true  && end  == ">>"   | record; break; rm >>
-	// |------------------------|------
+	// |--------------------------|------
+	// |recording && input        | action
+	// |--------------------------|------
+	// |false && == "" or x       | record; break
+	// |false && != "<<"          | record; break
+	// |false && == "<<" + ">>"   | record; break; rm << >>
+	// |false && == "<<"          | record; true; rm <<
+	// |true  && == "" or x       | record;
+	// |true  && != ">>"          | record;
+	// |true  && == ">>"          | record; break; rm >>
+	// |--------------------------|------
 
 	var ln string
 	var lns []string
@@ -67,6 +69,9 @@ func multiln_input(Liner *liner.State, prompt string) string {
 			break
 		} else if !recording && ln[:2] != "<<" {
 			lns = append(lns, ln)
+			break
+		} else if !recording && ln[:2] == "<<" && len(ln) >= 4 && ln[len(ln)-2:] == ">>" {
+			lns = append(lns, ln[2:len(ln)-2])
 			break
 		} else if !recording && ln[:2] == "<<" {
 			recording = true
@@ -165,11 +170,21 @@ TEST_PROXY:
 	_, err = ioutil.ReadFile("./cookies/1.json")
 	if err == nil {
 		s := EdgeGPT.NewStorage()
-		gpt, err = s.GetOrSet("any-key")
-		if err != nil {
-			fmt.Println("Please reset bing cookie")
-		}
+		ch := make(chan bool)
+		go func() {
+			defer func() {
+				if r := recover(); r != nil {
+					_ = os.Remove("./cookies/1.json")
+					ch <- true
+					return
+				}
+			}()
+			gpt, err = s.GetOrSet("any-key")
+			ch <- true
+		}()
+		<-ch
 	}
+
 	printer_bing := color.New(color.FgCyan).Add(color.Bold)
 
 	// Clean screen
@@ -354,31 +369,62 @@ TEST_PROXY:
 			bardOptions.ResponseID = response.ResponseID
 			bardOptions.ChoiceID = response.Choices[0].ChoiceID
 		}
-
 	BING:
 		if role == ".bing" {
 			// Check BingChat cookie
 			_, err := ioutil.ReadFile("./cookies/1.json")
 			if err != nil {
 				prom := "Please type << then paste Bing cookie then type >> then press Enter: "
-				ck := multiln_input(Liner, prom)
-				ck = strings.Replace(ck, "\r", "", -1)
-				ck = strings.Replace(ck, "\n", "", -1)
-				if len(ck) < 10 {
+				cook := multiln_input(Liner, prom)
+
+				// Clear screen of input cookie string
+				clear()
+
+				// Check cookie
+				cook = strings.Replace(cook, "\r", "", -1)
+				cook = strings.Replace(cook, "\n", "", -1)
+				if len(cook) < 100 {
+					fmt.Println("Invalid cookie")
 					continue
 				}
+				if !json.Valid([]byte(cook)) {
+					fmt.Println("Invalid JSON format")
+					continue
+				}
+				if !strings.Contains(cook, ".bing.com") {
+					fmt.Println("Invalid cookie, please make sure the tab is bing.com")
+					continue
+
+				}
+
+				// Save cookie
 				_ = os.MkdirAll("./cookies", 0755)
-				err = ioutil.WriteFile("./cookies/1.json", []byte(ck), 0644)
+				err = ioutil.WriteFile("./cookies/1.json", []byte(cook), 0644)
 				if err != nil {
 					fmt.Println("Save failed.")
 				}
+
 				// Renew BingChat client with cookie
 				s := EdgeGPT.NewStorage()
-				gpt, err = s.GetOrSet("any-key")
-				// Clear screen
-				clear()
+				// Test gpt with cookie in gorountine
+				ch := make(chan bool)
+				go func() {
+					// If invalid, remove cookie
+					defer func() {
+						if r := recover(); r != nil {
+							_ = os.Remove("./cookies/1.json")
+							fmt.Println("Invalid cookie value")
+							ch <- true
+							return
+						}
+					}()
+					gpt, err = s.GetOrSet("any-key")
+					ch <- true
+				}()
+				<-ch
 				continue
 			}
+
 			// Send message
 			as, err := gpt.AskSync("creative", userInput)
 			if err != nil {
