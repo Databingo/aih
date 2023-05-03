@@ -341,9 +341,10 @@ TEST_PROXY:
 				goto CHATAPI
 			}
 		}
-	BARD:
 		// Check role for correct actions
-		if role == ".bard" || role == ".eng" {
+		if role == ".bard" || (role == ".eng" && last_ask == "bard") {
+	BARD:
+		 {
 			// Check GoogleBard session
 			if bard_session_id == "" {
 				bard_session_id, _ = Liner.Prompt("Please input your cookie value of __Secure-lPSID: ")
@@ -379,9 +380,9 @@ TEST_PROXY:
 			bardOptions.ResponseID = response.ResponseID
 			bardOptions.ChoiceID = response.Choices[0].ChoiceID
 			last_ask = "bard"
-		}
+		       }}
 	BING:
-		if role == ".bing" || role == ".eng" {
+		if role == ".bing" || (role == ".eng" && last_ask == "bing") {
 			// Check BingChat cookie
 			_, err := ioutil.ReadFile("./cookies/1.json")
 			if err != nil {
@@ -448,7 +449,7 @@ TEST_PROXY:
 		}
 
 	CHAT:
-		if role == ".chat" || role == ".eng" {
+		if role == ".chat" || (role == ".eng" && last_ask == "chat") {
 			if chat_access_token == "" {
 				chat_access_token, _ = Liner.Prompt("Please input your ChatGPT accessToken: ")
 				if chat_access_token == "" {
@@ -471,7 +472,7 @@ TEST_PROXY:
 		}
 
 	CHATAPI:
-		if role == ".chatapi" || role == ".eng" {
+		if role == ".chatapi" || (role == ".eng" && last_ask == "chatapi") {
 			// Check ChatGPT API Key
 			if OpenAI_Key == "" {
 				OpenAI_Key, _ = Liner.Prompt("Please input your OpenAI Key: ")
