@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/chromedp/chromedp"
 	"log"
-	//"os"
 	"strings"
 	"time"
 )
@@ -47,19 +46,10 @@ func Play(words []string) {
 	}
 	//   chromedp.WaitVisible("body"),
 	//chromedp.Sleep(2 * time.Second),
-	if err := chromedp.Run(ctx, chromedp.Click("//body", chromedp.BySearch),); err != nil {
+	if err := chromedp.Run(ctx, chromedp.Click("//body", chromedp.BySearch)); err != nil {
 		fmt.Println(err)
 	}
 
-
-	fmt.Println("click play")
-
-	// if err := chromedp.Run(ctx, chromedp.Sleep(20 * time.Second)); err != nil {
-	// 	fmt.Println(err)
-	// }
-
-
-	
 	search_bar := "#search-input"
 
 	for _, phrase := range words {
@@ -75,13 +65,7 @@ func Play(words []string) {
 			if err := chromedp.Run(ctx, chromedp.Click(`//i[contains(text(),"close")]`, chromedp.BySearch)); err != nil {
 				log.Fatal(err)
 			}
-			// if err := chromedp.Run(ctx, chromedp.Clear(search_bar, chromedp.ByQuery)); err != nil {
-			// 	log.Fatal(err)
-			// // }
 
-			// if err := chromedp.Run(ctx, chromedp.Sleep(1*time.Second)); err != nil {
-			// 	log.Fatal(err)
-			// }
 			if err := chromedp.Run(ctx, chromedp.SendKeys(search_bar, phrase)); err != nil {
 				log.Fatal(err)
 			}
@@ -89,8 +73,6 @@ func Play(words []string) {
 				log.Fatal(err)
 			}
 		}
-
-		//fmt.Println("searching", phrase)
 
 		// Check if the search result count is "1/0"
 		if err := chromedp.Run(ctx, chromedp.Sleep(5*time.Second)); err != nil {
@@ -125,7 +107,6 @@ func Play(words []string) {
 		<-ch
 
 	}
-	//fmt.Println("Clips playing finished")
 
 	// Close the Chrome browser
 	// Shutdown() function is not present in chromedp.Context. Using Stop() function instead.
