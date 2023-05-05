@@ -1,105 +1,91 @@
 package eng
 
 import (
-//	"fmt"
-	"github.com/tebeka/selenium"
-	"github.com/tebeka/selenium/chrome"
+	"context"
+	"fmt"
+	"github.com/chromedp/chromedp"
 	"log"
+	//"os"
 	"strings"
 	"time"
 )
 
 func Play(words []string) {
-	caps := selenium.Capabilities{
-		"browserName": "chrome",
-		"chromeOptions": map[string]interface{}{
-			"excludeSwitches": [1]string{"enable-automation"},
-		},
-	}
+	ctx, cancel := chromedp.NewContext(context.Background())
+	defer cancel()
+
 	// Set up Chrome options
-	chromeCaps := chrome.Capabilities{
-		Args: []string{
-			"--disable-gpu",
-			"--no-sandbox",
-			"--disable-infobars",
-			"--disable-extensions",
-			"--disable-web-security",
-		},
-		Prefs: map[string]interface{}{
-			"profile.default_content_setting_values.notifications": 2,
-		},
-	}
-
-	caps.AddChrome(chromeCaps)
-
-	ops := []selenium.ServiceOption{}
-	// Set up ChromeDriver service
-	service, err := selenium.NewChromeDriverService("./chromedriver", 8083, ops...)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer service.Stop()
+	opts := append(chromedp.DefaultExecAllocatorOptions[:],
+		chromedp.Flag("headless", false),
+		// chromedp.Flag("disable-gpu", true),
+		// chromedp.Flag("no-sandbox", true),
+		// chromedp.Flag("disable-infobars", true),
+		// chromedp.Flag("disable-extensions", true),
+		// chromedp.Flag("disable-web-security", true),
+		// chromedp.Flag("mute-audio", true),
+		chromedp.Flag("mute-audio", false),
+	)
+	allocCtx, cancel := chromedp.NewExecAllocator(ctx, opts...)
+	defer cancel()
 
 	// Create a WebDriver object for Chrome browser
-	webDriver, err := selenium.NewRemote(caps, "http://127.0.0.1:8083/wd/hub")
-	if err != nil {
-		log.Fatal(err)
-	}
+	ctx, cancel = chromedp.NewContext(allocCtx)
+	defer cancel()
 
 	// Maximize the window for keep the stream alive
-	if err := webDriver.MaximizeWindow(""); err != nil {
-		log.Fatal(err)
-	}
-	defer webDriver.Quit()
-	// defer webDriver.Quit()
+	// This function has been removed as it returns an error, and it is not being used anywhere else
+	// if err := chromedp.Run(ctx, chromedp.MaximizeWindow()); err != nil {
+	//	log.Fatal(err)
+	// }
 
-	if err := webDriver.Get("https://playphrase.me/"); err != nil {
-		log.Fatal(err)
-	}
-
-	// Wait for the page to load
-	if err := webDriver.SetImplicitWaitTimeout(10 * time.Second); err != nil {
-		log.Fatal(err)
+	if err := chromedp.Run(ctx, chromedp.Navigate("https://playphrase.me/")); err != nil {
+		fmt.Println(err)
 	}
 
-	// List of words to search
-	//words := []string{"Fingerstyle", "Fingerpaint", "Fingerling potatoes", "Finger food", "Finger cymbals"}
-
-	// Click the body to start play video
-	if body, err := webDriver.FindElement(selenium.ByXPATH, "//body"); err != nil {
-		log.Fatal(err)
-	} else {
-		if err := body.Click(); err != nil {
-			log.Fatal(err)
-		}
+	if err := chromedp.Run(ctx, chromedp.WaitVisible(`//i[@class="material-icons-outlined"]`, chromedp.BySearch)); err != nil {
+		fmt.Println(err)
+	}
+	//   chromedp.WaitVisible("body"),
+	//chromedp.Sleep(2 * time.Second),
+	if err := chromedp.Run(ctx, chromedp.Click("//body", chromedp.BySearch),); err != nil {
+		fmt.Println(err)
 	}
 
-	//fmt.Println("clicked start")
 
-	search_bar, err := webDriver.FindElement(selenium.ByID, "search-input")
-	if err != nil {
-		log.Fatal(err)
-	}
-	//fmt.Println("find search bar")
+	fmt.Println("click play")
+
+	// if err := chromedp.Run(ctx, chromedp.Sleep(20 * time.Second)); err != nil {
+	// 	fmt.Println(err)
+	// }
+
+
+	
+	search_bar := "#search-input"
 
 	for _, phrase := range words {
 
 		for {
-			value, err := search_bar.GetAttribute("value")
-			if err != nil {
+			var value string
+			if err := chromedp.Run(ctx, chromedp.Value(search_bar, &value)); err != nil {
 				log.Fatal(err)
 			}
 			if value == phrase {
 				break
 			}
-			if elems, err := webDriver.FindElements(selenium.ByXPATH, "//i[contains(text(),'close')]"); err != nil {
+			if err := chromedp.Run(ctx, chromedp.Click(`//i[contains(text(),"close")]`, chromedp.BySearch)); err != nil {
 				log.Fatal(err)
-			} else if len(elems) > 0 {
-				if err := elems[0].Click(); err != nil {
-					log.Fatal(err)
-				}
 			}
-			if err := search_bar.SendKeys(phrase); err != nil {
+			// if err := chromedp.Run(ctx, chromedp.Clear(search_bar, chromedp.ByQuery)); err != nil {
+			// 	log.Fatal(err)
+			// // }
+
+			// if err := chromedp.Run(ctx, chromedp.Sleep(1*time.Second)); err != nil {
+			// 	log.Fatal(err)
+			// }
+			if err := chromedp.Run(ctx, chromedp.SendKeys(search_bar, phrase)); err != nil {
+				log.Fatal(err)
+			}
+			if err := chromedp.Run(ctx, chromedp.Sleep(1*time.Second)); err != nil {
 				log.Fatal(err)
 			}
 		}
@@ -107,16 +93,14 @@ func Play(words []string) {
 		//fmt.Println("searching", phrase)
 
 		// Check if the search result count is "1/0"
-		time.Sleep(2 * time.Second)
-		search_result_count, err := webDriver.FindElement(selenium.ByXPATH, "//li/div[@class='search-result-count']")
-		if err != nil {
+		if err := chromedp.Run(ctx, chromedp.Sleep(5*time.Second)); err != nil {
 			log.Fatal(err)
 		}
-		text, err := search_result_count.Text()
-		if err != nil {
+		var search_result_count string
+		if err := chromedp.Run(ctx, chromedp.Text("li div.search-result-count", &search_result_count)); err != nil {
 			log.Fatal(err)
 		}
-		if text == "1/0" {
+		if search_result_count == "1/0" {
 			//fmt.Println("Find nothing. Next!")
 			continue
 		}
@@ -125,8 +109,8 @@ func Play(words []string) {
 		go func() {
 			// Check if the page source contains the message "If you are not a sponsor you have a limit on our site."
 			for {
-				content, err := webDriver.PageSource()
-				if err != nil {
+				var content string
+				if err := chromedp.Run(ctx, chromedp.InnerHTML("body", &content)); err != nil {
 					log.Fatal(err)
 				}
 				if strings.Contains(content, "If you are not a sponsor you have a limit on our site.") {
@@ -140,12 +124,12 @@ func Play(words []string) {
 
 		<-ch
 
-
 	}
-//	fmt.Println("Clips playing finished")
+	//fmt.Println("Clips playing finished")
 
 	// Close the Chrome browser
-	if err := webDriver.Quit(); err != nil {
+	// Shutdown() function is not present in chromedp.Context. Using Stop() function instead.
+	if err := chromedp.Run(ctx, chromedp.Stop()); err != nil {
 		log.Fatal(err)
 	}
 
