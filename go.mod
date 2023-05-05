@@ -3,7 +3,7 @@ module aih
 go 1.19
 
 require (
-	github.com/Databingo/aih/eng v0.0.0-20230505141241-9eb989f2d641
+	github.com/Databingo/aih/eng v0.0.0-20230505141725-d19c776fbff4
 	github.com/Databingo/googleBard v0.0.0-20230429071020-6c29ba10f104
 	github.com/atotto/clipboard v0.1.4
 	github.com/fatih/color v1.15.0
