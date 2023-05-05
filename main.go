@@ -5,7 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/Databingo/EdgeGPT-Go"
+	"github.com/pavel-one/EdgeGPT-Go"
 	"github.com/Databingo/aih/eng"
 	"github.com/Databingo/googleBard/bard"
 	"github.com/atotto/clipboard"
