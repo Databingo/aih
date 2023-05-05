@@ -118,6 +118,7 @@ func main() {
 	// Set proxy for system of current program
 	os.Setenv("http_proxy", Proxy)
 	os.Setenv("https_proxy", Proxy)
+	os.Setenv("LOG_LEVEL", "ERROR")
 
 	// Test Proxy
 TEST_PROXY:
