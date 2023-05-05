@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/chromedp/chromedp"
+        "github.com/chromedp/cdproto/input"
+	"github.com/chromedp/cdproto/cdp"
 	"log"
 	"strings"
 	"time"
@@ -66,12 +68,18 @@ func Play(words []string) {
 				log.Fatal(err)
 			}
 
-			if err := chromedp.Run(ctx, chromedp.SendKeys(search_bar, phrase)); err != nil {
-				log.Fatal(err)
-			}
-			if err := chromedp.Run(ctx, chromedp.Sleep(1*time.Second)); err != nil {
-				log.Fatal(err)
-			}
+		//	if err := chromedp.Run(ctx, chromedp.SendKeys(search_bar, phrase)); err != nil {
+		//		log.Fatal(err)
+		//	}
+                        var nodes []*cdp.Node
+			_ = chromedp.Run(ctx, chromedp.Nodes("#search-input", &nodes, chromedp.ByQuery))
+			_ = chromedp.Run(ctx, chromedp.MouseClickNode(nodes[0]))
+			_ = chromedp.Run(ctx, input.InsertText(phrase))
+
+
+			//if err := chromedp.Run(ctx, chromedp.Sleep(1*time.Second)); err != nil {
+			//	log.Fatal(err)
+			//}
 		}
 
 		// Check if the search result count is "1/0"
