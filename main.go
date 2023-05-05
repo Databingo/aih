@@ -164,7 +164,7 @@ TEST_PROXY:
 		ResponseID:     "",
 		ChoiceID:       "",
 	}
-	printer_bard := color.New(color.FgRed).Add(color.Bold)
+	printer_bard := color.New(color.FgRed)//.Add(color.Bold)
 
 	// Set up client for BingChat
 	var gpt *EdgeGPT.GPT
@@ -186,7 +186,7 @@ TEST_PROXY:
 		<-ch
 	}
 
-	printer_bing := color.New(color.FgCyan).Add(color.Bold)
+	printer_bing := color.New(color.FgCyan)//.Add(color.Bold)
 
 	// Clean screen
 	clear()
