@@ -35,7 +35,7 @@ Download [binary file](https://github.com/Databingo/aih/releases/tag/v0.1.0) the
 - For ChatGPT Web (free) you should have an account and a logged-in `accessToken` from [OpenAI](https://chat.openai.com/api/auth/session).
 - For ChatGPT API (paid) you should have a paid API on [Billing](https://platform.openai.com/account/billing/overview). 
 - For Google Bard, you should [Join Waitlist](https://bard.google.com) and get a cookie value of `__Secure-lPSID`.
-- For Bing Chat, you should ~[Apply Waitlist](https://bing.com/new)~ have a free [Microsoft account](https://account.microsoft.com) (since May 4 2023) for get a cookie.
+- For Bing Chat, you should have a free [Microsoft account](https://account.microsoft.com) for get a cookie.
 
 ## How to get Cookies
 - For Google Bard cookie, you can log in and then add the [Cookie-Editor](https://cookie-editor.cgagnier.ca) extension. Click it on the top-right corner to copy the `__Secure-lPSID` value.
