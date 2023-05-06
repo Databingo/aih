@@ -32,7 +32,7 @@ Download [binary file](https://github.com/Databingo/aih/releases/tag/v0.1.0) the
 |.exit       | Exit Aih|
 
 ## Prerequisites
-- For ChatGPT Web (free) you should have an free account and a logged-in `accessToken` from [OpenAI](https://chat.openai.com/api/auth/session).
+- For ChatGPT Web (free) you should have a free account to obtain a logged-in `accessToken` from [OpenAI](https://chat.openai.com/api/auth/session).
 - For ChatGPT API (paid) you should have a paid API on [Billing](https://platform.openai.com/account/billing/overview). 
 - For Google Bard, you should [Join Waitlist](https://bard.google.com) and obtain a cookie value of `__Secure-lPSID`.
 - For Bing Chat, you need to have a free [Microsoft account](https://account.microsoft.com) in order to obtain a cookie.
