@@ -6,11 +6,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/Databingo/aih/eng"
-	"github.com/pavel-one/EdgeGPT-Go"
 	"github.com/Databingo/googleBard/bard"
 	"github.com/atotto/clipboard"
 	"github.com/fatih/color"
 	"github.com/google/uuid"
+	//"github.com/pavel-one/EdgeGPT-Go"
+	"github.com/Databingo/EdgeGPT-Go"
 	"github.com/peterh/liner"
 	"github.com/rocketlaunchr/google-search"
 	openai "github.com/sashabaranov/go-openai"
@@ -103,7 +104,7 @@ func main() {
 		f.Close()
 	}
 
-	// Use RESP for record response per time per time
+	// Use RESP for record response per time
 	var RESP string
 
 	// Read Aih Configure
@@ -118,7 +119,6 @@ func main() {
 	// Set proxy for system of current program
 	os.Setenv("http_proxy", Proxy)
 	os.Setenv("https_proxy", Proxy)
-	os.Setenv("LOG_LEVEL", "ERROR")
 
 	// Test Proxy
 TEST_PROXY:
@@ -143,7 +143,7 @@ TEST_PROXY:
 
 	}
 
-	// Set up client for OpenAI_API
+	// Set up client of OpenAI API
 	key := gjson.Get(string(aih_json), "key")
 	OpenAI_Key := key.String()
 	config := openai.DefaultConfig(OpenAI_Key)
@@ -151,13 +151,13 @@ TEST_PROXY:
 	messages := make([]openai.ChatCompletionMessage, 0)
 	printer_chat := color.New(color.FgWhite)
 
-	// Set up client for ChatGPT Web
+	// Set up client of ChatGPT Web
 	chat_access_token := gjson.Get(string(aih_json), "chat_access_token").String()
 	var client_chat = &http.Client{}
 	var conversation_id string
 	var parent_id string
 
-	// Set up client for GoogleBard
+	// Set up client of Google Bard
 	bard_session_id := gjson.Get(string(aih_json), "__Secure-lPSID").String()
 	bard_client := bard.NewBard(bard_session_id, "")
 	bardOptions := bard.Options{
@@ -165,9 +165,9 @@ TEST_PROXY:
 		ResponseID:     "",
 		ChoiceID:       "",
 	}
-	printer_bard := color.New(color.FgYellow)//.Add(color.Bold)
+	printer_bard := color.New(color.FgYellow) //.Add(color.Bold)
 
-	// Set up client for BingChat
+	// Set up client of Bing Chat
 	var gpt *EdgeGPT.GPT
 	_, err = ioutil.ReadFile("./cookies/1.json")
 	if err == nil {
@@ -187,7 +187,7 @@ TEST_PROXY:
 		<-ch
 	}
 
-	printer_bing := color.New(color.FgCyan)//.Add(color.Bold)
+	printer_bing := color.New(color.FgCyan) //.Add(color.Bold)
 
 	// Clean screen
 	clear()
@@ -323,7 +323,7 @@ TEST_PROXY:
 			uInput = strings.Replace(userInput, "\r", "\n", -1)
 			uInput = strings.Replace(uInput, "\n", " ", -1)
 			Liner.AppendHistory(uInput)
-			// Persistent
+			// Persistent user input
 			if f, err := os.Create(".history"); err == nil {
 				Liner.WriteHistory(f)
 				f.Close()
@@ -364,19 +364,27 @@ TEST_PROXY:
 				continue
 			}
 
-			// Send message
-			response, err := bard_client.SendMessage(userInput, bardOptions)
-			if err != nil {
-				fmt.Println(err)
-				continue
-			}
+			// Handle Bard error to recover
+			var response *bard.ResponseBody
+			response = func(rsp *bard.ResponseBody) *bard.ResponseBody {
+				defer func(rp *bard.ResponseBody) {
+					if r := recover(); r != nil {
+						fmt.Println("Bard error, please renew Bard cookie & check Internet accessing.")
+						rp = nil
+					}
+				}(rsp)
+				// Send message
+				rsp, _ = bard_client.SendMessage(userInput, bardOptions)
+				return rsp
+			}(response)
 
 			all_resp := response
 			if all_resp != nil {
 				RESP = response.Choices[0].Answer
 				printer_bard.Println(RESP)
 			} else {
-				break
+				//break
+				continue
 			}
 			bardOptions.ConversationID = response.ConversationID
 			bardOptions.ResponseID = response.ResponseID
@@ -466,10 +474,25 @@ TEST_PROXY:
 				continue
 			}
 
-			// Send message
-			RESP = chatgpt_web(client_chat, &chat_access_token, &userInput, &conversation_id, &parent_id)
-			printer_chat.Println(RESP)
-			last_ask = "chat"
+			// Handle ChatGPT Web error to recover
+			RESP = func(rsp *string) string {
+				defer func(rp *string) {
+					if r := recover(); r != nil {
+						*rp = ""
+					}
+				}(rsp)
+				// Send message
+				*rsp = chatgpt_web(client_chat, &chat_access_token, &userInput, &conversation_id, &parent_id)
+				return *rsp
+			}(&RESP)
+
+			if RESP == "" {
+				fmt.Println("ChatGPT Web error, please renew ChatGPT cookie & check Internet accessing.")
+			} else {
+				printer_chat.Println(RESP)
+				last_ask = "chat"
+
+			}
 
 		}
 
@@ -556,12 +579,12 @@ TEST_PROXY:
 
 			}()
 		}
+
 		// Play video
 		if role == ".eng" {
 
-			re := regexp.MustCompile(`(?s)\[[^\[\]]*\]`)
-
 			// Match the regular expression against the Python list.
+			re := regexp.MustCompile(`(?s)\[[^\[\]]*\]`)
 			match := re.FindAllString(RESP, -1)
 			sort.Slice(match, func(i, j int) bool {
 				return len(match[i]) > len(match[j])

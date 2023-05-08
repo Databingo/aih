@@ -1,6 +1,8 @@
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.34.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
+github.com/Databingo/EdgeGPT-Go v0.0.0-20230508142603-f684a9379652 h1:49E2zOOaAZ7JOMAIqFEXEtnsY376btxu/BJVKG3UHfE=
+github.com/Databingo/EdgeGPT-Go v0.0.0-20230508142603-f684a9379652/go.mod h1:Tj/mt0gbJwp56Ugo8FIfnxmCY1Qyw7GjYFLGhDgv4cw=
 github.com/Databingo/aih/eng v0.0.0-20230505141725-d19c776fbff4 h1:M4ya4kBDtaLVs0kCtXxZN7JSuNt2iLnuB4qWxV3ZVBk=
 github.com/Databingo/aih/eng v0.0.0-20230505141725-d19c776fbff4/go.mod h1:uuVbVVqs3AySX0RvxKFeTOD5YCuLZMZiP8xjU0zL2x0=
 github.com/Databingo/googleBard v0.0.0-20230429071020-6c29ba10f104 h1:BK3PPujPO4FayKgCBsBUQDLE/of52iOXWY6g3xR2DAI=
@@ -99,8 +101,6 @@ github.com/mattn/go-runewidth v0.0.14 h1:+xnbZSEeDbOIg5/mE6JF0w6n9duR1l3/WmbinWV
 github.com/mattn/go-runewidth v0.0.14/go.mod h1:Jdepj2loyihRzMpdS35Xk/zdY8IAYHsh153qUoGf23w=
 github.com/orisano/pixelmatch v0.0.0-20220722002657-fb0b55479cde h1:x0TT0RDC7UhAVbbWWBzr41ElhJx5tXPWkIHA2HWPRuw=
 github.com/orisano/pixelmatch v0.0.0-20220722002657-fb0b55479cde/go.mod h1:nZgzbfBr3hhjoZnS66nKrHmduYNpc34ny7RK4z5/HM0=
-github.com/pavel-one/EdgeGPT-Go v1.3.3 h1:eRWN3fhNm048LjO0WD2zxBAOotttnEQ0wCV97uVY8KI=
-github.com/pavel-one/EdgeGPT-Go v1.3.3/go.mod h1:voam1mTgtXbNCHq66/b0qLBKQ20Gr2qukALdYoiCslI=
 github.com/peterh/liner v1.2.2 h1:aJ4AOodmL+JxOZZEL2u9iJf8omNRpqHc/EbrK+3mAXw=
 github.com/peterh/liner v1.2.2/go.mod h1:xFwJyiKIXJZUKItq5dGHZSTBRAuG/CpeNpWLyiNRNwI=
 github.com/pkg/errors v0.8.1 h1:iURUrRGxPUNPdy5/HRSm+Yj6okJ6UtLINN0Q9M4+h3I=
