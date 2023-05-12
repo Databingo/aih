@@ -43,7 +43,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 ## How to get Cookies
 - For Google Bard cookie, you can log in and then add the [Cookie-Editor](https://cookie-editor.cgagnier.ca) extension. Click it on the top-right corner to copy the `__Secure-lPSID` value.
 - For Bing Chat cookie you can log in and then use Cookie-Editor -> click Cookie-Editor icon -> click "Export" -> click "Export as JSON" (This saves your cookies to the clipboard), then type `.bingkey` in Aih, you will see a prompt that says **"Please type << then paste Bing cookie then type >> then press Enter"**, by doing so you can set Bing Chat cookie via multiple lines input mode.
-- For Cloude in Slack, [create an App](https://api.slack.com/apps) by click `Create New App`, then click `From scratch`, then click `Create App`, find `OAuth & Permissions`->`Scope`->`User Token Scope`, add these promisions: 
+- For Cloude in Slack, [create an Slack App](https://api.slack.com/apps) by click `Create New App`, then click `From scratch`, then click `Create App`, find `OAuth & Permissions`->`Scope`->`User Token Scope`, add these promisions: 
     - channels:history 
     - channels:read
     - chat:write
@@ -58,7 +58,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
     - team:read
     - users:read
 
-then click `Install to Workspace` to find your `User OAuth Token`; You can obtain your `channel_id` by open the webside of chating with Claude in Slack at `https://app.slack.com/client/xxxxx/yyyyy`, then `yyyyy` is it.  
+then click `Install to Workspace` to find your `User OAuth Token`; You can obtain your `channel_id` by open the webside of chating with Claude in Slack via format of `https://app.slack.com/client/xxxxx/yyyyy`, then `yyyyy` is it.  
 
 ## Tips
 - The returned text will be auotmatically saved in your system clipboard, so you can paste it anywhere directly.
