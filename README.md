@@ -38,14 +38,14 @@ Download [binary file](https://github.com/Databingo/aih/releases/tag/v0.1.0) the
 - For ChatGPT API (paid) you should have a paid API on [Billing](https://platform.openai.com/account/billing/overview). 
 - For Google Bard, you should have a free [Google account](https://account.google.com) to obtain a cookie value of `__Secure-lPSID`.
 - For Bing Chat, you need to have a free [Microsoft account](https://account.microsoft.com) in order to obtain a cookie.
-- For Claude, you need a [Slack account](https://slack.com/get-started#/createnew) to [add Claude](https://www.anthropic.com/claude-in-slack) for a `Claude channel ID`, then create an app to get your `User OAuth Token` .
+- For Claude, you need a [Slack account](https://slack.com/get-started#/createnew) to [add Claude](https://www.anthropic.com/claude-in-slack) for a `channel_id`, then create an app to get your `User OAuth Token` .
 
 ## How to get Cookies
 - For Google Bard cookie, you can log in and then add the [Cookie-Editor](https://cookie-editor.cgagnier.ca) extension. Click it on the top-right corner to copy the `__Secure-lPSID` value.
 - For Bing Chat cookie you can log in and then use Cookie-Editor -> click Cookie-Editor icon -> click "Export" -> click "Export as JSON" (This saves your cookies to the clipboard), then type `.bingkey` in Aih, you will see a prompt that says **"Please type << then paste Bing cookie then type >> then press Enter"**, by doing so you can set Bing Chat cookie via multiple lines input mode.
 - For Cloude, [create an App](https://api.slack.com/apps) by click `Create New App`, then click `From scratch`, then click `Create App`, fint `OAuth & Permissions`-`Scope`-`User Token Scope`, add these auths: 
-    - channels:history
-    = channels:read
+    - channels:history 
+    - channels:read
     - chat:write
     - files:write
     - groups:history
@@ -57,7 +57,7 @@ Download [binary file](https://github.com/Databingo/aih/releases/tag/v0.1.0) the
     - mpim:read
     - team:read
     - users:read
- then click `Install to Workspace` to find your `User OAuth Token`. And you can find your `channel id` by open the webside of chating with Claude in Slack at `https://app.slack.com/client/xxxxx/yyyyy`, then `yyyyy` is it.  
+then click `Install to Workspace` to find your `User OAuth Token`. And you can find your `channel id` by open the webside of chating with Claude in Slack at `https://app.slack.com/client/xxxxx/yyyyy`, then `yyyyy` is it.  
 https://api.slack.com/apps
 check this [explanation](https://github.com/fffnower/chat_with_slack_claude) please. 
 
