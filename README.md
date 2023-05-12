@@ -57,6 +57,7 @@ Download [binary file](https://github.com/Databingo/aih/releases/tag/v0.1.0) the
     - mpim:read
     - team:read
     - users:read
+
 then click `Install to Workspace` to find your `User OAuth Token`. And you can find your `channel id` by open the webside of chating with Claude in Slack at `https://app.slack.com/client/xxxxx/yyyyy`, then `yyyyy` is it.  
 https://api.slack.com/apps
 check this [explanation](https://github.com/fffnower/chat_with_slack_claude) please. 
