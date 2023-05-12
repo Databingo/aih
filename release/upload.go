@@ -31,10 +31,10 @@ func main() {
 
 	// Create a new release
 	release, _, err := client.Repositories.CreateRelease(ctx, owner, repo, &github.RepositoryRelease{
-		TagName:         github.String("v0.1.0"),
+		TagName:         github.String("v0.1.1"),
 		TargetCommitish: github.String("master"),
-		Name:            github.String("Release v0.1.0"),
-		Body:            github.String("Welcome to Aih, an open plan based on the idea of \"Co-relation's enhancement of AI and human beings\""),
+		Name:            github.String("Release v0.1.1"),
+		Body:            github.String("Welcome to Aih! Recently we added Claude through the Slack for free use."),
 		Draft:           github.Bool(false),
 		Prerelease:      github.Bool(false),
 	})
