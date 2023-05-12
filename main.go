@@ -628,6 +628,7 @@ TEST_PROXY:
 				for {
 					time.Sleep(1 * time.Second)
 					claude_history, err := slack_client.GetConversationHistory(claude_hist_para)
+                                        //fmt.Println(">>>", claude_history.Messages[0])
 					if err != nil {
 						fmt.Printf("Error history: %v\n", err)
 					}

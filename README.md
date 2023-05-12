@@ -43,7 +43,23 @@ Download [binary file](https://github.com/Databingo/aih/releases/tag/v0.1.0) the
 ## How to get Cookies
 - For Google Bard cookie, you can log in and then add the [Cookie-Editor](https://cookie-editor.cgagnier.ca) extension. Click it on the top-right corner to copy the `__Secure-lPSID` value.
 - For Bing Chat cookie you can log in and then use Cookie-Editor -> click Cookie-Editor icon -> click "Export" -> click "Export as JSON" (This saves your cookies to the clipboard), then type `.bingkey` in Aih, you will see a prompt that says **"Please type << then paste Bing cookie then type >> then press Enter"**, by doing so you can set Bing Chat cookie via multiple lines input mode.
-- For Cloude, check this [explanation](https://github.com/fffnower/chat_with_slack_claude) please. 
+- For Cloude, [create an App](https://api.slack.com/apps) by click `Create New App`, then click `From scratch`, then click `Create App`, fint `OAuth & Permissions`-`Scope`-`User Token Scope`, add these auths: 
+    - channels:history
+    = channels:read
+    - chat:write
+    - files:write
+    - groups:history
+    - groups:read
+    - im:history
+    - im:read
+    - im:write
+    - mpim:history
+    - mpim:read
+    - team:read
+    - users:read
+ then click `Install to Workspace` to find your `User OAuth Token`. And you can find your `channel id` by open the webside of chating with Claude in Slack at `https://app.slack.com/client/xxxxx/yyyyy`, then `yyyyy` is it.  
+https://api.slack.com/apps
+check this [explanation](https://github.com/fffnower/chat_with_slack_claude) please. 
 
 ## Tips
 - The returned text will be auotmatically saved in your system clipboard, so you can paste it anywhere directly.
