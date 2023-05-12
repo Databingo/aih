@@ -1,4 +1,4 @@
-# Aih: Ask Bard, Bing, ChatGPT and Claude in the terminal.
+# Aih: Ask Bard/Bing/ChatGPT/Claude in the terminal.
 
 ![screenshot](aih.png)
 
