@@ -15,6 +15,7 @@ import (
 	"github.com/peterh/liner"
 	"github.com/rocketlaunchr/google-search"
 	openai "github.com/sashabaranov/go-openai"
+	"github.com/slack-go/slack"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 	"io/ioutil"
@@ -27,6 +28,7 @@ import (
 	"strconv"
 	"strings"
 	"syscall"
+	"time"
 )
 
 func clear() {
@@ -189,6 +191,16 @@ TEST_PROXY:
 
 	printer_bing := color.New(color.FgCyan) //.Add(color.Bold)
 
+	// Set up client fo Claude
+	claude_user_token := gjson.Get(string(aih_json), "claude_user_token").String()
+	claude_channel_id := gjson.Get(string(aih_json), "claude_channel_id").String()
+	var claude_client *slack.Client
+	if claude_user_token != "" {
+		claude_client = slack.New(claude_user_token)
+		//claude_client := slack.New(userToken, slack.OptionAppLevelToken(botToken))
+	}
+	printer_claude := color.New(color.FgRed) //.Add(color.Bold)
+
 	// Clean screen
 	clear()
 
@@ -251,6 +263,11 @@ TEST_PROXY:
 			role = ".bing"
 			goto BING
 			//continue
+		case ".claudekey":
+			claude_user_token = ""
+			claude_channel_id = ""
+			role = ".claude"
+			goto CLAUDE
 		case ".help":
 			fmt.Println(".bard        Google Bard")
 			fmt.Println(".bing        Bing Chat")
@@ -313,6 +330,10 @@ TEST_PROXY:
 			role = ".chatapi"
 			left_tokens = max_tokens - used_tokens
 			continue
+		case ".claude":
+			role = ".claude"
+			left_tokens = 0
+			continue
 		case ".eng":
 			role = ".eng"
 			speak = 0
@@ -342,6 +363,8 @@ TEST_PROXY:
 				goto CHAT
 			case "chatapi":
 				goto CHATAPI
+			case "claude":
+				goto CLAUDE
 			}
 		}
 	BARD:
@@ -550,6 +573,78 @@ TEST_PROXY:
 			})
 
 			last_ask = "chatapi"
+		}
+	CLAUDE:
+		if role == ".claude" || (role == ".eng" && last_ask == "claude") {
+			if claude_user_token == "" {
+				claude_user_token, _ = Liner.Prompt("Please input your claude_user_token: ")
+				if claude_user_token == "" {
+					continue
+				}
+				aihj, err := ioutil.ReadFile("aih.json")
+				nj, _ := sjson.Set(string(aihj), "claude_user_token", claude_user_token)
+				err = ioutil.WriteFile("aih.json", []byte(nj), 0644)
+				if err != nil {
+					fmt.Println("Save failed.")
+				}
+				// Renew Claude client with user token
+				claude_client = slack.New(claude_user_token)
+				continue
+			}
+			if claude_channel_id == "" {
+				claude_channel_id, _ = Liner.Prompt("Please input your claude_channel_id: ")
+				if claude_channel_id == "" {
+					continue
+				}
+				aihj, err := ioutil.ReadFile("aih.json")
+				nj, _ := sjson.Set(string(aihj), "claude_channel_id", claude_channel_id)
+				err = ioutil.WriteFile("aih.json", []byte(nj), 0644)
+				if err != nil {
+					fmt.Println("Save failed.")
+				}
+				// Renew claude_channel_id
+				claude_channel_id = gjson.Get(string(aih_json), "claude_channel_id").String()
+				continue
+			}
+
+			// Prepare history parameter
+			claude_hist_para := &slack.GetConversationHistoryParameters{
+				ChannelID: claude_channel_id,
+				Limit:     1,
+			}
+
+			// Handle Claude error to recover
+			var rsp string
+			RESP = func(slack_client *slack.Client, slack_channel string) string {
+				defer func(rp *string) {
+					if r := recover(); r != nil {
+						fmt.Println("Claude error, please check Claude user token, channel id & Internet accessing.")
+						*rp = ""
+					}
+				}(&RESP)
+
+				// Send message
+				_, _, err = slack_client.PostMessage(slack_channel, slack.MsgOptionText(userInput, false))
+				for {
+					time.Sleep(1 * time.Second)
+					claude_history, err := slack_client.GetConversationHistory(claude_hist_para)
+					if err != nil {
+						fmt.Printf("Error history: %v\n", err)
+					}
+					rsp = claude_history.Messages[0].Text
+					if !strings.Contains(rsp, "_Typing") {
+						rsp = strings.Replace(rsp, "%!(EXTRA string= ", "", -1)
+						last_ask = "claude"
+						break
+					}
+				}
+				return rsp
+			}(claude_client, claude_channel_id)
+
+			if RESP != "" {
+				printer_claude.Println(RESP)
+			}
+			continue
 		}
 
 		// -------------for all AI's RESP---------------

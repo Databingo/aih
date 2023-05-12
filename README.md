@@ -1,4 +1,4 @@
-# Aih: Ask Google Bard, Bing Chat, ChatGPT in the terminal.
+# Aih: Ask Bard, Bing, ChatGPT and Claude in the terminal.
 
 ![screenshot](aih.png)
 
@@ -15,6 +15,7 @@ Download [binary file](https://github.com/Databingo/aih/releases/tag/v0.1.0) the
 |.bing       | Bing Chat|
 |.chat       | ChatGPT Web (free)|
 |.chatapi    | ChatGPT API (pay) |
+|.claude     | Claude (in Slack) |
 |.proxy      | Set proxy, for example: socks5://127.0.0.1:7890|
 |<<          | Start multiple lines input mode|
 |>>          | End multiple lines input mode|
@@ -27,6 +28,7 @@ Download [binary file](https://github.com/Databingo/aih/releases/tag/v0.1.0) the
 |.bingkey    | Set Bing Chat cookie|
 |.chatkey    | Set ChatGPT Web access token|
 |.chatapikey | Set ChatGPT API key|
+|.claudekey  | Set Claude Slack key|
 |.clear or .c| Clear the screen|
 |.help       | Show help|
 |.exit       | Exit Aih|
@@ -34,12 +36,14 @@ Download [binary file](https://github.com/Databingo/aih/releases/tag/v0.1.0) the
 ## Prerequisites
 - For ChatGPT Web (free) you should have a free account to obtain a logged-in `accessToken` from [OpenAI](https://chat.openai.com/api/auth/session).
 - For ChatGPT API (paid) you should have a paid API on [Billing](https://platform.openai.com/account/billing/overview). 
-- For Google Bard, you should [Join Waitlist](https://bard.google.com) to obtain a cookie value of `__Secure-lPSID`.
+- For Google Bard, you should have a free [Google account](https://account.google.com) to obtain a cookie value of `__Secure-lPSID`.
 - For Bing Chat, you need to have a free [Microsoft account](https://account.microsoft.com) in order to obtain a cookie.
+- For Claude, you need a [Slack account](https://slack.com/get-started#/createnew) to [add Claude](https://www.anthropic.com/claude-in-slack) for a `Claude channel ID`, then create an app to get your `User OAuth Token` .
 
 ## How to get Cookies
 - For Google Bard cookie, you can log in and then add the [Cookie-Editor](https://cookie-editor.cgagnier.ca) extension. Click it on the top-right corner to copy the `__Secure-lPSID` value.
 - For Bing Chat cookie you can log in and then use Cookie-Editor -> click Cookie-Editor icon -> click "Export" -> click "Export as JSON" (This saves your cookies to the clipboard), then type `.bingkey` in Aih, you will see a prompt that says **"Please type << then paste Bing cookie then type >> then press Enter"**, by doing so you can set Bing Chat cookie via multiple lines input mode.
+- For Cloude, check this [explanation](https://github.com/fffnower/chat_with_slack_claude) please. 
 
 ## Tips
 - The returned text will be auotmatically saved in your system clipboard, so you can paste it anywhere directly.
