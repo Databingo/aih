@@ -49,13 +49,13 @@ func multiln_input(Liner *liner.State, prompt string) string {
 	// |--------------------------|------
 	// |recording && input        | action
 	// |--------------------------|------
-	// |false && == "" or x       | record; break
-	// |false && != "<<"          | record; break
-	// |false && == "<<" + ">>"   | record; break; rm << >>
-	// |false && == "<<"          | record; true; rm <<
+	// |false && == "" or x       | record; break;
+	// |false && != "<<"          | record; break;
+	// |false && == "<<" + ">>"   | record; break; rm << >>;
+	// |false && == "<<"          | record; true; rm <<;
 	// |true  && == "" or x       | record;
 	// |true  && != ">>"          | record;
-	// |true  && == ">>"          | record; break; rm >>
+	// |true  && == ">>"          | record; break; rm >>;
 	// |--------------------------|------
 
 	var ln string
