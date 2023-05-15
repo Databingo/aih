@@ -100,12 +100,6 @@ func main() {
 	Liner := liner.NewLiner()
 	defer Liner.Close()
 
-	// Read user input history
-	if f, err := os.Open(".history"); err == nil {
-		Liner.ReadHistory(f)
-		f.Close()
-	}
-
 	// Use RESP for record response per time
 	var RESP string
 
@@ -222,6 +216,11 @@ TEST_PROXY:
 
 	// Start loop to read user input
 	for {
+		// Re-read user input history
+		if f, err := os.Open(".history"); err == nil {
+			Liner.ReadHistory(f)
+			f.Close()
+		}
 		prompt := strconv.Itoa(left_tokens) + role + "> "
 		userInput := multiln_input(Liner, prompt)
 
@@ -630,7 +629,7 @@ TEST_PROXY:
 				for {
 					time.Sleep(1 * time.Second)
 					claude_history, err := slack_client.GetConversationHistory(claude_hist_para)
-                                        //fmt.Println(">>>", claude_history.Messages[0])
+					//fmt.Println(">>>", claude_history.Messages[0])
 					if err != nil {
 						fmt.Printf("Error history: %v\n", err)
 					}
