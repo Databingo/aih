@@ -625,7 +625,10 @@ TEST_PROXY:
 				}(&RESP)
 
 				// Send message
-				_, _, err = slack_client.PostMessage(slack_channel, slack.MsgOptionText(userInput, false))
+				_, ts, _:= slack_client.PostMessage(slack_channel, slack.MsgOptionText(userInput, false))
+				claude_hist_para.Oldest = ts
+				claude_hist_para.Inclusive = false
+
 				for {
 					time.Sleep(1 * time.Second)
 					claude_history, err := slack_client.GetConversationHistory(claude_hist_para)
