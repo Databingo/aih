@@ -625,8 +625,9 @@ TEST_PROXY:
 				}(&RESP)
 
 				// Send message
-				_, ts, _:= slack_client.PostMessage(slack_channel, slack.MsgOptionText(userInput, false))
-				// Fetch the latest return message
+				_, ts, _ := slack_client.PostMessage(slack_channel, slack.MsgOptionText(userInput, false))
+
+				// Parameter for fetch the latest return message
 				claude_hist_para.Oldest = ts
 				claude_hist_para.Inclusive = false
 
