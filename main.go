@@ -638,9 +638,11 @@ TEST_PROXY:
 					if err != nil {
 						fmt.Printf("Error history: %v\n", err)
 					}
+					if len(claude_history.Messages) == 0 {continue} // Wait Claude server to response
 					rsp = claude_history.Messages[0].Text
 					if !strings.Contains(rsp, "_Typing") {
 						rsp = strings.Replace(rsp, "%!(EXTRA string= ", "", -1)
+						rsp = strings.Trim(rsp, " ")
 						last_ask = "claude"
 						break
 					}
