@@ -14,7 +14,7 @@ func main() {
         var ghp_token string
 	fmt.Printf("Please input ghp_token: ")
 	fmt.Scanf("%s", & ghp_token)
-	fmt.Println("ghp_token: ", ghp_token)
+	//fmt.Println("ghp_token: ", ghp_token)
 
 	ctx := context.Background()
 

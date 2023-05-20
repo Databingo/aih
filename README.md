@@ -29,7 +29,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 |.chatkey    | Set ChatGPT Web access token|
 |.chatapikey | Set ChatGPT API key|
 |.claudekey  | Set Claude Slack key|
-|.price      | Set ChatGPT Api mode such as GPT3Dot5Turbo(default), GPT4, GPT432K (pay)|
+|.price      | Set ChatGPT API mode such as GPT3Dot5Turbo(default), GPT4, GPT432K (pay)|
 |.clear or .c| Clear the screen|
 |.help       | Show help|
 |.exit       | Exit Aih|
