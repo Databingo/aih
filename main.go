@@ -276,6 +276,7 @@ TEST_PROXY:
 			fmt.Println(".bing        Bing Chat")
 			fmt.Println(".chat        ChatGPT Web (free)")
 			fmt.Println(".chatapi     ChatGPT Api (pay)")
+			fmt.Println(".chatapi.    Set ChatGPT API mode such as GPT3Dot5Turbo(default), GPT4, GPT432K")
 			fmt.Println(".claude      Claude (via Slack)")
 			fmt.Println(".proxy       Set proxy")
 			fmt.Println("<<           Start multiple lines input")
@@ -290,7 +291,6 @@ TEST_PROXY:
 			fmt.Println(".chatkey     Reset ChatGPT Web accessToken")
 			fmt.Println(".chatapikey  Reset ChatGPT Api key")
 			fmt.Println(".claudekey   Reset Claude Slack keys")
-			fmt.Println(".price       Reset ChatGPT Api mode such as GPT3Dot5Turbo(default), GPT4, GPT432K (pay)")
 			fmt.Println(".clear or .c Clear screen")
 			fmt.Println(".help        Help")
 			fmt.Println(".exit        Exit")
@@ -345,7 +345,7 @@ TEST_PROXY:
 			speak = 0
 			left_tokens = 0
 			continue
-		case ".price":
+		case ".chatapi.", ".price":
 			role = ".chatapi"
 			prompt := promptui.Select{
 				Label: "Select model of OpenAI according to the offical pricing:",

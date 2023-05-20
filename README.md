@@ -15,6 +15,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 |.bing       | Bing Chat|
 |.chat       | ChatGPT Web (free)|
 |.chatapi    | ChatGPT API (pay) |
+|.chatapi.   | Set ChatGPT API mode such as GPT3Dot5Turbo(default), GPT4, GPT432K|
 |.claude     | Claude (in Slack) |
 |.proxy      | Set proxy, for example: socks5://127.0.0.1:7890|
 |<<          | Start multiple lines input mode|
@@ -29,7 +30,6 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 |.chatkey    | Set ChatGPT Web access token|
 |.chatapikey | Set ChatGPT API key|
 |.claudekey  | Set Claude Slack key|
-|.price      | Set ChatGPT API mode such as GPT3Dot5Turbo(default), GPT4, GPT432K (pay)|
 |.clear or .c| Clear the screen|
 |.help       | Show help|
 |.exit       | Exit Aih|
