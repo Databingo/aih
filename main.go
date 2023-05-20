@@ -346,6 +346,7 @@ TEST_PROXY:
 			left_tokens = 0
 			continue
 		case ".price":
+			role = ".chatapi"
 			prompt := promptui.Select{
 				Label: "Select model of OpenAI according to the offical pricing:",
 				Items: []string{
