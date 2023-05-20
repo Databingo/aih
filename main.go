@@ -12,6 +12,7 @@ import (
 	"github.com/google/uuid"
 	//"github.com/pavel-one/EdgeGPT-Go"
 	"github.com/Databingo/EdgeGPT-Go"
+	"github.com/manifoldco/promptui"
 	"github.com/peterh/liner"
 	"github.com/rocketlaunchr/google-search"
 	openai "github.com/sashabaranov/go-openai"
@@ -213,6 +214,9 @@ TEST_PROXY:
 	role := ".bard"
 	uInput := ""
 	last_ask := "bard"
+	price := ""
+	chat_mode := openai.GPT3Dot5Turbo
+	chat_completion := true
 
 	// Start loop to read user input
 	for {
@@ -286,6 +290,7 @@ TEST_PROXY:
 			fmt.Println(".chatkey     Reset ChatGPT Web accessToken")
 			fmt.Println(".chatapikey  Reset ChatGPT Api key")
 			fmt.Println(".claudekey   Reset Claude Slack keys")
+			fmt.Println(".price       Reset ChatGPT Api mode such as GPT3Dot5Turbo(default), GPT4, GPT432K (pay)")
 			fmt.Println(".clear or .c Clear screen")
 			fmt.Println(".help        Help")
 			fmt.Println(".exit        Exit")
@@ -311,7 +316,7 @@ TEST_PROXY:
 			parent_id = ""
 			// For role .chatapi
 			messages = make([]openai.ChatCompletionMessage, 0)
-			max_tokens = 4097
+			//max_tokens = 4097
 			used_tokens = 0
 			left_tokens = max_tokens - used_tokens
 			continue
@@ -340,6 +345,57 @@ TEST_PROXY:
 			speak = 0
 			left_tokens = 0
 			continue
+		case ".price":
+			prompt := promptui.Select{
+				Label: "Select model of OpenAI according to the offical pricing:",
+				Items: []string{
+					"gpt-3.5-turbo, $0.002/1K tokens",
+					"gpt-4 8K Prompt, $0.03/1K tokens",
+					"gpt-4 8K Completion, $0.06/1K tokens",
+					"gpt-4 32K Prompt, $0.06/1K tokens",
+					"gpt-4 32K Completion, $0.12/1K tokens",
+				},
+			}
+
+			_, price, err = prompt.Run()
+			if err != nil {
+				panic(err)
+			}
+
+			switch price {
+			case "gpt-3.5-turbo, $0.002/1K tokens":
+				chat_mode = openai.GPT3Dot5Turbo
+				max_tokens = 4097
+				used_tokens = 0
+				left_tokens = max_tokens - used_tokens
+				chat_completion = true
+			case "gpt-4 8K Prompt, $0.03/1K tokens":
+				chat_mode = openai.GPT4
+				max_tokens = 8192
+				used_tokens = 0
+				left_tokens = max_tokens - used_tokens
+				chat_completion = false
+			case "gpt-4 8K Completion, $0.06/1K tokens":
+				chat_mode = openai.GPT4
+				max_tokens = 8192
+				used_tokens = 0
+				left_tokens = max_tokens - used_tokens
+				chat_completion = true
+			case "gpt-4 32K Prompt, $0.06/1K tokens":
+				chat_mode = openai.GPT432K
+				max_tokens = 32768
+				used_tokens = 0
+				left_tokens = max_tokens - used_tokens
+				chat_completion = false
+			case "gpt-4 32K Completion, $0.12/1K tokens":
+				chat_mode = openai.GPT432K
+				max_tokens = 32768
+				used_tokens = 0
+				left_tokens = max_tokens - used_tokens
+				chat_completion = true
+			}
+			continue
+
 		default:
 			// Record user input without Aih commands
 			uInput = strings.Replace(userInput, "\r", "\n", -1)
@@ -551,14 +607,22 @@ TEST_PROXY:
 			resp, err := client.CreateChatCompletion(
 				context.Background(),
 				openai.ChatCompletionRequest{
-					Model:    openai.GPT3Dot5Turbo,
+					Model:    chat_mode, //openai.GPT3Dot5Turbo,
 					Messages: messages,
 				},
 			)
 
 			if err != nil {
-				fmt.Println(err)
+				fmt.Println(">>>", err)
 				continue
+			}
+
+			// Record in coversation context
+			if chat_completion {
+				messages = append(messages, openai.ChatCompletionMessage{
+					Role:    openai.ChatMessageRoleUser,
+					Content: RESP,
+				})
 			}
 
 			// Print the response to the terminal
@@ -566,12 +630,6 @@ TEST_PROXY:
 			used_tokens = resp.Usage.TotalTokens
 			left_tokens = max_tokens - used_tokens
 			printer_chat.Println(RESP)
-
-			// Record in coversation context
-			messages = append(messages, openai.ChatCompletionMessage{
-				Role:    openai.ChatMessageRoleUser,
-				Content: RESP,
-			})
 
 			last_ask = "chatapi"
 		}
@@ -638,7 +696,9 @@ TEST_PROXY:
 					if err != nil {
 						fmt.Printf("Error history: %v\n", err)
 					}
-					if len(claude_history.Messages) == 0 {continue} // Wait Claude server to response
+					if len(claude_history.Messages) == 0 {
+						continue
+					} // Wait Claude server to response
 					rsp = claude_history.Messages[0].Text
 					if !strings.Contains(rsp, "_Typing") {
 						rsp = strings.Replace(rsp, "%!(EXTRA string= ", "", -1)
