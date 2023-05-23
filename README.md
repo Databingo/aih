@@ -1,6 +1,6 @@
 # Aih: Talk with Bard/Bing/ChatGPT/Claude in the terminal.
 
-![screenshot](aih.png) ![screenshot2](elegant.png)
+![screenshot](aih.png) 
 
 ## Usage
 Download [binary file](https://github.com/Databingo/aih/releases) then type:
