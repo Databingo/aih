@@ -8,10 +8,11 @@ import (
 	"github.com/Databingo/aih/eng"
 	"github.com/Databingo/googleBard/bard"
 	"github.com/atotto/clipboard"
-	"github.com/fatih/color"
 	"github.com/google/uuid"
 	//"github.com/pavel-one/EdgeGPT-Go"
 	"github.com/Databingo/EdgeGPT-Go"
+	"github.com/gdamore/tcell/v2"
+	"github.com/rivo/tview"
 	"github.com/manifoldco/promptui"
 	"github.com/peterh/liner"
 	"github.com/rocketlaunchr/google-search"
@@ -31,6 +32,12 @@ import (
 	"syscall"
 	"time"
 )
+
+var color_bard = tcell.ColorDarkCyan
+var color_bing = tcell.ColorIndianRed
+var color_chat = tcell.ColorWhite
+var color_chatapi = tcell.ColorWhite
+var color_claude = tcell.ColorYellow
 
 func clear() {
 	switch runtime.GOOS {
@@ -146,7 +153,6 @@ TEST_PROXY:
 	config := openai.DefaultConfig(OpenAI_Key)
 	client := openai.NewClientWithConfig(config)
 	messages := make([]openai.ChatCompletionMessage, 0)
-	printer_chat := color.New(color.FgWhite)
 
 	// Set up client of ChatGPT Web
 	chat_access_token := gjson.Get(string(aih_json), "chat_access_token").String()
@@ -162,7 +168,6 @@ TEST_PROXY:
 		ResponseID:     "",
 		ChoiceID:       "",
 	}
-	printer_bard := color.New(color.FgYellow) //.Add(color.Bold)
 
 	// Set up client of Bing Chat
 	var gpt *EdgeGPT.GPT
@@ -184,8 +189,6 @@ TEST_PROXY:
 		<-ch
 	}
 
-	printer_bing := color.New(color.FgCyan) //.Add(color.Bold)
-
 	// Set up client fo Claude
 	claude_user_token := gjson.Get(string(aih_json), "claude_user_token").String()
 	claude_channel_id := gjson.Get(string(aih_json), "claude_channel_id").String()
@@ -194,7 +197,6 @@ TEST_PROXY:
 		claude_client = slack.New(claude_user_token)
 		//claude_client := slack.New(userToken, slack.OptionAppLevelToken(botToken))
 	}
-	printer_claude := color.New(color.FgRed) //.Add(color.Bold)
 
 	// Clean screen
 	clear()
@@ -283,6 +285,9 @@ TEST_PROXY:
 			fmt.Println(">>           End multiple lines input")
 			fmt.Println("↑            Previous input value")
 			fmt.Println("↓            Next input value")
+			fmt.Println("j            Scroll down in long response text")
+			fmt.Println("k            Scroll up in long response text")
+			fmt.Println("Enter(Key)   Back to conversationk")
 			fmt.Println(".new         New conversation of ChatGPT")
 			fmt.Println(".speak       Voice speak context")
 			fmt.Println(".quiet       Not speak")
@@ -348,7 +353,7 @@ TEST_PROXY:
 		case ".chatapi.", ".price":
 			role = ".chatapi"
 			prompt := promptui.Select{
-				Label: "Select model of OpenAI according to the offical pricing:",
+				Label: "Select model of OpenAI according to the offical pricing",
 				Items: []string{
 					"gpt-3.5-turbo, $0.002/1K tokens",
 					"gpt-4 8K Prompt, $0.03/1K tokens",
@@ -462,7 +467,9 @@ TEST_PROXY:
 			all_resp := response
 			if all_resp != nil {
 				RESP = response.Choices[0].Answer
-				printer_bard.Println(RESP)
+				//printer_bard.Println(RESP)
+				//printer_bard.Println("RESP")
+				printer(color_bard, RESP)
 			} else {
 				//break
 				continue
@@ -535,7 +542,8 @@ TEST_PROXY:
 				continue
 			}
 			RESP = strings.TrimSpace(as.Answer.GetAnswer())
-			printer_bing.Println(RESP)
+			//printer_bing.Println(RESP)
+			printer(color_bing, RESP)
 			last_ask = "bing"
 		}
 
@@ -570,7 +578,8 @@ TEST_PROXY:
 			if RESP == "" {
 				fmt.Println("ChatGPT Web error, please renew ChatGPT cookie & check Internet accessing.")
 			} else {
-				printer_chat.Println(RESP)
+				//printer_chat.Println(RESP)
+				printer(color_chat, RESP)
 				last_ask = "chat"
 
 			}
@@ -630,7 +639,8 @@ TEST_PROXY:
 			RESP = strings.TrimSpace(resp.Choices[0].Message.Content)
 			used_tokens = resp.Usage.TotalTokens
 			left_tokens = max_tokens - used_tokens
-			printer_chat.Println(RESP)
+			//printer_chat.Println(RESP)
+			printer(color_chatapi, RESP)
 
 			last_ask = "chatapi"
 		}
@@ -712,7 +722,8 @@ TEST_PROXY:
 			}(claude_client, claude_channel_id)
 
 			if RESP != "" {
-				printer_claude.Println(RESP)
+				//printer_claude.Println(RESP)
+				printer(color_claude, RESP)
 			}
 			continue
 		}
@@ -830,4 +841,59 @@ func chatgpt_web(c *http.Client, chat_access_token, prompt, c_id, p_id *string) 
 	*c_id = gjson.Get(long_str[5:], "conversation_id").String()
 	*p_id = gjson.Get(long_str[5:], "message.id").String()
 	return answer
+}
+
+func scrollUp(textView *tview.TextView) {
+	row, _ := textView.GetScrollOffset()
+	if row > 0 {
+		textView.ScrollTo(row-1, 0)
+	}
+}
+
+func scrollDown(textView *tview.TextView) {
+	row, _ := textView.GetScrollOffset()
+	textView.ScrollTo(row+1, 0)
+}
+
+func printer(colour tcell.Color, context string) {
+	app := tview.NewApplication()
+	flex := tview.NewFlex()
+	textView := tview.NewTextView().
+		SetDynamicColors(true).
+		SetRegions(true).
+		SetWrap(true).
+		SetTextColor(colour)
+
+	flex.AddItem(tview.NewTextView(), 0, 1, false).AddItem(tview.NewFlex().SetDirection(tview.FlexRow).
+		AddItem(tview.NewTextView(), 0, 1, false).
+		AddItem(textView, 0, 6, true).
+		AddItem(tview.NewTextView(), 0, 1, false), 0, 8, false).
+		AddItem(tview.NewTextView(), 0, 1, false)
+
+	fmt.Fprintf(textView, context)
+
+	// Handle 'j' and 'k' key events for scrolling
+	flex.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
+		switch event.Key() {
+		case tcell.KeyEnter:
+			app.Stop()
+			//	case tcell.KeyUp: // maybe use for last response
+			//		scrollUp(textView)
+			//	case tcell.KeyDown:
+			scrollDown(textView)
+		case tcell.KeyRune:
+			switch event.Rune() {
+			case 'k':
+				scrollUp(textView)
+			case 'j':
+				scrollDown(textView)
+			}
+		}
+		return event
+	})
+
+	if err := app.SetRoot(flex, true).SetFocus(flex).Run(); err != nil {
+		panic(err)
+	}
+
 }

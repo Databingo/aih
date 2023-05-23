@@ -22,6 +22,9 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 |>>          | End multiple lines input mode|
 |↑           | Previous input value|
 |↓           | Next input value|
+|j           | Scroll down in long response text|
+|k           | Scroll up in long response text|
+|Enter(Keyboard)| Back to conversation|
 |.new        | Start a new conversation on ChatGPT|
 |.speak      | Voice speak context(macOS only)|
 |.quiet      | Disable voice output |

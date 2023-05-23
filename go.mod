@@ -8,10 +8,12 @@ require (
 	github.com/Databingo/googleBard v0.0.0-20230429071020-6c29ba10f104
 	github.com/atotto/clipboard v0.1.4
 	github.com/fatih/color v1.15.0
+	github.com/gdamore/tcell/v2 v2.6.0
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/google/uuid v1.3.0
 	github.com/manifoldco/promptui v0.9.0
 	github.com/peterh/liner v1.2.2
+	github.com/rivo/tview v0.0.0-20230511053024-822bd067b165
 	github.com/rocketlaunchr/google-search v1.1.5
 	github.com/sashabaranov/go-openai v1.9.0
 	github.com/slack-go/slack v0.12.2
@@ -31,6 +33,7 @@ require (
 	github.com/chromedp/sysutil v1.0.0 // indirect
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
+	github.com/gdamore/encoding v1.0.0 // indirect
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
@@ -42,6 +45,7 @@ require (
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/kennygrant/sanitize v1.2.4 // indirect
+	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.18 // indirect
@@ -56,6 +60,7 @@ require (
 	go.uber.org/zap v1.24.0 // indirect
 	golang.org/x/net v0.9.0 // indirect
 	golang.org/x/sys v0.7.0 // indirect
+	golang.org/x/term v0.7.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
 	golang.org/x/time v0.0.0-20201208040808-7e3f01d25324 // indirect
 	google.golang.org/appengine v1.6.6 // indirect
