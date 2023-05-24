@@ -227,6 +227,7 @@ TEST_PROXY:
 			Liner.ReadHistory(f)
 			f.Close()
 		}
+
 		prompt := strconv.Itoa(left_tokens) + role + "> "
 		userInput := multiln_input(Liner, prompt)
 
@@ -410,6 +411,11 @@ TEST_PROXY:
 			continue
 
 		default:
+		       // Re-read user input history in case other process alternated 
+		       if f, err := os.Open(".history"); err == nil {
+		       	Liner.ReadHistory(f)
+		       	f.Close()
+		       }
 			// Record user input without Aih commands
 			uInput = strings.Replace(userInput, "\r", "\n", -1)
 			uInput = strings.Replace(uInput, "\n", " ", -1)
