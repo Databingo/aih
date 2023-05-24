@@ -274,32 +274,35 @@ TEST_PROXY:
 			role = ".claude"
 			goto CLAUDE
 		case ".help":
-			fmt.Println(".bard        Google Bard")
-			fmt.Println(".bing        Bing Chat")
-			fmt.Println(".chat        ChatGPT Web (free)")
-			fmt.Println(".chatapi     ChatGPT Api (pay)")
-			fmt.Println(".chatapi.    Set ChatGPT API mode such as GPT3Dot5Turbo(default), GPT4, GPT432K")
-			fmt.Println(".claude      Claude (via Slack)")
-			fmt.Println(".proxy       Set proxy")
-			fmt.Println("<<           Start multiple lines input")
-			fmt.Println(">>           End multiple lines input")
-			fmt.Println("↑            Previous input value")
-			fmt.Println("↓            Next input value")
-			fmt.Println("j            Scroll down in long response text")
-			fmt.Println("k            Scroll up in long response text")
-			fmt.Println("Enter(Key)   Back to conversationk")
-			fmt.Println(".new         New conversation of ChatGPT")
-			fmt.Println(".speak       Voice speak context")
-			fmt.Println(".quiet       Not speak")
-			fmt.Println(".bardkey     Reset Google Bard cookie")
-			fmt.Println(".bingkey     Reset Bing Chat coolie")
-			fmt.Println(".chatkey     Reset ChatGPT Web accessToken")
-			fmt.Println(".chatapikey  Reset ChatGPT Api key")
-			fmt.Println(".claudekey   Reset Claude Slack keys")
-			fmt.Println(".clear or .c Clear screen")
-			fmt.Println(".help        Help")
-			fmt.Println(".exit        Exit")
-			fmt.Println(".eng         Play movie clips")
+			fmt.Println(".bard           Google Bard")
+			fmt.Println(".bing           Bing Chat")
+			fmt.Println(".chat           ChatGPT Web (free)")
+			fmt.Println(".chatapi        ChatGPT Api (pay)")
+			fmt.Println(".chatapi.       Set ChatGPT API mode such as GPT3Dot5Turbo(default), GPT4, GPT432K")
+			fmt.Println(".claude         Claude (via Slack)")
+			fmt.Println(".proxy          Set proxy")
+			fmt.Println("<<              Start multiple lines input")
+			fmt.Println(">>              End multiple lines input")
+			fmt.Println("↑               Previous input")
+			fmt.Println("↓               Next input")
+			fmt.Println(".history or .h  Show history of conversations")
+			fmt.Println("j               Scroll down")
+			fmt.Println("k               Scroll up")
+			fmt.Println("gg              Scroll top")
+			fmt.Println("G               Scroll bottom")
+			fmt.Println("Enter(Key)      Back to conversationk")
+			fmt.Println(".new            New conversation of ChatGPT")
+			fmt.Println(".speak          Voice speak context")
+			fmt.Println(".quiet          Not speak")
+			fmt.Println(".bardkey        Reset Google Bard cookie")
+			fmt.Println(".bingkey        Reset Bing Chat coolie")
+			fmt.Println(".chatkey        Reset ChatGPT Web accessToken")
+			fmt.Println(".chatapikey     Reset ChatGPT Api key")
+			fmt.Println(".claudekey      Reset Claude Slack keys")
+			fmt.Println(".clear or .c    Clear screen")
+			fmt.Println(".help           Help")
+			fmt.Println(".exit           Exit")
+			fmt.Println(".eng            Play movie clips")
 			continue
 		case ".speak":
 			speak = 1
@@ -349,6 +352,10 @@ TEST_PROXY:
 			role = ".eng"
 			speak = 0
 			left_tokens = 0
+			continue
+	        case ".history", ".h":
+		        cnt, _:= ioutil.ReadFile("history.txt")
+		        printer(color_chat, string(cnt))
 			continue
 		case ".chatapi.", ".price":
 			role = ".chatapi"
@@ -412,6 +419,8 @@ TEST_PROXY:
 				Liner.WriteHistory(f)
 				f.Close()
 			}
+
+
 
 		}
 
@@ -722,13 +731,22 @@ TEST_PROXY:
 			}(claude_client, claude_channel_id)
 
 			if RESP != "" {
-				//printer_claude.Println(RESP)
 				printer(color_claude, RESP)
 			}
-			continue
 		}
 
 		// -------------for all AI's RESP---------------
+
+			// Persistent conversation uInput + response
+			if fs, err := os.OpenFile("history.txt", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0666); err == nil {
+			 time_string := time.Now().Format("2006-01-02 15:04:05")
+			 _, err  = fs.WriteString("--------------------\n")
+			 _, err  = fs.WriteString(time_string + role + "\n\nQuestion:\n" + uInput + "\n\n")
+			 _, err  = fs.WriteString("Answer:" + "\n" + RESP + "\n")
+			    if err != nil { panic(err) }
+			    fs.Close()
+			   }
+
 		// Write response RESP to clipboard
 		err = clipboard.WriteAll(RESP)
 		if err != nil {
@@ -871,22 +889,26 @@ func printer(colour tcell.Color, context string) {
 		AddItem(tview.NewTextView(), 0, 1, false)
 
 	fmt.Fprintf(textView, context)
+        textView.ScrollToEnd()
 
 	// Handle 'j' and 'k' key events for scrolling
 	flex.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		switch event.Key() {
-		case tcell.KeyEnter:
+		case tcell.KeyEnter, tcell.KeyEsc:
 			app.Stop()
 			//	case tcell.KeyUp: // maybe use for last response
 			//		scrollUp(textView)
 			//	case tcell.KeyDown:
-			scrollDown(textView)
 		case tcell.KeyRune:
 			switch event.Rune() {
 			case 'k':
 				scrollUp(textView)
 			case 'j':
 				scrollDown(textView)
+			case 'g':
+			        textView.ScrollToBeginning()
+			case 'G':
+			        textView.ScrollToEnd()
 			}
 		}
 		return event

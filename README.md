@@ -20,10 +20,13 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 |.proxy      | Set proxy, for example: socks5://127.0.0.1:7890|
 |<<          | Start multiple lines input mode|
 |>>          | End multiple lines input mode|
-|↑           | Previous input value|
-|↓           | Next input value|
-|j           | Scroll down in long response text|
-|k           | Scroll up in long response text|
+|↑           | Previous input|
+|↓           | Next input|
+|.history or .h| Show history of conversations|
+|j           | Scroll down|
+|k           | Scroll up|
+|gg          | Scroll top|
+|G           | Scroll bottom|
 |Enter(Keyboard)| Back to conversation|
 |.new        | Start a new conversation on ChatGPT|
 |.speak      | Voice speak context(macOS only)|
