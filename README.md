@@ -18,6 +18,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 |>>          | End multiple lines input mode|
 |↑           | Previous input|
 |↓           | Next input|
+|.c or .clear| Clear the screen|
 |.h or .history | Show history of conversations|
 |j           | Scroll down|
 |k           | Scroll up|
@@ -25,7 +26,6 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 |G           | Scroll bottom|
 |q or Enter  | Back to conversation|
 |.new        | Start a new conversation on ChatGPT|
-|.c or .clear| Clear the screen|
 |.help       | Show help|
 |.exit       | Exit Aih|
 
