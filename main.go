@@ -253,22 +253,18 @@ TEST_PROXY:
 			bard_session_id = ""
 			role = ".bard"
 			goto BARD
-			//continue
 		case ".chatkey":
 			chat_access_token = ""
 			role = ".chat"
 			goto CHAT
-			//continue
 		case ".chatapikey":
 			OpenAI_Key = ""
 			role = ".chatapi"
 			goto CHATAPI
-			//continue
 		case ".bingkey":
 			_ = os.Remove("./cookies/1.json")
 			role = ".bing"
 			goto BING
-			//continue
 		case ".claudekey":
 			claude_user_token = ""
 			claude_channel_id = ""
@@ -276,26 +272,26 @@ TEST_PROXY:
 			goto CLAUDE
 		case ".help":
 			fmt.Println("                           ")
-			fmt.Println(" .chat           Select AI mode to chat Bard/Bing/ChatGPT/Claude ...")
 			//fmt.Println(" .bard           Bard")
 			//fmt.Println(" .bing           Bing")
 			//fmt.Println(" .chat           ChatGPT Web (free)")
 			//fmt.Println(" .chatapi        ChatGPT Api (pay)")
 			//fmt.Println(" .chatapi.       Choose GPT3.5(default)/GPT4/GPT432K mode")
 			//fmt.Println(" .claude         Claude (Slack)")
-			fmt.Println(" .proxy          Set proxy")
+			fmt.Println(" .ai             Select AI mode to chat Bard/Bing/ChatGPT/Claude ...")
 			fmt.Println(" .key            Set Bard/Bing/ChatGPT/Claude cookie")
+			fmt.Println(" .proxy          Set proxy")
 			fmt.Println(" <<              Start multiple lines input")
 			fmt.Println(" >>              End multiple lines input")
 			fmt.Println(" ↑               Previous input")
 			fmt.Println(" ↓               Next input")
+			fmt.Println(" .c or .clear    Clear screen")
 			fmt.Println(" .h or .history  Show history")
 			fmt.Println(" j               Scroll down")
 			fmt.Println(" k               Scroll up")
 			fmt.Println(" gg              Scroll top")
 			fmt.Println(" G               Scroll bottom")
 			fmt.Println(" q or Enter      Back to conversation")
-			fmt.Println(" .c or .clear    Clear screen")
 			fmt.Println(" .help           Help")
 			fmt.Println(" .exit           Exit")
 			fmt.Println(" .new            New conversation of ChatGPT")
@@ -310,17 +306,12 @@ TEST_PROXY:
 			//fmt.Println(".chatapikey     Reset ChatGPT Api key")
 			//fmt.Println(".claudekey      Reset Claude Slack keys")
 			continue
-		case ".speak":
-			speak = 1
-			continue
-		case ".quiet":
-			speak = 0
-			continue
-		case ".clear":
+		case ".c", ".clear":
 			clear()
 			continue
-		case ".c":
-			clear()
+		case ".h", ".history":
+			cnt, _ := ioutil.ReadFile("history.txt")
+			printer(color_chat, string(cnt), true)
 			continue
 		case ".exit":
 			return
@@ -354,7 +345,7 @@ TEST_PROXY:
 			role = ".claude"
 			left_tokens = 0
 			continue
-		case ".ch":
+		case ".ai":
 			prom := promptui.Select{
 				Label: "Select AI mode to chat",
 				Size:  10,
@@ -437,15 +428,6 @@ TEST_PROXY:
 			case "Exit":
 				continue
 			}
-		case ".eng":
-			role = ".eng"
-			speak = 0
-			left_tokens = 0
-			continue
-		case ".h", ".history":
-			cnt, _ := ioutil.ReadFile("history.txt")
-			printer(color_chat, string(cnt), true)
-			continue
 		case ".key":
 			prom := promptui.Select{
 				Label: "Select cookie/key to set",
@@ -546,7 +528,17 @@ TEST_PROXY:
 				continue
 			}
 			continue
-
+		case ".speak":
+			speak = 1
+			continue
+		case ".quiet":
+			speak = 0
+			continue
+		case ".eng":
+			role = ".eng"
+			speak = 0
+			left_tokens = 0
+			continue
 		default:
 			// Re-read user input history in case other process alternated
 			if f, err := os.Open(".history"); err == nil {
