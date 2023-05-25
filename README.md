@@ -11,7 +11,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 ## Command list
 | Command    | Operation|
 |------------|----------|
-|.ai         | Select AI mode of Bard/Bing/ChatGPT/Claude|
+|/           | Select AI mode of Bard/Bing/ChatGPT/Claude|
 |.key        | Set cookie of Bard/Bing/ChatGPT/Claude|
 |.proxy      | Set proxy, for example: socks5://127.0.0.1:7890|
 |<<          | Start multiple lines input mode|

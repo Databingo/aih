@@ -278,7 +278,7 @@ TEST_PROXY:
 			//fmt.Println(" .chatapi        ChatGPT Api (pay)")
 			//fmt.Println(" .chatapi.       Choose GPT3.5(default)/GPT4/GPT432K mode")
 			//fmt.Println(" .claude         Claude (Slack)")
-			fmt.Println(" .ai             Select AI mode of Bard/Bing/ChatGPT/Claude")
+			fmt.Println(" /               Select AI mode of Bard/Bing/ChatGPT/Claude")
 			fmt.Println(" .key            Set cookie of Bard/Bing/ChatGPT/Claude")
 			fmt.Println(" .proxy          Set proxy")
 			fmt.Println(" <<              Start multiple lines input")
@@ -345,7 +345,7 @@ TEST_PROXY:
 			role = ".claude"
 			left_tokens = 0
 			continue
-		case ".ai":
+		case "/":
 			prom := promptui.Select{
 				Label: "Select AI mode to chat",
 				Size:  10,
