@@ -11,8 +11,8 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 ## Command list
 | Command    | Operation|
 |------------|----------|
-|.ai         | Select AI mode to chat Bard/Bing/ChatGPT/Claude ...|
-|.key        | Set Bard/Bing/ChatGPT/Claude cookie|
+|.ai         | Select AI mode of Bard/Bing/ChatGPT/Claude|
+|.key        | Set cookie of Bard/Bing/ChatGPT/Claude|
 |.proxy      | Set proxy, for example: socks5://127.0.0.1:7890|
 |<<          | Start multiple lines input mode|
 |>>          | End multiple lines input mode|
@@ -25,7 +25,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 |g           | Scroll top|
 |G           | Scroll bottom|
 |q or Enter  | Back to conversation|
-|.new        | Start a new conversation on ChatGPT|
+|.new        | Start a new conversation of ChatGPT|
 |.help       | Show help|
 |.exit       | Exit Aih|
 
