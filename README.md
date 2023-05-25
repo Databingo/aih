@@ -1,6 +1,5 @@
 # Aih: Talk with Bard/Bing/ChatGPT/Claude in the terminal.
 
-![screenshot](aih.png) 
 ![screenshot2](aih.gif) 
 
 ## Usage
