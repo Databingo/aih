@@ -12,14 +12,6 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 | Command    | Operation|
 |------------|----------|
 |.chat       | Select AI mode to chat Bard/Bing/ChatGPT/Claude ...|
-<!--
-|.bard       | Bard|
-|.bing       | Bing|
-|.chat       | ChatGPT Web (free)|
-|.chatapi    | ChatGPT API (pay) |
-|.chatapi.   | Choose GPT3.5(default)/GPT4/GPT432K mode|
-|.claude     | Claude (Slack) |
--->
 |.proxy      | Set proxy, for example: socks5://127.0.0.1:7890|
 |.key        | Set Bard/Bing/ChatGPT/Claude cookie|
 |<<          | Start multiple lines input mode|
@@ -36,6 +28,17 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 |.c or .clear| Clear the screen|
 |.help       | Show help|
 |.exit       | Exit Aih|
+
+<!--
+|.bard       | Bard|
+|.bing       | Bing|
+|.chat       | ChatGPT Web (free)|
+|.chatapi    | ChatGPT API (pay) |
+|.chatapi.   | Choose GPT3.5(default)/GPT4/GPT432K mode|
+|.claude     | Claude (Slack) |
+-->
+
+
 
 ## Prerequisites
 - For ChatGPT Web (free) you should have a free account to obtain a logged-in `accessToken` from [OpenAI](https://chat.openai.com/api/auth/session).
