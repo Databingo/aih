@@ -27,7 +27,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 |k           | Scroll up|
 |gg          | Scroll top|
 |G           | Scroll bottom|
-|Enter(Keyboard)| Back to conversation|
+|q or Enter  | Back to conversation|
 |.new        | Start a new conversation on ChatGPT|
 |.speak      | Voice speak context(macOS only)|
 |.quiet      | Disable voice output |
