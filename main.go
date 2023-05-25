@@ -376,12 +376,12 @@ TEST_PROXY:
 				},
 			}
 
-			_, key, err := prom.Run()
+			_, keyy, err := prom.Run()
 			if err != nil {
 				panic(err)
 			}
 
-			switch key {
+			switch keyy {
 			case "Set Google Bard Cookie":
 				bard_session_id = ""
 				role = ".bard"
@@ -952,10 +952,10 @@ func printer(colour tcell.Color, context string, history bool) {
 		textView.ScrollToEnd()
 	}
 
-	// Handle 'j' and 'k' key events for scrolling
+	// Handle 'jkgGq'
 	flex.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		switch event.Key() {
-		case tcell.KeyEnter: //, tcell.KeyEsc:
+		case tcell.KeyEnter: 
 			app.Stop()
 			//	case tcell.KeyUp: // maybe use for last response
 			//		scrollUp(textView)
