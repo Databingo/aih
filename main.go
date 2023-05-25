@@ -276,12 +276,13 @@ TEST_PROXY:
 			goto CLAUDE
 		case ".help":
 			fmt.Println("                           ")
-			fmt.Println(" .bard           Bard")
-			fmt.Println(" .bing           Bing")
-			fmt.Println(" .chat           ChatGPT Web (free)")
-			fmt.Println(" .chatapi        ChatGPT Api (pay)")
-			fmt.Println(" .chatapi.       Choose GPT3.5(default)/GPT4/GPT432K mode")
-			fmt.Println(" .claude         Claude (Slack)")
+			fmt.Println(" .chat           Select AI mode to chat Bard/Bing/ChatGPT/Claude ...")
+			//fmt.Println(" .bard           Bard")
+			//fmt.Println(" .bing           Bing")
+			//fmt.Println(" .chat           ChatGPT Web (free)")
+			//fmt.Println(" .chatapi        ChatGPT Api (pay)")
+			//fmt.Println(" .chatapi.       Choose GPT3.5(default)/GPT4/GPT432K mode")
+			//fmt.Println(" .claude         Claude (Slack)")
 			fmt.Println(" .proxy          Set proxy")
 			fmt.Println(" .key            Set Bard/Bing/ChatGPT/Claude cookie")
 			fmt.Println(" <<              Start multiple lines input")
@@ -353,6 +354,89 @@ TEST_PROXY:
 			role = ".claude"
 			left_tokens = 0
 			continue
+		case ".ch":
+			prom := promptui.Select{
+				Label: "Select AI mode to chat",
+				Size:  10,
+				Items: []string{
+					"Bard",
+					"Bing",
+					"ChatGPT Web (free)",
+					"Claude (Slack)",
+					"ChatGPT API gpt-3.5-turbo, $0.002/1K tokens",
+					"ChatGPT API gpt-4 8K Prompt, $0.03/1K tokens",
+					"ChatGPT API gpt-4 8K Completion, $0.06/1K tokens",
+					"ChatGPT API gpt-4 32K Prompt, $0.06/1K tokens",
+					"ChatGPT API gpt-4 32K Completion, $0.12/1K tokens",
+					"Exit",
+				},
+			}
+
+			_, ai, err := prom.Run()
+			if err != nil {
+				panic(err)
+			}
+
+			switch ai {
+			case "Bard":
+			        role = ".bard"
+			        left_tokens = 0
+			        continue
+			case "Bing":
+			        role = ".bing"
+			        left_tokens = 0
+			        continue
+			case "ChatGPT Web (free)":
+			        role = ".chat"
+			        left_tokens = 0
+			        continue
+			case "Claude (Slack)":
+			        role = ".claude"
+			        left_tokens = 0
+			        continue
+			case "ChatGPT API gpt-3.5-turbo, $0.002/1K tokens":
+			        role = ".chatapi"
+				chat_mode = openai.GPT3Dot5Turbo
+				max_tokens = 4097
+				used_tokens = 0
+				left_tokens = max_tokens - used_tokens
+				chat_completion = true
+			        continue
+			case "ChatGPT API gpt-4 8K Prompt, $0.03/1K tokens":
+			        role = ".chatapi"
+				chat_mode = openai.GPT4
+				max_tokens = 8192
+				used_tokens = 0
+				left_tokens = max_tokens - used_tokens
+				chat_completion = false
+			        continue
+			case "ChatGPT API gpt-4 8K Completion, $0.06/1K tokens":
+			        role = ".chatapi"
+				chat_mode = openai.GPT4
+				max_tokens = 8192
+				used_tokens = 0
+				left_tokens = max_tokens - used_tokens
+				chat_completion = true
+			        continue
+			case "ChatGPT API gpt-4 32K Prompt, $0.06/1K tokens":
+			        role = ".chatapi"
+				chat_mode = openai.GPT432K
+				max_tokens = 32768
+				used_tokens = 0
+				left_tokens = max_tokens - used_tokens
+				chat_completion = false
+			        continue
+			case "ChatGPT API gpt-4 32K Completion, $0.12/1K tokens":
+			        role = ".chatapi"
+				chat_mode = openai.GPT432K
+				max_tokens = 32768
+				used_tokens = 0
+				left_tokens = max_tokens - used_tokens
+				chat_completion = true
+			        continue
+			case "Exit":
+				continue
+			}
 		case ".eng":
 			role = ".eng"
 			speak = 0
