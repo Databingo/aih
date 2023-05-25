@@ -291,7 +291,7 @@ TEST_PROXY:
 			fmt.Println("k               Scroll up")
 			fmt.Println("gg              Scroll top")
 			fmt.Println("G               Scroll bottom")
-			fmt.Println("Enter(Key)      Back to conversationk")
+			fmt.Println("q or Enter      Back to conversationk")
 			fmt.Println(".new            New conversation of ChatGPT")
 			fmt.Println(".speak          Voice speak context")
 			fmt.Println(".quiet          Not speak")
@@ -356,7 +356,7 @@ TEST_PROXY:
 			continue
 	        case ".history", ".h":
 		        cnt, _:= ioutil.ReadFile("history.txt")
-		        printer(color_chat, string(cnt))
+		        printer(color_chat, string(cnt), true)
 			continue
 		case ".chatapi.", ".price":
 			role = ".chatapi"
@@ -484,7 +484,7 @@ TEST_PROXY:
 				RESP = response.Choices[0].Answer
 				//printer_bard.Println(RESP)
 				//printer_bard.Println("RESP")
-				printer(color_bard, RESP)
+				printer(color_bard, RESP, false)
 			} else {
 				//break
 				continue
@@ -558,7 +558,7 @@ TEST_PROXY:
 			}
 			RESP = strings.TrimSpace(as.Answer.GetAnswer())
 			//printer_bing.Println(RESP)
-			printer(color_bing, RESP)
+			printer(color_bing, RESP, false)
 			last_ask = "bing"
 		}
 
@@ -594,7 +594,7 @@ TEST_PROXY:
 				fmt.Println("ChatGPT Web error, please renew ChatGPT cookie & check Internet accessing.")
 			} else {
 				//printer_chat.Println(RESP)
-				printer(color_chat, RESP)
+				printer(color_chat, RESP, false)
 				last_ask = "chat"
 
 			}
@@ -655,7 +655,7 @@ TEST_PROXY:
 			used_tokens = resp.Usage.TotalTokens
 			left_tokens = max_tokens - used_tokens
 			//printer_chat.Println(RESP)
-			printer(color_chatapi, RESP)
+			printer(color_chatapi, RESP, false)
 
 			last_ask = "chatapi"
 		}
@@ -737,7 +737,7 @@ TEST_PROXY:
 			}(claude_client, claude_channel_id)
 
 			if RESP != "" {
-				printer(color_claude, RESP)
+				printer(color_claude, RESP, false)
 			}
 		}
 
@@ -879,7 +879,7 @@ func scrollDown(textView *tview.TextView) {
 	textView.ScrollTo(row+1, 0)
 }
 
-func printer(colour tcell.Color, context string) {
+func printer(colour tcell.Color, context string, history bool) {
 	app := tview.NewApplication()
 	flex := tview.NewFlex()
 	textView := tview.NewTextView().
@@ -895,12 +895,12 @@ func printer(colour tcell.Color, context string) {
 		AddItem(tview.NewTextView(), 0, 1, false)
 
 	fmt.Fprintf(textView, context)
-        textView.ScrollToEnd()
+        if history { textView.ScrollToEnd() }
 
 	// Handle 'j' and 'k' key events for scrolling
 	flex.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		switch event.Key() {
-		case tcell.KeyEnter, tcell.KeyEsc:
+		case tcell.KeyEnter://, tcell.KeyEsc:
 			app.Stop()
 			//	case tcell.KeyUp: // maybe use for last response
 			//		scrollUp(textView)
@@ -915,6 +915,8 @@ func printer(colour tcell.Color, context string) {
 			        textView.ScrollToBeginning()
 			case 'G':
 			        textView.ScrollToEnd()
+			case 'q':
+			        app.Stop()
 			}
 		}
 		return event
