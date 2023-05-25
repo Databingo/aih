@@ -22,7 +22,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 |>>          | End multiple lines input mode|
 |↑           | Previous input|
 |↓           | Next input|
-|.history or .h| Show history of conversations|
+|.h or.history | Show history of conversations|
 |j           | Scroll down|
 |k           | Scroll up|
 |gg          | Scroll top|
@@ -36,7 +36,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 |.chatkey    | Set ChatGPT Web access token|
 |.chatapikey | Set ChatGPT API key|
 |.claudekey  | Set Claude Slack key|
-|.clear or .c| Clear the screen|
+|.c or .clear| Clear the screen|
 |.help       | Show help|
 |.exit       | Exit Aih|
 
