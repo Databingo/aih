@@ -11,13 +11,14 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 ## Command list
 | Command    | Operation|
 |------------|----------|
-|.bard       | Google Bard|
-|.bing       | Bing Chat|
+|.bard       | Bard|
+|.bing       | Bing|
 |.chat       | ChatGPT Web (free)|
 |.chatapi    | ChatGPT API (pay) |
-|.chatapi<strong>.</strong>  | Set ChatGPT API mode such as GPT3Dot5Turbo(default), GPT4, GPT432K|
-|.claude     | Claude (in Slack) |
+|.chatapi.   | Choose GPT3.5(default)/GPT4/GPT432K mode|
+|.claude     | Claude (Slack) |
 |.proxy      | Set proxy, for example: socks5://127.0.0.1:7890|
+|.key        | Set Bard/Bing/ChatGPT/Claude cookie|
 |<<          | Start multiple lines input mode|
 |>>          | End multiple lines input mode|
 |↑           | Previous input|
@@ -29,13 +30,6 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 |G           | Scroll bottom|
 |q or Enter  | Back to conversation|
 |.new        | Start a new conversation on ChatGPT|
-|.speak      | Voice speak context(macOS only)|
-|.quiet      | Disable voice output |
-|.bardkey    | Set Google Bard cookie|
-|.bingkey    | Set Bing Chat cookie|
-|.chatkey    | Set ChatGPT Web access token|
-|.chatapikey | Set ChatGPT API key|
-|.claudekey  | Set Claude Slack key|
 |.c or .clear| Clear the screen|
 |.help       | Show help|
 |.exit       | Exit Aih|
@@ -75,6 +69,8 @@ then click `Install to Workspace` to find your `User OAuth Token`; You can obtai
 ## Co-relation's Enhancement Function
 | Command    | Operation|
 |------------|----------|
+|.speak      | Voice speak context(macOS only)|
+|.quiet      | Disable voice output |
 |.eng        | Play Movie clips about English word, including 30 related phrases or words|
 
 ## Supported Operating Systems:

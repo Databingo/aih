@@ -12,9 +12,9 @@ import (
 	//"github.com/pavel-one/EdgeGPT-Go"
 	"github.com/Databingo/EdgeGPT-Go"
 	"github.com/gdamore/tcell/v2"
-	"github.com/rivo/tview"
 	"github.com/manifoldco/promptui"
 	"github.com/peterh/liner"
+	"github.com/rivo/tview"
 	"github.com/rocketlaunchr/google-search"
 	openai "github.com/sashabaranov/go-openai"
 	"github.com/slack-go/slack"
@@ -275,35 +275,39 @@ TEST_PROXY:
 			role = ".claude"
 			goto CLAUDE
 		case ".help":
-			fmt.Println(".bard           Google Bard")
-			fmt.Println(".bing           Bing Chat")
-			fmt.Println(".chat           ChatGPT Web (free)")
-			fmt.Println(".chatapi        ChatGPT Api (pay)")
-			fmt.Println(".chatapi.       Set ChatGPT API mode such as GPT3Dot5Turbo(default), GPT4, GPT432K")
-			fmt.Println(".claude         Claude (via Slack)")
-			fmt.Println(".proxy          Set proxy")
-			fmt.Println("<<              Start multiple lines input")
-			fmt.Println(">>              End multiple lines input")
-			fmt.Println("↑               Previous input")
-			fmt.Println("↓               Next input")
-			fmt.Println(".h or .history  Show history of conversations")
-			fmt.Println("j               Scroll down")
-			fmt.Println("k               Scroll up")
-			fmt.Println("gg              Scroll top")
-			fmt.Println("G               Scroll bottom")
-			fmt.Println("q or Enter      Back to conversationk")
-			fmt.Println(".new            New conversation of ChatGPT")
-			fmt.Println(".speak          Voice speak context")
-			fmt.Println(".quiet          Not speak")
-			fmt.Println(".bardkey        Reset Google Bard cookie")
-			fmt.Println(".bingkey        Reset Bing Chat coolie")
-			fmt.Println(".chatkey        Reset ChatGPT Web accessToken")
-			fmt.Println(".chatapikey     Reset ChatGPT Api key")
-			fmt.Println(".claudekey      Reset Claude Slack keys")
-			fmt.Println(".c or .clear    Clear screen")
-			fmt.Println(".help           Help")
-			fmt.Println(".exit           Exit")
-			fmt.Println(".eng            Play movie clips")
+			fmt.Println("                           ")
+			fmt.Println(" .bard           Bard")
+			fmt.Println(" .bing           Bing")
+			fmt.Println(" .chat           ChatGPT Web (free)")
+			fmt.Println(" .chatapi        ChatGPT Api (pay)")
+			fmt.Println(" .chatapi.       Choose GPT3.5(default)/GPT4/GPT432K mode")
+			fmt.Println(" .claude         Claude (Slack)")
+			fmt.Println(" .proxy          Set proxy")
+			fmt.Println(" .key            Set Bard/Bing/ChatGPT/Claude cookie")
+			fmt.Println(" <<              Start multiple lines input")
+			fmt.Println(" >>              End multiple lines input")
+			fmt.Println(" ↑               Previous input")
+			fmt.Println(" ↓               Next input")
+			fmt.Println(" .h or .history  Show history")
+			fmt.Println(" j               Scroll down")
+			fmt.Println(" k               Scroll up")
+			fmt.Println(" gg              Scroll top")
+			fmt.Println(" G               Scroll bottom")
+			fmt.Println(" q or Enter      Back to conversation")
+			fmt.Println(" .c or .clear    Clear screen")
+			fmt.Println(" .help           Help")
+			fmt.Println(" .exit           Exit")
+			fmt.Println(" .new            New conversation of ChatGPT")
+			fmt.Println(" .speak          Voice speak context (MasOS only)")
+			fmt.Println(" .quiet          Not speak")
+			fmt.Println(" .eng            Play movie clips")
+			fmt.Println("                           ")
+			fmt.Println("                           ")
+			//fmt.Println(".bardkey        Reset Google Bard cookie")
+			//fmt.Println(".bingkey        Reset Bing Chat coolie")
+			//fmt.Println(".chatkey        Reset ChatGPT Web accessToken")
+			//fmt.Println(".chatapikey     Reset ChatGPT Api key")
+			//fmt.Println(".claudekey      Reset Claude Slack keys")
 			continue
 		case ".speak":
 			speak = 1
@@ -354,20 +358,71 @@ TEST_PROXY:
 			speak = 0
 			left_tokens = 0
 			continue
-	        case ".history", ".h":
-		        cnt, _:= ioutil.ReadFile("history.txt")
-		        printer(color_chat, string(cnt), true)
+		case ".history", ".h":
+			cnt, _ := ioutil.ReadFile("history.txt")
+			printer(color_chat, string(cnt), true)
 			continue
+		case ".key":
+			prom := promptui.Select{
+				Label: "Select cookie/key to set",
+				Size:  6,
+				Items: []string{
+					"Set Google Bard Cookie",
+					"Set Bing Chat Cookie",
+					"Set ChatGPT Web Token",
+					"Set ChatGPT API Key",
+					"Set Claude Slack Key",
+					"Exit",
+				},
+			}
+
+			_, key, err := prom.Run()
+			if err != nil {
+				panic(err)
+			}
+
+			switch key {
+			case "Set Google Bard Cookie":
+				bard_session_id = ""
+				role = ".bard"
+				goto BARD
+				//continue
+			case "Set ChatGPT Web Token":
+				chat_access_token = ""
+				role = ".chat"
+				goto CHAT
+				//continue
+			case "Set ChatGPT API Key":
+				OpenAI_Key = ""
+				role = ".chatapi"
+				goto CHATAPI
+				//continue
+			case "Set Bing Chat Cookie":
+				_ = os.Remove("./cookies/1.json")
+				role = ".bing"
+				goto BING
+				//continue
+			case "Set Claude Slack Key":
+				claude_user_token = ""
+				claude_channel_id = ""
+				role = ".claude"
+				goto CLAUDE
+			case "Exit":
+				continue
+			}
+
 		case ".chatapi.", ".price":
 			role = ".chatapi"
 			prompt := promptui.Select{
 				Label: "Select model of OpenAI according to the offical pricing",
+				Size:  6,
 				Items: []string{
 					"gpt-3.5-turbo, $0.002/1K tokens",
 					"gpt-4 8K Prompt, $0.03/1K tokens",
 					"gpt-4 8K Completion, $0.06/1K tokens",
 					"gpt-4 32K Prompt, $0.06/1K tokens",
 					"gpt-4 32K Completion, $0.12/1K tokens",
+					"Exit",
 				},
 			}
 
@@ -407,15 +462,17 @@ TEST_PROXY:
 				used_tokens = 0
 				left_tokens = max_tokens - used_tokens
 				chat_completion = true
+		        case "Exit":
+				continue
 			}
 			continue
 
 		default:
-		       // Re-read user input history in case other process alternated 
-		       if f, err := os.Open(".history"); err == nil {
-		       	Liner.ReadHistory(f)
-		       	f.Close()
-		       }
+			// Re-read user input history in case other process alternated
+			if f, err := os.Open(".history"); err == nil {
+				Liner.ReadHistory(f)
+				f.Close()
+			}
 			// Record user input without Aih commands
 			uInput = strings.Replace(userInput, "\r", "\n", -1)
 			uInput = strings.Replace(uInput, "\n", " ", -1)
@@ -425,8 +482,6 @@ TEST_PROXY:
 				Liner.WriteHistory(f)
 				f.Close()
 			}
-
-
 
 		}
 
@@ -743,15 +798,17 @@ TEST_PROXY:
 
 		// -------------for all AI's RESP---------------
 
-			// Persistent conversation uInput + response
-			if fs, err := os.OpenFile("history.txt", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0666); err == nil {
-			 time_string := time.Now().Format("2006-01-02 15:04:05")
-			 _, err  = fs.WriteString("--------------------\n")
-			 _, err  = fs.WriteString(time_string + role + "\n\nQuestion:\n" + uInput + "\n\n")
-			 _, err  = fs.WriteString("Answer:" + "\n" + RESP + "\n")
-			    if err != nil { panic(err) }
-			    fs.Close()
-			   }
+		// Persistent conversation uInput + response
+		if fs, err := os.OpenFile("history.txt", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0666); err == nil {
+			time_string := time.Now().Format("2006-01-02 15:04:05")
+			_, err = fs.WriteString("--------------------\n")
+			_, err = fs.WriteString(time_string + role + "\n\nQuestion:\n" + uInput + "\n\n")
+			_, err = fs.WriteString("Answer:" + "\n" + RESP + "\n")
+			if err != nil {
+				panic(err)
+			}
+			fs.Close()
+		}
 
 		// Write response RESP to clipboard
 		err = clipboard.WriteAll(RESP)
@@ -895,12 +952,14 @@ func printer(colour tcell.Color, context string, history bool) {
 		AddItem(tview.NewTextView(), 0, 1, false)
 
 	fmt.Fprintf(textView, context)
-        if history { textView.ScrollToEnd() }
+	if history {
+		textView.ScrollToEnd()
+	}
 
 	// Handle 'j' and 'k' key events for scrolling
 	flex.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		switch event.Key() {
-		case tcell.KeyEnter://, tcell.KeyEsc:
+		case tcell.KeyEnter: //, tcell.KeyEsc:
 			app.Stop()
 			//	case tcell.KeyUp: // maybe use for last response
 			//		scrollUp(textView)
@@ -912,11 +971,11 @@ func printer(colour tcell.Color, context string, history bool) {
 			case 'j':
 				scrollDown(textView)
 			case 'g':
-			        textView.ScrollToBeginning()
+				textView.ScrollToBeginning()
 			case 'G':
-			        textView.ScrollToEnd()
+				textView.ScrollToEnd()
 			case 'q':
-			        app.Stop()
+				app.Stop()
 			}
 		}
 		return event
