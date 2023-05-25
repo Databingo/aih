@@ -34,7 +34,7 @@ import (
 )
 
 var color_bard = tcell.ColorDarkCyan
-var color_bing = tcell.ColorIndianRed
+var color_bing = tcell.ColorOrangeRed
 var color_chat = tcell.ColorWhite
 var color_chatapi = tcell.ColorWhite
 var color_claude = tcell.ColorYellow
