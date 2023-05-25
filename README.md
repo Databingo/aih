@@ -26,7 +26,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 |.h or .history | Show history of conversations|
 |j           | Scroll down|
 |k           | Scroll up|
-|gg          | Scroll top|
+|g           | Scroll top|
 |G           | Scroll bottom|
 |q or Enter  | Back to conversation|
 |.new        | Start a new conversation on ChatGPT|
