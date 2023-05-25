@@ -29,15 +29,6 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 |.help       | Show help|
 |.exit       | Exit Aih|
 
-<!--
-|.bard       | Bard|
-|.bing       | Bing|
-|.chat       | ChatGPT Web (free)|
-|.chatapi    | ChatGPT API (pay) |
-|.chatapi.   | Choose GPT3.5(default)/GPT4/GPT432K mode|
-|.claude     | Claude (Slack) |
--->
-
 
 
 ## Prerequisites
@@ -78,6 +69,15 @@ then click `Install to Workspace` to find your `User OAuth Token`; You can obtai
 |.speak      | Voice speak context(macOS only)|
 |.quiet      | Disable voice output |
 |.eng        | Play Movie clips about English word, including 30 related phrases or words|
+
+## The previous version's commands could still be used for accommondation.
+|------------|----------|
+|.bard       | Bard|
+|.bing       | Bing|
+|.chat       | ChatGPT Web (free)|
+|.chatapi    | ChatGPT API (pay) |
+|.chatapi.   | Choose GPT3.5(default)/GPT4/GPT432K mode|
+|.claude     | Claude (Slack) |
 
 ## Supported Operating Systems:
 - Mac
