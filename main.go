@@ -358,7 +358,7 @@ TEST_PROXY:
 			speak = 0
 			left_tokens = 0
 			continue
-		case ".history", ".h":
+		case ".h", ".history":
 			cnt, _ := ioutil.ReadFile("history.txt")
 			printer(color_chat, string(cnt), true)
 			continue
@@ -386,22 +386,18 @@ TEST_PROXY:
 				bard_session_id = ""
 				role = ".bard"
 				goto BARD
-				//continue
 			case "Set ChatGPT Web Token":
 				chat_access_token = ""
 				role = ".chat"
 				goto CHAT
-				//continue
 			case "Set ChatGPT API Key":
 				OpenAI_Key = ""
 				role = ".chatapi"
 				goto CHATAPI
-				//continue
 			case "Set Bing Chat Cookie":
 				_ = os.Remove("./cookies/1.json")
 				role = ".bing"
 				goto BING
-				//continue
 			case "Set Claude Slack Key":
 				claude_user_token = ""
 				claude_channel_id = ""
