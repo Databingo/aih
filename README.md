@@ -71,6 +71,7 @@ then click `Install to Workspace` to find your `User OAuth Token`; You can obtai
 |.eng        | Play Movie clips about English word, including 30 related phrases or words|
 
 ## The previous version's commands could still be used for accommondation.
+| Command    | Operation|
 |------------|----------|
 |.bard       | Bard|
 |.bing       | Bing|
