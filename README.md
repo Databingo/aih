@@ -23,7 +23,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 |>>          | End multiple lines input mode|
 |↑           | Previous input|
 |↓           | Next input|
-|.h or.history | Show history of conversations|
+|.h or .history | Show history of conversations|
 |j           | Scroll down|
 |k           | Scroll up|
 |gg          | Scroll top|
