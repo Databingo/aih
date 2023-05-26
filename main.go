@@ -801,8 +801,8 @@ TEST_PROXY:
 				}
 				// Renew Claude client with user token
 				claude_client = slack.New(claude_user_token)
-				continue
 			}
+
 			if claude_channel_id == "" {
 				claude_channel_id, _ = Liner.Prompt("Please input your claude_channel_id: ")
 				if claude_channel_id == "" {
@@ -814,8 +814,6 @@ TEST_PROXY:
 				if err != nil {
 					fmt.Println("Save failed.")
 				}
-				// Renew claude_channel_id
-				claude_channel_id = gjson.Get(string(aih_json), "claude_channel_id").String()
 				continue
 			}
 
