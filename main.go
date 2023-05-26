@@ -15,7 +15,7 @@ import (
 	"github.com/manifoldco/promptui"
 	"github.com/peterh/liner"
 	"github.com/rivo/tview"
-	"github.com/rocketlaunchr/google-search"
+	//"github.com/rocketlaunchr/google-search"
 	openai "github.com/sashabaranov/go-openai"
 	"github.com/slack-go/slack"
 	"github.com/tidwall/gjson"
@@ -125,27 +125,27 @@ func main() {
 	os.Setenv("https_proxy", Proxy)
 
 	// Test Proxy
-TEST_PROXY:
-	fmt.Println("Checking network accessing...")
-	ops1 := googlesearch.SearchOptions{Limit: 12}
-	_, err = googlesearch.Search(nil, "BTC", ops1)
-	if err != nil {
-		fmt.Println("Need proxy to access GoogleBard, BingChat, ChatGPT")
-		proxy, _ := Liner.Prompt("Please input proxy: ")
-		if proxy == "" {
-			goto TEST_PROXY
-		}
-		aihj, err := ioutil.ReadFile("aih.json")
-		new_aihj, _ := sjson.Set(string(aihj), "proxy", proxy)
-		err = ioutil.WriteFile("aih.json", []byte(new_aihj), 0644)
-		if err != nil {
-			fmt.Println("Save failed.")
-		}
-		fmt.Println("Please restart Aih for using proxy...")
-		Liner.Close()
-		syscall.Exit(0)
-
-	}
+//TEST_PROXY:
+//	fmt.Println("Checking network accessing...")
+//	ops1 := googlesearch.SearchOptions{Limit: 12}
+//	_, err = googlesearch.Search(nil, "BTC", ops1)
+//	if err != nil {
+//		fmt.Println("Need proxy to access GoogleBard, BingChat, ChatGPT")
+//		proxy, _ := Liner.Prompt("Please input proxy: ")
+//		if proxy == "" {
+//			goto TEST_PROXY
+//		}
+//		aihj, err := ioutil.ReadFile("aih.json")
+//		new_aihj, _ := sjson.Set(string(aihj), "proxy", proxy)
+//		err = ioutil.WriteFile("aih.json", []byte(new_aihj), 0644)
+//		if err != nil {
+//			fmt.Println("Save failed.")
+//		}
+//		fmt.Println("Please restart Aih for using proxy...")
+//		Liner.Close()
+//		syscall.Exit(0)
+//
+//	}
 
 	// Set up client of OpenAI API
 	key := gjson.Get(string(aih_json), "key")
