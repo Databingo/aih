@@ -103,6 +103,14 @@ func multiln_input(Liner *liner.State, prompt string) string {
 	return long_str
 }
 
+// Write response RESP to clipboard
+func save2clip_board(rs string) {
+	err := clipboard.WriteAll(rs)
+	if err != nil {
+		panic(err)
+	}
+}
+
 func main() {
 	// Create prompt for user input
 	Liner := liner.NewLiner()
@@ -125,27 +133,27 @@ func main() {
 	os.Setenv("https_proxy", Proxy)
 
 	// Test Proxy
-//TEST_PROXY:
-//	fmt.Println("Checking network accessing...")
-//	ops1 := googlesearch.SearchOptions{Limit: 12}
-//	_, err = googlesearch.Search(nil, "BTC", ops1)
-//	if err != nil {
-//		fmt.Println("Need proxy to access GoogleBard, BingChat, ChatGPT")
-//		proxy, _ := Liner.Prompt("Please input proxy: ")
-//		if proxy == "" {
-//			goto TEST_PROXY
-//		}
-//		aihj, err := ioutil.ReadFile("aih.json")
-//		new_aihj, _ := sjson.Set(string(aihj), "proxy", proxy)
-//		err = ioutil.WriteFile("aih.json", []byte(new_aihj), 0644)
-//		if err != nil {
-//			fmt.Println("Save failed.")
-//		}
-//		fmt.Println("Please restart Aih for using proxy...")
-//		Liner.Close()
-//		syscall.Exit(0)
-//
-//	}
+	//TEST_PROXY:
+	//	fmt.Println("Checking network accessing...")
+	//	ops1 := googlesearch.SearchOptions{Limit: 12}
+	//	_, err = googlesearch.Search(nil, "BTC", ops1)
+	//	if err != nil {
+	//		fmt.Println("Need proxy to access GoogleBard, BingChat, ChatGPT")
+	//		proxy, _ := Liner.Prompt("Please input proxy: ")
+	//		if proxy == "" {
+	//			goto TEST_PROXY
+	//		}
+	//		aihj, err := ioutil.ReadFile("aih.json")
+	//		new_aihj, _ := sjson.Set(string(aihj), "proxy", proxy)
+	//		err = ioutil.WriteFile("aih.json", []byte(new_aihj), 0644)
+	//		if err != nil {
+	//			fmt.Println("Save failed.")
+	//		}
+	//		fmt.Println("Please restart Aih for using proxy...")
+	//		Liner.Close()
+	//		syscall.Exit(0)
+	//
+	//	}
 
 	// Set up client of OpenAI API
 	key := gjson.Get(string(aih_json), "key")
@@ -370,61 +378,61 @@ func main() {
 
 			switch ai {
 			case "Bard":
-			        role = ".bard"
-			        left_tokens = 0
-			        continue
+				role = ".bard"
+				left_tokens = 0
+				continue
 			case "Bing":
-			        role = ".bing"
-			        left_tokens = 0
-			        continue
+				role = ".bing"
+				left_tokens = 0
+				continue
 			case "ChatGPT Web (free)":
-			        role = ".chat"
-			        left_tokens = 0
-			        continue
+				role = ".chat"
+				left_tokens = 0
+				continue
 			case "Claude (Slack)":
-			        role = ".claude"
-			        left_tokens = 0
-			        continue
+				role = ".claude"
+				left_tokens = 0
+				continue
 			case "ChatGPT API gpt-3.5-turbo, $0.002/1K tokens":
-			        role = ".chatapi"
+				role = ".chatapi"
 				chat_mode = openai.GPT3Dot5Turbo
 				max_tokens = 4097
 				used_tokens = 0
 				left_tokens = max_tokens - used_tokens
 				chat_completion = true
-			        continue
+				continue
 			case "ChatGPT API gpt-4 8K Prompt, $0.03/1K tokens":
-			        role = ".chatapi"
+				role = ".chatapi"
 				chat_mode = openai.GPT4
 				max_tokens = 8192
 				used_tokens = 0
 				left_tokens = max_tokens - used_tokens
 				chat_completion = false
-			        continue
+				continue
 			case "ChatGPT API gpt-4 8K Completion, $0.06/1K tokens":
-			        role = ".chatapi"
+				role = ".chatapi"
 				chat_mode = openai.GPT4
 				max_tokens = 8192
 				used_tokens = 0
 				left_tokens = max_tokens - used_tokens
 				chat_completion = true
-			        continue
+				continue
 			case "ChatGPT API gpt-4 32K Prompt, $0.06/1K tokens":
-			        role = ".chatapi"
+				role = ".chatapi"
 				chat_mode = openai.GPT432K
 				max_tokens = 32768
 				used_tokens = 0
 				left_tokens = max_tokens - used_tokens
 				chat_completion = false
-			        continue
+				continue
 			case "ChatGPT API gpt-4 32K Completion, $0.12/1K tokens":
-			        role = ".chatapi"
+				role = ".chatapi"
 				chat_mode = openai.GPT432K
 				max_tokens = 32768
 				used_tokens = 0
 				left_tokens = max_tokens - used_tokens
 				chat_completion = true
-			        continue
+				continue
 			case "Exit":
 				continue
 			}
@@ -524,7 +532,7 @@ func main() {
 				used_tokens = 0
 				left_tokens = max_tokens - used_tokens
 				chat_completion = true
-		        case "Exit":
+			case "Exit":
 				continue
 			}
 			continue
@@ -597,6 +605,7 @@ func main() {
 			response = func(rsp *bard.ResponseBody) *bard.ResponseBody {
 				defer func(rp *bard.ResponseBody) {
 					if r := recover(); r != nil {
+						fmt.Println(r)
 						fmt.Println("Bard error, please renew Bard cookie & check Internet accessing.")
 						rp = nil
 					}
@@ -611,6 +620,7 @@ func main() {
 				RESP = response.Choices[0].Answer
 				//printer_bard.Println(RESP)
 				//printer_bard.Println("RESP")
+				save2clip_board(RESP)
 				printer(color_bard, RESP, false)
 			} else {
 				//break
@@ -685,6 +695,7 @@ func main() {
 			}
 			RESP = strings.TrimSpace(as.Answer.GetAnswer())
 			//printer_bing.Println(RESP)
+			save2clip_board(RESP)
 			printer(color_bing, RESP, false)
 			last_ask = "bing"
 		}
@@ -721,6 +732,7 @@ func main() {
 				fmt.Println("ChatGPT Web error, please renew ChatGPT cookie & check Internet accessing.")
 			} else {
 				//printer_chat.Println(RESP)
+				save2clip_board(RESP)
 				printer(color_chat, RESP, false)
 				last_ask = "chat"
 
@@ -862,6 +874,7 @@ func main() {
 			}(claude_client, claude_channel_id)
 
 			if RESP != "" {
+				save2clip_board(RESP)
 				printer(color_claude, RESP, false)
 			}
 		}
@@ -878,12 +891,6 @@ func main() {
 				panic(err)
 			}
 			fs.Close()
-		}
-
-		// Write response RESP to clipboard
-		err = clipboard.WriteAll(RESP)
-		if err != nil {
-			panic(err)
 		}
 
 		// Speak all the response RESP using the "say" command
@@ -1029,7 +1036,7 @@ func printer(colour tcell.Color, context string, history bool) {
 	// Handle 'jkgGq'
 	flex.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		switch event.Key() {
-		case tcell.KeyEnter: 
+		case tcell.KeyEnter:
 			app.Stop()
 			//	case tcell.KeyUp: // maybe use for last response
 			//		scrollUp(textView)
