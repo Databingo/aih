@@ -1,6 +1,8 @@
 package main
 
 import (
+        "io"
+        "bufio"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -176,6 +178,35 @@ func main() {
 		ResponseID:     "",
 		ChoiceID:       "",
 	}
+
+	// Set up client of Bard2
+	//cmd := exec.Command("python3", "-u", "./uc.py", "login")
+	// Read cookie 
+	bard_json, err := ioutil.ReadFile("./2.json")
+	if err != nil {
+		err = ioutil.WriteFile("./2.json", []byte(""), 0644)
+	}
+	// Read 
+	bjs := gjson.Parse(string(bard_json)).String()
+	fmt.Println("bjs:", bjs)
+	var cmd *exec.Cmd
+	var stdout io.ReadCloser
+	var stdin io.WriteCloser
+	if bjs != "" { 
+	 cmd = exec.Command("python3", "-u", "./uc.py", "load") 
+        //print("Please login google bard manually...")
+	stdout, _ = cmd.StdoutPipe()
+	stdin, _ = cmd.StdinPipe()
+	if err := cmd.Start(); err != nil {panic(err)}
+	scanner := bufio.NewScanner(stdout)
+	go func() {
+		for scanner.Scan() {
+			RESP := scanner.Text()
+			printer(color_bard, RESP, false)
+		}
+	}()
+       }
+	//_ = cmd.Wait()
 
 	// Set up client of Bing Chat
 	var gpt *EdgeGPT.GPT
@@ -583,6 +614,19 @@ func main() {
 	BARD:
 		// Check role for correct actions
 		if role == ".bard" || (role == ".eng" && last_ask == "bard") {
+		 /////////////
+		 _, err = io.WriteString(stdin, userInput)
+		 if err != nil {panic(err)}
+		 err = stdin.Close()
+		 if err != nil {panic(err)}
+
+		continue 
+
+
+
+
+
+		 /////////////
 			// Check GoogleBard session
 			if bard_session_id == "" {
 				bard_session_id, _ = Liner.Prompt("Please input your cookie value of __Secure-lPSID: ")
