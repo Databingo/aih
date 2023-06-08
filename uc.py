@@ -95,9 +95,11 @@ driver.get("https://bard.google.com")
 wait = WebDriverWait(driver, 10)
 try:
     work = wait.until(EC.visibility_of_element_located((By.XPATH,  "//textarea[@id='mat-input-0']")))
+    print("login work")
 except:
     print("relogin clear 2.json")
     open("./2.json", "w").close()
+    driver.close()
     os.exit()
     
 
