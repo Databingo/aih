@@ -107,15 +107,26 @@ except:
 
 
 while 1:
-   #time.sleep(3)
+    time.sleep(1)
    #print("work")
    #sys.stdout.flush()
+    line = sys.stdin.readline()
+    if not line:
+        continue
+    message = line.strip()
+    print("Received message:", message)
+    cookies = driver.get_cookies()
+    with open("./2.json", "w", newline='') as outputdata:
+        json.dump(cookies, outputdata)
 
-    for line in sys.stdin:
-        message = line.strip()
-        print("Received message:", message)
-       #sys.stdout.flush()
-
+#    for line in sys.stdin:
+#        message = line.strip()
+#        print("Received message:", message)
+#        sys.stdout.flush()
+#        cookies = driver.get_cookies()
+#        with open("./2.json", "w", newline='') as outputdata:
+#            json.dump(cookies, outputdata)
+#
 
 
 #time.sleep(500000)

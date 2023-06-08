@@ -617,8 +617,8 @@ func main() {
 		 /////////////
 		 _, err = io.WriteString(stdin, userInput)
 		 if err != nil {panic(err)}
-		 err = stdin.Close()
-		 if err != nil {panic(err)}
+		 //err = stdin.Close()
+		 //if err != nil {panic(err)}
 
 		continue 
 
