@@ -6,8 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/Databingo/aih/eng"
-	//"github.com/Databingo/googleBard/bard"
-	"bard"
+	"github.com/Databingo/googleBard/bard"
 	"github.com/atotto/clipboard"
 	"github.com/google/uuid"
 	//"github.com/pavel-one/EdgeGPT-Go"
@@ -170,28 +169,8 @@ func main() {
 	var parent_id string
 
 	// Set up client of Google Bard
-	//bard_session_id := gjson.Get(string(aih_json), "__Secure-lPSID").String()
-	//////////////
-
-	bck_json, _ := ioutil.ReadFile("./cookies/2.json")
-	//if err != nil {
-	//	err = ioutil.WriteFile("./cookies/2.json", []byte(""), 0644)
-	//}
-
-	var bard_ck []string
-	var bard_session_id string
-	bard_cook := gjson.Parse(string(bck_json))
-	bard_cook.ForEach(func(k, v gjson.Result) bool{
-	 str := v.Map()["name"].String() + "=" + v.Map()["value"].String()
-	 if strings.Contains(str, "SID") {
-	 bard_ck = append(bard_ck, str)}
-	 if v.Map()["name"].String() ==  "__Secure-1PSID" { bard_session_id = v.Map()["value"].String() }
-	 return true
-	})
-
-	//////////////
-	 
-	bard_client := bard.NewBard(bard_session_id, "", bard_ck)
+	bard_session_id := gjson.Get(string(aih_json), "__Secure-lPSID").String()
+	bard_client := bard.NewBard(bard_session_id, "")
 	bardOptions := bard.Options{
 		ConversationID: "",
 		ResponseID:     "",
@@ -263,18 +242,6 @@ func main() {
 		// Check Aih commands
 		switch userInput {
 		case "":
-//////////
-        fmt.Println(bard_ck, bard_session_id)
-
-	//bard_cook.ForEach(func(k, v gjson.Result) bool{
-	// str := v.Map()["name"].String() + "=" + v.Map()["value"].String()
-	// fmt.Println(str)
-	// return true
-	//})
-//////////
-
-
-
 			continue
 		case ".proxy":
 			proxy, _ := Liner.Prompt("Please input your proxy:")
@@ -618,35 +585,7 @@ func main() {
 		if role == ".bard" || (role == ".eng" && last_ask == "bard") {
 			// Check GoogleBard session
 			if bard_session_id == "" {
-				//bard_session_id, _ = Liner.Prompt("Please input your cookie value of __Secure-lPSID: ")
-
-				////////////////
-                                prom := "Please input your cookie value: "
-				ck := multiln_input(Liner, prom)
-				// Clear screen of input cookie string
-				clear()
-
-				// Save cookie
-				_ = os.MkdirAll("./cookies", 0755)
-				err = ioutil.WriteFile("./cookies/2.json", []byte(ck), 0644)
-				if err != nil {
-					fmt.Println("Save failed.")
-				}
-	//////////////
-//        // Renew bard_cookie
-//	var bard_ck []string
-//	bard_cook := gjson.Parse(string(ck))
-//	bard_cook.ForEach(func(k, v gjson.Result) bool{
-//	 str := v.Map()["name"].String() + "=" + v.Map()["value"].String()
-//	 bard_ck = append(bard_ck, str)
-//	 if v.Map()["name"].String() ==  "__Secure-lPSID" { bard_session_id = v.Map()["value"].String() }
-//	 return true
-//	})
-
-	//////////////
-				////////////////
-
-
+				bard_session_id, _ = Liner.Prompt("Please input your cookie value of __Secure-lPSID: ")
 				if bard_session_id == "" {
 					continue
 				}
@@ -657,7 +596,7 @@ func main() {
 					fmt.Println("Save failed.")
 				}
 				// Renew GoogleBard client with __Secure-lPSID
-				bard_client = bard.NewBard(bard_session_id, "", bard_ck)
+				bard_client = bard.NewBard(bard_session_id, "")
 				continue
 			}
 
