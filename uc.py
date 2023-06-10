@@ -99,7 +99,6 @@ except:
 
 
 
-
 while 1:
    #time.sleep(1)
    #print("work")
@@ -115,11 +114,27 @@ while 1:
 
    #lines = sys.stdin.readlines()
    #print("Received message:", " ".join(lines))
+    last_response_text = ""
     for line in sys.stdin:
         message = line.strip()
         ori = message.replace("(-:]", "\n")
        #print("Received message:", message)
         print("original message:", ori)
+        work.send_keys(ori)
+        driver.find_element(By.XPATH, "//button[@aria-label='Send message']").click()
+       #st = "//user-query[text()='" + ori + "'][last()]/following-sibling::model-response/text()"
+       #response = wait.until(EC.visibility_of_element_located((By.XPATH, "//model-response[last()]")))
+       #e = driver.find_element(By.XPATH,  "//model-response[last()]")
+       #response = wait.until(EC.visibility_of_element_located((By.XPATH,  "//message-content[last()]")))
+        try:
+            img = wait.until(EC.presence_of_element_located((By.XPATH,  "//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')]")))
+            response = img.find_element(By.XPATH,  "./ancestor::model-response")
+            content = response.find_element(By.XPATH, ".//message-content")
+            text = content.text
+            print(text)
+
+        except Exception as e:
+            print(str(e))
 
 #  #     sys.stdout.flush()
 #        cookies = driver.get_cookies()
@@ -128,4 +143,3 @@ while 1:
 #
 
 
-#time.sleep(500000)

@@ -205,10 +205,11 @@ func main() {
 		for scanner.Scan() {
 			RESP := scanner.Text()
 			//printer(color_bard, RESP, false)
-			fmt.Println(RESP)
 			if RESP == "login work"{
 			 *x = true
-			}
+			} else {
+			fmt.Println(RESP)
+		       }
 		}
 	}(&x)
        }
