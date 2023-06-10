@@ -36,14 +36,8 @@ import sys
 #driver.delete_all_cookies()
 
 ###3
-#driver.get("https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?redirect_uri=https%3A%2F%2Fdevelopers.google.com%2Foauthplayground&prompt=consent&response_type=code&client_id=407408718192.apps.googleusercontent.com&scope=email&access_type=offline&flowName=GeneralOAuthFlow")
-#driver.get("https://accounts.google.com")
-#wait = WebDriverWait(driver, 20)
-#email_input = wait.until(EC.visibility_of_element_located((By.XPATH,  "//input[@id='identifierId']")))
 #email_input.send_keys(GMAIL)
 #driver.find_element(By.XPATH, "//div[@id='identifierNext']").click()
-#password_input = wait.until(EC.visibility_of_element_located((By.XPATH,  "//input[@type='password']")))
-#password_input.send_keys(PASSWORD)
 #driver.find_element(By.XPATH, "//span[text()='Next']").click()
 #
 
@@ -69,60 +63,65 @@ if login == "login":
         json.dump(cookies, outputdata)
     driver.close()
 
-# Restart session
-#########################
-#driver = uc.Chrome(options=chrome_options, headless=True)
-chrome_options = uc.ChromeOptions()
-chrome_options.add_argument("--disable-extensions")
-chrome_options.add_argument("--disable-popup-blocking")
-chrome_options.add_argument("--profile-directory=Default")
-chrome_options.add_argument("--ignore-certificate-errors")
-chrome_options.add_argument("--disable-plugins-discovery")
-chrome_options.add_argument("--incognito")
-#chrome_options.add_argument("--headless")
-chrome_options.add_argument("user_agent=DN")
-driver = uc.Chrome(options=chrome_options)
-
-# Load cookie
-driver.get("https://bard.google.com")
-with open("./2.json", "r", newline='') as inputdata:
-    ck = json.load(inputdata)
-for c in ck:
-    driver.add_cookie({k:c[k] for k in {'name', 'value'}})
-
-# Renew with cookie
-driver.get("https://bard.google.com")
-wait = WebDriverWait(driver, 10)
-try:
-    work = wait.until(EC.visibility_of_element_located((By.XPATH,  "//textarea[@id='mat-input-0']")))
-    print("login work")
-except:
-    print("relogin clear 2.json")
-    open("./2.json", "w").close()
-    driver.close()
-    os.exit()
-    
-
-
-
+## Restart session
+##########################
+##driver = uc.Chrome(options=chrome_options, headless=True)
+#chrome_options = uc.ChromeOptions()
+#chrome_options.add_argument("--disable-extensions")
+#chrome_options.add_argument("--disable-popup-blocking")
+#chrome_options.add_argument("--profile-directory=Default")
+#chrome_options.add_argument("--ignore-certificate-errors")
+#chrome_options.add_argument("--disable-plugins-discovery")
+#chrome_options.add_argument("--incognito")
+##chrome_options.add_argument("--headless")
+#chrome_options.add_argument("user_agent=DN")
+#driver = uc.Chrome(options=chrome_options)
+#
+## Load cookie
+#driver.get("https://bard.google.com")
+#with open("./2.json", "r", newline='') as inputdata:
+#    ck = json.load(inputdata)
+#for c in ck:
+#    driver.add_cookie({k:c[k] for k in {'name', 'value'}})
+#
+## Renew with cookie
+#driver.get("https://bard.google.com")
+#wait = WebDriverWait(driver, 10)
+#try:
+#    work = wait.until(EC.visibility_of_element_located((By.XPATH,  "//textarea[@id='mat-input-0']")))
+#    print("login work")
+#except:
+#    print("relogin clear 2.json")
+#    open("./2.json", "w").close()
+#    driver.close()
+#    os.exit()
+#    
+#
+#
+#
 
 while 1:
     time.sleep(1)
-   #print("work")
+    print("work")
    #sys.stdout.flush()
-    line = sys.stdin.readline()
-    if not line:
-        continue
-    message = line.strip()
-    print("Received message:", message)
-    cookies = driver.get_cookies()
-    with open("./2.json", "w", newline='') as outputdata:
-        json.dump(cookies, outputdata)
+   #line = sys.stdin.readline()
+   #if not line:
+   #    continue
+   #message = line.strip()
+   #print("Received message:", message)
+#   cookies = driver.get_cookies()
+#   with open("./2.json", "w", newline='') as outputdata:
+#       json.dump(cookies, outputdata)
 
-#    for line in sys.stdin:
-#        message = line.strip()
-#        print("Received message:", message)
-#        sys.stdout.flush()
+   #lines = sys.stdin.readlines()
+   #print("Received message:", " ".join(lines))
+    for line in sys.stdin:
+        message = line.strip()
+        ori = message.replace("(-:]", "\n")
+        print("Received message:", message)
+        print("original message:", ori)
+
+#  #     sys.stdout.flush()
 #        cookies = driver.get_cookies()
 #        with open("./2.json", "w", newline='') as outputdata:
 #            json.dump(cookies, outputdata)

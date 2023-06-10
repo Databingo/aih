@@ -202,7 +202,8 @@ func main() {
 	go func() {
 		for scanner.Scan() {
 			RESP := scanner.Text()
-			printer(color_bard, RESP, false)
+			//printer(color_bard, RESP, false)
+			fmt.Println(RESP)
 		}
 	}()
        }
@@ -269,6 +270,7 @@ func main() {
 
 		prompt := strconv.Itoa(left_tokens) + role + "> "
 		userInput := multiln_input(Liner, prompt)
+		fmt.Println("userInput:", userInput)
 
 		// Check Aih commands
 		switch userInput {
@@ -615,7 +617,8 @@ func main() {
 		// Check role for correct actions
 		if role == ".bard" || (role == ".eng" && last_ask == "bard") {
 		 /////////////
-		 _, err = io.WriteString(stdin, userInput)
+		 spc := strings.Replace(userInput, "\n", "(-:]", -1)
+		 _, err = io.WriteString(stdin, spc + "\n")
 		 if err != nil {panic(err)}
 		 //err = stdin.Close()
 		 //if err != nil {panic(err)}
