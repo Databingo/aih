@@ -192,6 +192,7 @@ func main() {
 	var cmd *exec.Cmd
 	var stdout io.ReadCloser
 	var stdin io.WriteCloser
+	var x bool
 	if bjs != "" { 
 	 cmd = exec.Command("python3", "-u", "./uc.py", "load") 
         //print("Please login google bard manually...")
@@ -199,13 +200,17 @@ func main() {
 	stdin, _ = cmd.StdinPipe()
 	if err := cmd.Start(); err != nil {panic(err)}
 	scanner := bufio.NewScanner(stdout)
-	go func() {
+	x = false
+	go func(x *bool) {
 		for scanner.Scan() {
 			RESP := scanner.Text()
 			//printer(color_bard, RESP, false)
 			fmt.Println(RESP)
+			if RESP == "login work"{
+			 *x = true
+			}
 		}
-	}()
+	}(&x)
        }
 	//_ = cmd.Wait()
 
@@ -270,7 +275,7 @@ func main() {
 
 		prompt := strconv.Itoa(left_tokens) + role + "> "
 		userInput := multiln_input(Liner, prompt)
-		fmt.Println("userInput:", userInput)
+		//fmt.Println("userInput:", userInput)
 
 		// Check Aih commands
 		switch userInput {
@@ -617,6 +622,10 @@ func main() {
 		// Check role for correct actions
 		if role == ".bard" || (role == ".eng" && last_ask == "bard") {
 		 /////////////
+		 if x != true {
+			fmt.Println("Bard initializing...")
+			continue}
+
 		 spc := strings.Replace(userInput, "\n", "(-:]", -1)
 		 _, err = io.WriteString(stdin, spc + "\n")
 		 if err != nil {panic(err)}
