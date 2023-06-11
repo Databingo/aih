@@ -1,8 +1,7 @@
 #import undetected_chromedriver as uc
 #import time
 #
-#chrome_options = uc.ChromeOptions()
-## All arguments to hide robot automation trackers
+#chrome_options = uc.ChromeOptions() ## All arguments to hide robot automation trackers
 #chrome_options.add_argument("--disable-blink-features=AutomationControlled")
 #chrome_options.add_argument("--no-first-run")
 #chrome_options.add_argument("--no-service-autorun")
@@ -137,15 +136,19 @@ while 1:
                 time.sleep(1)
                #print("get img")
                #response = img.find_element(By.XPATH,  "./ancestor::model-response")
-                response = img.find_element(By.XPATH,  "ancestor::model-response")
-               #response  = driver.find_element(By.XPATH,  "//model-response[last()]")
-               #content = response.find_element(By.XPATH, ".//message-content")
+               #response = img.find_element(By.XPATH,  "ancestor::model-response")
+                response  = driver.find_element(By.XPATH,  "//model-response[last()]")
+                content = response.find_element(By.XPATH, ".//message-content")
+                text = content.text
 
+               #xp = "//user-query//h2[text()='{}']".format(ori)
+               #uq = driver.find_element(By.XPATH,  xp)
+                
                #contents = response.find_elements(By.XPATH, ".//message-content")
                #texts= "\n".join(content.text for content in contents)
                #text = "(-:]".join(line for line in texts.splitlines() if line)
 
-                text = response.text
+               #text = response.text
                #text = text.replace("\n","(-:]")
                #text = text.replace("View other drafts","")
                #text = text.replace("Regenerate draft","")
