@@ -126,18 +126,23 @@ while 1:
        #response = wait.until(EC.visibility_of_element_located((By.XPATH, "//model-response[last()]")))
        #e = driver.find_element(By.XPATH,  "//model-response[last()]")
        #response = wait.until(EC.visibility_of_element_located((By.XPATH,  "//message-content[last()]")))
-        try:
-            img = wait.until(EC.presence_of_element_located((By.XPATH,  "//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')]")))
-            time.sleep(0.5)
-            print("get img")
-            response = img.find_element(By.XPATH,  "./ancestor::model-response")
-           #response  = driver.find_element(By.XPATH,  "//model-response[last()]")
-            content = response.find_element(By.XPATH, ".//message-content")
-            text = content.text
-            print(text)
+        if ori:
+            try:
+                img = wait.until(EC.presence_of_element_located((By.XPATH,  "//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')]")))
+                time.sleep(0.5)
+                print("get img")
+               #response = img.find_element(By.XPATH,  "./ancestor::model-response")
+                response = img.find_element(By.XPATH,  "ancestor::model-response")
+               #response  = driver.find_element(By.XPATH,  "//model-response[last()]")
+               #content = response.find_element(By.XPATH, ".//message-content")
+                contents = response.find_elements(By.XPATH, ".//message-content")
+                texts= "\n".join(content.text for content in contents)
+                test = "\n".join(line for line in texts.splitlines() if line)
+               #text = response.text
+                print(text)
 
-        except Exception as e:
-            print(str(e))
+            except Exception as e:
+                print(str(e))
 
 #  #     sys.stdout.flush()
 #        cookies = driver.get_cookies()
