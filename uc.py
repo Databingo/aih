@@ -119,7 +119,7 @@ while 1:
         message = line.strip()
         ori = message.replace("(-:]", "\n")
        #print("Received message:", message)
-        print("original message:", ori)
+       #print("original message:", ori)
         work.send_keys(ori)
         driver.find_element(By.XPATH, "//button[@aria-label='Send message']").click()
        #st = "//user-query[text()='" + ori + "'][last()]/following-sibling::model-response/text()"
@@ -141,13 +141,14 @@ while 1:
                #text = response.text
                 print(text)
 
+                cookies = driver.get_cookies()
+                with open("./2.json", "w", newline='') as outputdata:
+                    json.dump(cookies, outputdata)
+
             except Exception as e:
                 print(str(e))
 
 #  #     sys.stdout.flush()
-#        cookies = driver.get_cookies()
-#        with open("./2.json", "w", newline='') as outputdata:
-#            json.dump(cookies, outputdata)
 #
 
 

@@ -193,6 +193,7 @@ func main() {
 	var stdout io.ReadCloser
 	var stdin io.WriteCloser
 	var x bool
+	chb := make(chan string)
 	if bjs != "" { 
 	 cmd = exec.Command("python3", "-u", "./uc.py", "load") 
         //print("Please login google bard manually...")
@@ -201,6 +202,7 @@ func main() {
 	if err := cmd.Start(); err != nil {panic(err)}
 	scanner := bufio.NewScanner(stdout)
 	x = false
+	//ch := make(chan string)
 	go func(x *bool) {
 		for scanner.Scan() {
 			RESP := scanner.Text()
@@ -208,11 +210,14 @@ func main() {
 			if RESP == "login work"{
 			 *x = true
 			} else {
-			fmt.Println(RESP)
+			//printer(color_bard, RESP, false)
+			//fmt.Println(RESP)
+			chb <- RESP
 		       }
 		}
 	}(&x)
        }
+
 	//_ = cmd.Wait()
 
 	// Set up client of Bing Chat
@@ -632,6 +637,9 @@ func main() {
 		 if err != nil {panic(err)}
 		 //err = stdin.Close()
 		 //if err != nil {panic(err)}
+                 r := <- chb
+		 printer(color_bard, r, false)
+
 
 		continue 
 
