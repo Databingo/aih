@@ -8,7 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/Databingo/aih/eng"
-	"github.com/Databingo/googleBard/bard"
+//	"github.com/Databingo/googleBard/bard"
 	"github.com/atotto/clipboard"
 	"github.com/google/uuid"
 	//"github.com/pavel-one/EdgeGPT-Go"
@@ -171,13 +171,13 @@ func main() {
 	var parent_id string
 
 	// Set up client of Google Bard
-	bard_session_id := gjson.Get(string(aih_json), "__Secure-lPSID").String()
-	bard_client := bard.NewBard(bard_session_id, "")
-	bardOptions := bard.Options{
-		ConversationID: "",
-		ResponseID:     "",
-		ChoiceID:       "",
-	}
+//	bard_session_id := gjson.Get(string(aih_json), "__Secure-lPSID").String()
+//	bard_client := bard.NewBard(bard_session_id, "", "sn")
+//	bardOptions := bard.Options{
+//		ConversationID: "",
+//		ResponseID:     "",
+//		ChoiceID:       "",
+//	}
 
 	// Set up client of Bard2
 	//cmd := exec.Command("python3", "-u", "./uc.py", "login")
@@ -196,7 +196,7 @@ func main() {
 	chb := make(chan string)
 	if bjs != "" { 
 	 cmd = exec.Command("python3", "-u", "./uc.py", "load") 
-        //print("Please login google bard manually...")
+        fmt.Println("Please login google bard manually...")
 	stdout, _ = cmd.StdoutPipe()
 	stdin, _ = cmd.StdinPipe()
 	if err := cmd.Start(); err != nil {panic(err)}
@@ -211,7 +211,7 @@ func main() {
 			 *x = true
 			} else {
 			//printer(color_bard, RESP, false)
-			//fmt.Println(RESP)
+			fmt.Println("scan stdout RESP:", RESP)
 			chb <- RESP
 		       }
 		}
@@ -302,7 +302,7 @@ func main() {
 			Liner.Close()
 			syscall.Exit(0)
 		case ".bardkey":
-			bard_session_id = ""
+			//bard_session_id = ""
 			role = ".bard"
 			goto BARD
 		case ".chatkey":
@@ -501,7 +501,7 @@ func main() {
 
 			switch keyy {
 			case "Set Google Bard Cookie":
-				bard_session_id = ""
+				//bard_session_id = ""
 				role = ".bard"
 				goto BARD
 			case "Set ChatGPT Web Token":
@@ -632,69 +632,78 @@ func main() {
 			fmt.Println("Bard initializing...")
 			continue}
 
+		 fmt.Println("userInput:", userInput)
 		 spc := strings.Replace(userInput, "\n", "(-:]", -1)
+		 fmt.Println("typed:", spc)
 		 _, err = io.WriteString(stdin, spc + "\n")
 		 if err != nil {panic(err)}
 		 //err = stdin.Close()
 		 //if err != nil {panic(err)}
-                 r := <- chb
-		 printer(color_bard, r, false)
+                 RESP = <- chb
+		 fmt.Println("get :", RESP)
+		 data , _ := ioutil.ReadFile("./bard.txt")
+
+		 //RESP = strings.Replace(RESP, "(-:]", "\n", -1)
+		 //printer(color_bard, RESP, false)
+		 fmt.Println("RESP:",string(data))
+		 save2clip_board(RESP)
 
 
-		continue 
+		last_ask = "bard"
+		//continue 
 
 
 
 
 
 		 /////////////
-			// Check GoogleBard session
-			if bard_session_id == "" {
-				bard_session_id, _ = Liner.Prompt("Please input your cookie value of __Secure-lPSID: ")
-				if bard_session_id == "" {
-					continue
-				}
-				aihj, err := ioutil.ReadFile("aih.json")
-				nj, _ := sjson.Set(string(aihj), "__Secure-lPSID", bard_session_id)
-				err = ioutil.WriteFile("aih.json", []byte(nj), 0644)
-				if err != nil {
-					fmt.Println("Save failed.")
-				}
-				// Renew GoogleBard client with __Secure-lPSID
-				bard_client = bard.NewBard(bard_session_id, "")
-				continue
-			}
-
-			// Handle Bard error to recover
-			var response *bard.ResponseBody
-			response = func(rsp *bard.ResponseBody) *bard.ResponseBody {
-				defer func(rp *bard.ResponseBody) {
-					if r := recover(); r != nil {
-						fmt.Println(r)
-						fmt.Println("Bard error, please renew Bard cookie & check Internet accessing.")
-						rp = nil
-					}
-				}(rsp)
-				// Send message
-				rsp, _ = bard_client.SendMessage(userInput, bardOptions)
-				return rsp
-			}(response)
-
-			all_resp := response
-			if all_resp != nil {
-				RESP = response.Choices[0].Answer
-				//printer_bard.Println(RESP)
-				//printer_bard.Println("RESP")
-				save2clip_board(RESP)
-				printer(color_bard, RESP, false)
-			} else {
-				//break
-				continue
-			}
-			bardOptions.ConversationID = response.ConversationID
-			bardOptions.ResponseID = response.ResponseID
-			bardOptions.ChoiceID = response.Choices[0].ChoiceID
-			last_ask = "bard"
+//			// Check GoogleBard session
+//			if bard_session_id == "" {
+//				bard_session_id, _ = Liner.Prompt("Please input your cookie value of __Secure-lPSID: ")
+//				if bard_session_id == "" {
+//					continue
+//				}
+//				aihj, err := ioutil.ReadFile("aih.json")
+//				nj, _ := sjson.Set(string(aihj), "__Secure-lPSID", bard_session_id)
+//				err = ioutil.WriteFile("aih.json", []byte(nj), 0644)
+//				if err != nil {
+//					fmt.Println("Save failed.")
+//				}
+//				// Renew GoogleBard client with __Secure-lPSID
+//				bard_client = bard.NewBard(bard_session_id, "", "sn")
+//				continue
+//			}
+//
+//			// Handle Bard error to recover
+//			var response *bard.ResponseBody
+//			response = func(rsp *bard.ResponseBody) *bard.ResponseBody {
+//				defer func(rp *bard.ResponseBody) {
+//					if r := recover(); r != nil {
+//						fmt.Println(r)
+//						fmt.Println("Bard error, please renew Bard cookie & check Internet accessing.")
+//						rp = nil
+//					}
+//				}(rsp)
+//				// Send message
+//				rsp, _ = bard_client.SendMessage(userInput, bardOptions)
+//				return rsp
+//			}(response)
+//
+//			all_resp := response
+//			if all_resp != nil {
+//				RESP = response.Choices[0].Answer
+//				//printer_bard.Println(RESP)
+//				//printer_bard.Println("RESP")
+//				save2clip_board(RESP)
+//				printer(color_bard, RESP, false)
+//			} else {
+//				//break
+//				continue
+//			}
+//			bardOptions.ConversationID = response.ConversationID
+//			bardOptions.ResponseID = response.ResponseID
+//			bardOptions.ChoiceID = response.Choices[0].ChoiceID
+//			last_ask = "bard"
 		}
 	BING:
 		if role == ".bing" || (role == ".eng" && last_ask == "bing") {

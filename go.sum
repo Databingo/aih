@@ -3,8 +3,8 @@ github.com/Databingo/EdgeGPT-Go v0.0.0-20230508142603-f684a9379652 h1:49E2zOOaAZ
 github.com/Databingo/EdgeGPT-Go v0.0.0-20230508142603-f684a9379652/go.mod h1:Tj/mt0gbJwp56Ugo8FIfnxmCY1Qyw7GjYFLGhDgv4cw=
 github.com/Databingo/aih/eng v0.0.0-20230505141725-d19c776fbff4 h1:M4ya4kBDtaLVs0kCtXxZN7JSuNt2iLnuB4qWxV3ZVBk=
 github.com/Databingo/aih/eng v0.0.0-20230505141725-d19c776fbff4/go.mod h1:uuVbVVqs3AySX0RvxKFeTOD5YCuLZMZiP8xjU0zL2x0=
-github.com/Databingo/googleBard v0.0.0-20230429071020-6c29ba10f104 h1:BK3PPujPO4FayKgCBsBUQDLE/of52iOXWY6g3xR2DAI=
-github.com/Databingo/googleBard v0.0.0-20230429071020-6c29ba10f104/go.mod h1:Z3do4gQopXRd5gDV8v9wz4bfaGWZVvfPDA2aRYGg2+I=
+github.com/Databingo/googleBard v0.0.0-20230526071203-a27e09291502 h1:PhB2J7ZyRUn20U+rXqZjdL8aiFJAxbWHiFCJCUWSPcM=
+github.com/Databingo/googleBard v0.0.0-20230526071203-a27e09291502/go.mod h1:Z3do4gQopXRd5gDV8v9wz4bfaGWZVvfPDA2aRYGg2+I=
 github.com/atotto/clipboard v0.1.4 h1:EH0zSVneZPSuFR11BlR9YppQTVDbh5+16AmcJi4g1z4=
 github.com/atotto/clipboard v0.1.4/go.mod h1:ZY9tmq7sm5xIbd9bOK4onWV4S6X0u6GY7Vn0Yu86PYI=
 github.com/benbjohnson/clock v1.1.0 h1:Q92kusRqC1XV2MjkWETPvjJVqKetz1OzxZB7mHJLju8=

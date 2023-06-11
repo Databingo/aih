@@ -117,11 +117,15 @@ while 1:
     last_response_text = ""
     for line in sys.stdin:
         message = line.strip()
-        ori = message.replace("(-:]", "\n")
+       #ori = message.replace("(-:]", "\n")
+        ori = message.replace("(-:]", " ")
        #print("Received message:", message)
        #print("original message:", ori)
         work.send_keys(ori)
-        driver.find_element(By.XPATH, "//button[@aria-label='Send message']").click()
+       #print("sended keys:", ori)
+       #driver.find_element(By.XPATH, "//button[@aria-label='Send message']").click()
+        driver.find_element(By.XPATH, "//button[@mattooltip='Submit']").click()
+       #print("clicked")
        #st = "//user-query[text()='" + ori + "'][last()]/following-sibling::model-response/text()"
        #response = wait.until(EC.visibility_of_element_located((By.XPATH, "//model-response[last()]")))
        #e = driver.find_element(By.XPATH,  "//model-response[last()]")
@@ -130,23 +134,39 @@ while 1:
             try:
                 img = wait.until(EC.presence_of_element_located((By.XPATH,  "//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')]")))
                #time.sleep(0.5)
+                time.sleep(1)
                #print("get img")
                #response = img.find_element(By.XPATH,  "./ancestor::model-response")
                 response = img.find_element(By.XPATH,  "ancestor::model-response")
                #response  = driver.find_element(By.XPATH,  "//model-response[last()]")
                #content = response.find_element(By.XPATH, ".//message-content")
-                contents = response.find_elements(By.XPATH, ".//message-content")
-                texts= "\n".join(content.text for content in contents)
-                text = "\n".join(line for line in texts.splitlines() if line)
-               #text = response.text
-                print(text)
+
+               #contents = response.find_elements(By.XPATH, ".//message-content")
+               #texts= "\n".join(content.text for content in contents)
+               #text = "(-:]".join(line for line in texts.splitlines() if line)
+
+                text = response.text
+               #text = text.replace("\n","(-:]")
+               #text = text.replace("View other drafts","")
+               #text = text.replace("Regenerate draft","")
+               #text = text.replace("thumb_up","")
+               #text = text.replace("thumb_down","")
+               #text = text.replace("upload","")
+               #text = text.replace("Google it","")
+               #text = text.replace("more_vert","")
+               #text = "(-:]".join(line for line in text.splitlines() if line)
+                with open("./bard.txt", "w") as file:
+                    file.write(text)
+                print("text[:10]")
+                sys.stdout.flush()
 
                 cookies = driver.get_cookies()
                 with open("./2.json", "w", newline='') as outputdata:
                     json.dump(cookies, outputdata)
 
             except Exception as e:
-                print(str(e))
+               #print(str(e))
+                pass
 
 #  #     sys.stdout.flush()
 #
