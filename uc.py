@@ -53,7 +53,7 @@ for c in ck:
 
 # Renew with cookie
 driver.get("https://bard.google.com")
-wait = WebDriverWait(driver, 300000)
+wait = WebDriverWait(driver, 20)
 try:
     work = wait.until(EC.visibility_of_element_located((By.XPATH,  "//textarea[@id='mat-input-0']")))
     print("login work")
@@ -63,6 +63,7 @@ except:
     driver.quit()
     os.exit()
 
+wait = WebDriverWait(driver, 30000)
 while 1:
     ori = input(":")
     if ori:

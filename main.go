@@ -193,8 +193,9 @@ func main() {
 	var stdout_bard io.ReadCloser
 	var stdin_bard io.WriteCloser
 	var login_bard bool
+	var relogin_bard bool
 	var scanner_bard *bufio.Scanner
-	chb := make(chan string)
+	channel_bard_answer := make(chan string)
 	if bjs != "" {
 		cmd_bard = exec.Command("python3", "-u", "./uc.py", "load")
 		//fmt.Println("Please login google bard manually...")
@@ -204,23 +205,24 @@ func main() {
 			panic(err)
 		}
 		login_bard = false
+	        relogin_bard = false
 		//ch := make(chan string)
-		go func(login_bard *bool) {
+		go func(login_bard, relogin_bard *bool) {
 	                scanner_bard  = bufio.NewScanner(stdout_bard)
 			for scanner_bard.Scan() {
 				RESP = scanner_bard.Text()
 				//printer(color_bard, RESP, false)
 				if RESP == "login work" {
 					*login_bard = true
-					//        else if RESP == "relogin" {
-					//		chb <- "yes_we_need_relogin"
+				} else if RESP == "relogin" {
+					*relogin_bard = true
 				} else {
 					//printer(color_bard, RESP, false)
 					//fmt.Println("ini scan stdout_bard RESP:", RESP)
-					chb <- RESP
+					channel_bard_answer <- RESP
 				}
 			}
-		}(&login_bard)
+		}(&login_bard, &relogin_bard)
 	}
 
 	//_ = cmd.Wait()
@@ -671,7 +673,7 @@ func main() {
 //				//	var stdout_bard io.ReadCloser
 //				//	var stdin_bard io.WriteCloser
 //				//	var login_bard bool
-//				//		chb := make(chan string)
+//				//		channel_bard_answer := make(chan string)
 //				if bjs == "" {
 //					continue
 //				}
@@ -694,18 +696,22 @@ func main() {
 //								*login_bard = true
 //							} else {
 //								fmt.Println("scan stdout_bard RESP:", RESP)
-//								chb <- RESP
+//								channel_bard_answer <- RESP
 //							}
 //						}
 //					}(&login_bard)
 //				}
 //			}
+                        if relogin_bard == true {
+				fmt.Println("Cookie failed, please renew bard cookie...")
+				continue
+
+			}
 //
 			if login_bard != true {
 				fmt.Println("Bard initializing...")
 				continue
 			}
-
 			//if RESP == "relogin" {
 			//	fmt.Println("Cookie not work, renew cookie please.")
 			//   continue
@@ -724,7 +730,7 @@ func main() {
 			//fmt.Println("get :", RESP)
 			//data , _ := ioutil.ReadFile("./bard.txt")
 
-			RESP = <-chb
+			RESP = <-channel_bard_answer
 			RESP = strings.Replace(RESP, "(-:]", "\n", -1)
 			printer(color_bard, RESP, false)
 			//fmt.Println("RESP:",string(data))
