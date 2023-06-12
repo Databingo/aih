@@ -31,10 +31,10 @@ func main() {
 
 	// Create a new release
 	release, _, err := client.Repositories.CreateRelease(ctx, owner, repo, &github.RepositoryRelease{
-		TagName:         github.String("v0.1.1"),
+		TagName:         github.String("v0.1.2"),
 		TargetCommitish: github.String("master"),
-		Name:            github.String("Release v0.1.1"),
-		Body:            github.String("Welcome to Aih! Recently we added Claude through the Slack for free use."),
+		Name:            github.String("Release v0.1.2"),
+		Body:            github.String("Welcome to Aih! Recently we update bard to chromedriver mode since the former method does not work anymore(with __Secure-lPSID"),
 		Draft:           github.Bool(false),
 		Prerelease:      github.Bool(false),
 	})

@@ -1,15 +1,12 @@
 aih
 aih.json
 aih.mov
-chromedriver
-chromedriver.exe
 release/*
 !release/upload.go
 cookies
 cookies/*
 cookies/1.json
+2.json
 .history
 history.txt
 test.go
-2.json
-google_cookie.json
