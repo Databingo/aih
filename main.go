@@ -513,6 +513,17 @@ func main() {
 			switch keyy {
 			case "Set Google Bard Cookie":
 				//bard_session_id = ""
+			        cmd_bard.Process.Kill()
+			        switch runtime.GOOS {
+			        case "linux", "darwin":
+			        	cmd := exec.Command("pkill", "-f", "undetected_chromedriver")
+			        	err = cmd.Run()
+			        	if err != nil { fmt.Println(err) }
+			        case "windows":
+			        	cmd := exec.Command("taskkill", "/IM", "undetected_chromedriver", "/F")
+			        	err = cmd.Run()
+			        	if err != nil { fmt.Println(err) }
+			        }
 				bjs = ""
 				role = ".bard"
 				goto BARD
