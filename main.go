@@ -6,18 +6,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	//"github.com/Databingo/aih/eng"
 	"io"
-	//	"github.com/Databingo/googleBard/bard"
 	"github.com/atotto/clipboard"
 	"github.com/google/uuid"
-	//"github.com/pavel-one/EdgeGPT-Go"
 	"github.com/Databingo/EdgeGPT-Go"
 	"github.com/gdamore/tcell/v2"
 	"github.com/manifoldco/promptui"
 	"github.com/peterh/liner"
 	"github.com/rivo/tview"
-	//"github.com/rocketlaunchr/google-search"
 	openai "github.com/sashabaranov/go-openai"
 	"github.com/slack-go/slack"
 	"github.com/tidwall/gjson"
@@ -26,9 +22,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
-//	"regexp"
 	"runtime"
-//	"sort"
 	"strconv"
 	"strings"
 	"syscall"
@@ -170,7 +164,7 @@ func main() {
 	var conversation_id string
 	var parent_id string
 
-	// Set up client of Google Bard
+	// Set up client of Google Bard (not work since 2023.6)
 	//	bard_session_id := gjson.Get(string(aih_json), "__Secure-lPSID").String()
 	//	bard_client := bard.NewBard(bard_session_id, "", "sn")
 	//	bardOptions := bard.Options{
@@ -179,16 +173,18 @@ func main() {
 	//		ChoiceID:       "",
 	//	}
 
-	// Set up client of Bard2
-	//cmd := exec.Command("python3", "-u", "./uc.py", "login")
+	// Set up client of Bard (chromedriver version)
+	pf, _ := os.CreateTemp("", "pf.py")
+	_, _  = pf.WriteString(ps)
+	_ = pf.Close()
+	defer os.Remove(pf.Name())
+
 	// Read cookie
 	bard_json, err := ioutil.ReadFile("./2.json")
 	if err != nil {
 		err = ioutil.WriteFile("./2.json", []byte(""), 0644)
 	}
-	// Read
 	bjs := gjson.Parse(string(bard_json)).String()
-	//fmt.Println("bjs:", bjs)
 	var cmd_bard *exec.Cmd
 	var stdout_bard io.ReadCloser
 	var stdin_bard io.WriteCloser
@@ -197,8 +193,8 @@ func main() {
 	var scanner_bard *bufio.Scanner
 	channel_bard_answer := make(chan string)
 	if bjs != "" {
-		cmd_bard = exec.Command("python3", "-u", "./uc.py", "load")
-		//fmt.Println("Please login google bard manually...")
+		//cmd_bard = exec.Command("python3", "-u", "./uc.py", "load")
+		cmd_bard = exec.Command("python3", "-u", pf.Name(), "load")
 		stdout_bard, _ = cmd_bard.StdoutPipe()
 		stdin_bard, _ = cmd_bard.StdinPipe()
 		if err := cmd_bard.Start(); err != nil {
@@ -206,7 +202,6 @@ func main() {
 		}
 		login_bard = false
 		relogin_bard = false
-		//ch := make(chan string)
 		go func(login_bard, relogin_bard *bool) {
 			scanner_bard = bufio.NewScanner(stdout_bard)
 			for scanner_bard.Scan() {
@@ -217,15 +212,12 @@ func main() {
 				} else if RESP == "relogin" {
 					*relogin_bard = true
 				} else {
-					//printer(color_bard, RESP, false)
-					//fmt.Println("ini scan stdout_bard RESP:", RESP)
 					channel_bard_answer <- RESP
 				}
 			}
 		}(&login_bard, &relogin_bard)
 	}
 
-	//_ = cmd.Wait()
 
 	// Set up client of Bing Chat
 	var gpt *EdgeGPT.GPT
@@ -373,7 +365,18 @@ func main() {
 			printer(color_chat, string(cnt), true)
 			continue
 		case ".exit":
-			//cmd_bard.Process.Kill()
+			cmd_bard.Process.Kill()
+			switch runtime.GOOS {
+			case "linux", "darwin":
+				cmd := exec.Command("pkill", "-f", "undetected_chromedriver")
+				err = cmd.Run()
+				if err != nil { fmt.Println(err) }
+			case "windows":
+				cmd := exec.Command("taskkill", "/IM", "undetected_chromedriver", "/F")
+				err = cmd.Run()
+				if err != nil { fmt.Println(err) }
+			}
+
 			return
 		case ".new":
 			// For role .chat
@@ -674,8 +677,8 @@ func main() {
 					continue
 				}
 				if bjs != "" {
-					cmd_bard = exec.Command("python3", "-u", "./uc.py", "load")
-					//fmt.Println("Please login google bard manually...")
+					//cmd_bard = exec.Command("python3", "-u", "./uc.py", "load")
+					cmd_bard = exec.Command("python3", "-u", pf.Name(), "load")
 					stdout_bard, _ = cmd_bard.StdoutPipe()
 					stdin_bard, _ = cmd_bard.StdinPipe()
 					if err := cmd_bard.Start(); err != nil {
@@ -683,18 +686,14 @@ func main() {
 					}
 					scanner_bard = bufio.NewScanner(stdout_bard)
 					login_bard = false
-					//ch := make(chan string)
 					go func(login_bard, relogin_bard *bool) {
 						for scanner_bard.Scan() {
 							RESP = scanner_bard.Text()
-							//printer(color_bard, RESP, false)
 							if RESP == "login work" {
 								*login_bard = true
 							} else if RESP == "relogin" {
 								*relogin_bard = true
 							} else {
-								//printer(color_bard, RESP, false)
-								//fmt.Println("ini scan stdout_bard RESP:", RESP)
 								channel_bard_answer <- RESP
 							}
 						}
@@ -707,38 +706,21 @@ func main() {
 				continue
 
 			}
-			//
 			if login_bard != true {
 				fmt.Println("Bard initializing...")
 				continue
 			}
-			//if RESP == "relogin" {
-			//	fmt.Println("Cookie not work, renew cookie please.")
-			//   continue
 
-			//  }
-
-			//fmt.Println("userInput:", userInput)
 			spc := strings.Replace(userInput, "\n", "(-:]", -1)
-			//fmt.Println("typed:", spc)
 			_, err = io.WriteString(stdin_bard, spc+"\n")
 			if err != nil {
 				panic(err)
 			}
-			//err = stdin_bard.Close()
-			//if err != nil {panic(err)}
-			//fmt.Println("get :", RESP)
-			//data , _ := ioutil.ReadFile("./bard.txt")
 
 			RESP = <-channel_bard_answer
 			RESP = strings.Replace(RESP, "(-:]", "\n", -1)
 			printer(color_bard, RESP, false)
-			//fmt.Println("RESP:",string(data))
 			save2clip_board(RESP)
-
-			//last_ask = "bard"
-
-			//continue
 
 			/////////////
 			//			// Check GoogleBard session
@@ -1225,3 +1207,96 @@ func printer(colour tcell.Color, context string, history bool) {
 	}
 
 }
+
+
+var ps = `
+import undetected_chromedriver as uc
+#from selenium import webdriver as uc
+import random,time,os,sys
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support    import expected_conditions as EC
+import json
+import sys
+
+# Restart session
+#########################
+#driver = uc.Chrome(options=chrome_options, headless=True)
+chrome_options = uc.ChromeOptions()
+chrome_options.add_argument("--disable-extensions")
+chrome_options.add_argument("--disable-popup-blocking")
+chrome_options.add_argument("--profile-directory=Default")
+chrome_options.add_argument("--ignore-certificate-errors")
+chrome_options.add_argument("--disable-plugins-discovery")
+chrome_options.add_argument("--incognito")
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("user_agent=DN")
+driver = uc.Chrome(options=chrome_options)
+
+# Load cookie
+driver.get("https://bard.google.com")
+with open("./2.json", "r", newline='') as inputdata:
+    ck = json.load(inputdata)
+for c in ck:
+    driver.add_cookie({k:c[k] for k in {'name', 'value'}})
+
+# Renew with cookie
+driver.get("https://bard.google.com")
+wait = WebDriverWait(driver, 20)
+try:
+    work = wait.until(EC.visibility_of_element_located((By.XPATH,  "//textarea[@id='mat-input-0']")))
+    print("login work")
+except:
+    print("relogin")
+    open("./2.json", "w").close()
+    driver.quit()
+    os.exit()
+
+wait = WebDriverWait(driver, 30000)
+while 1:
+   #ori = input(":")
+   #if ori:
+    for line in sys.stdin:
+        message = line.strip()
+        ori = message.replace("(-:]", " ")
+        work.send_keys(ori)
+        driver.find_element(By.XPATH, "//button[@mattooltip='Submit']").click()
+       #ini_source = driver.page_source
+        if ori:
+            try:
+                img_thinking = wait.until(EC.presence_of_element_located((By.XPATH,  "//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_thinking_v2_e272afd4f8d4bbd25efe.gif')]")))
+               #print("get img_thinking")
+                img = wait.until(EC.presence_of_element_located((By.XPATH,  "//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')]")))
+               #print("get img")
+                response = img.find_element(By.XPATH,  "ancestor::model-response")
+               #print("get response content img")
+                google  = response.find_element(By.XPATH,  ".//button[@aria-label='Google it']")
+                
+                contents = response.find_elements(By.XPATH, ".//message-content")
+                texts= "\n".join(content.text for content in contents)
+                text = "(-:]".join(line for line in texts.splitlines() if line)
+
+                text = response.text
+                text = text.replace("\n","(-:]")
+                text = text.replace("View other drafts","")
+                text = text.replace("Regenerate draft","")
+                text = text.replace("thumb_up","")
+                text = text.replace("thumb_down","")
+                text = text.replace("upload","")
+                text = text.replace("Google it","")
+                text = text.replace("more_vert","")
+                text = "(-:]".join(line for line in text.splitlines() if line)
+                print(text)
+                sys.stdout.flush()
+
+                cookies = driver.get_cookies()
+                with open("./2.json", "w", newline='') as outputdata:
+                    json.dump(cookies, outputdata)
+
+            except Exception as e:
+                pass
+
+
+
+`
