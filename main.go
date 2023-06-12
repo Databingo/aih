@@ -193,6 +193,7 @@ func main() {
 	var stdout_bard io.ReadCloser
 	var stdin_bard io.WriteCloser
 	var login_bard bool
+	var scanner_bard *bufio.Scanner
 	chb := make(chan string)
 	if bjs != "" {
 		cmd_bard = exec.Command("python3", "-u", "./uc.py", "load")
@@ -202,12 +203,12 @@ func main() {
 		if err := cmd_bard.Start(); err != nil {
 			panic(err)
 		}
-		scanner := bufio.NewScanner(stdout_bard)
 		login_bard = false
 		//ch := make(chan string)
 		go func(login_bard *bool) {
-			for scanner.Scan() {
-				RESP := scanner.Text()
+	                scanner_bard  = bufio.NewScanner(stdout_bard)
+			for scanner_bard.Scan() {
+				RESP := scanner_bard.Text()
 				//printer(color_bard, RESP, false)
 				if RESP == "login work" {
 					*login_bard = true
@@ -215,7 +216,7 @@ func main() {
 					//		chb <- "yes_we_need_relogin"
 				} else {
 					//printer(color_bard, RESP, false)
-					//fmt.Println("scan stdout_bard RESP:", RESP)
+					fmt.Println("ini scan stdout_bard RESP:", RESP)
 					chb <- RESP
 				}
 			}
@@ -370,7 +371,7 @@ func main() {
 			printer(color_chat, string(cnt), true)
 			continue
 		case ".exit":
-		        cmd_bard.Process.Kill() 
+			cmd_bard.Process.Kill()
 			return
 		case ".new":
 			// For role .chat
@@ -632,12 +633,8 @@ func main() {
 	BARD:
 		// Check role for correct actions
 		if role == ".bard" || (role == ".eng" && last_ask == "bard") {
-			/////////////
 
-			//bard_json, err = ioutil.ReadFile("./2.json")
-			//if err != nil {
-	                if bjs == "" {
-				//err = ioutil.WriteFile("./2.json", []byte(""), 0644)
+			if bjs == "" {
 				prom := "Please type << then paste Bard cookie then type >> then press Enter: "
 				cook := multiln_input(Liner, prom)
 
@@ -662,21 +659,22 @@ func main() {
 				}
 
 				// Save cookie
-				//_ = os.MkdirAll("./cookies", 0755)
 				err = ioutil.WriteFile("./2.json", []byte(cook), 0644)
 				if err != nil {
 					fmt.Println("Save failed.")
 				}
-                                // Reload bard cookie
+				// Reload bard cookie
 				bard_json, err = ioutil.ReadFile("./2.json")
-				bjs  = gjson.Parse(string(bard_json)).String()
-		//		fmt.Println("bjs:", bjs)
-			//	var cmd *exec.Cmd
-			//	var stdout_bard io.ReadCloser
-			//	var stdin_bard io.WriteCloser
-			//	var login_bard bool
-		//		chb := make(chan string)
-		if bjs == "" { continue }
+				bjs = gjson.Parse(string(bard_json)).String()
+				//		fmt.Println("bjs:", bjs)
+				//	var cmd *exec.Cmd
+				//	var stdout_bard io.ReadCloser
+				//	var stdin_bard io.WriteCloser
+				//	var login_bard bool
+				//		chb := make(chan string)
+				if bjs == "" {
+					continue
+				}
 				if bjs != "" {
 					cmd_bard = exec.Command("python3", "-u", "./uc.py", "load")
 					//fmt.Println("Please login google bard manually...")
@@ -685,31 +683,35 @@ func main() {
 					if err := cmd_bard.Start(); err != nil {
 						panic(err)
 					}
-					scanner := bufio.NewScanner(stdout_bard)
+					scanner_bard = bufio.NewScanner(stdout_bard)
 					login_bard = false
 					//ch := make(chan string)
 					go func(login_bard *bool) {
-						for scanner.Scan() {
-							RESP := scanner.Text()
+						for scanner_bard.Scan() {
+							RESP := scanner_bard.Text()
 							//printer(color_bard, RESP, false)
 							if RESP == "login work" {
 								*login_bard = true
-								//        else if RESP == "relogin" {
-								//		chb <- "yes_we_need_relogin"
 							} else {
-								//printer(color_bard, RESP, false)
-								//fmt.Println("scan stdout_bard RESP:", RESP)
+								fmt.Println("scan stdout_bard RESP:", RESP)
 								chb <- RESP
 							}
 						}
 					}(&login_bard)
 				}
-
 			}
+
 			if login_bard != true {
 				fmt.Println("Bard initializing...")
 				continue
 			}
+
+			RESP = <-chb
+			//if RESP == "relogin" {
+			//	fmt.Println("Cookie not work, renew cookie please.")
+			//   continue
+
+			//  }
 
 			fmt.Println("userInput:", userInput)
 			spc := strings.Replace(userInput, "\n", "(-:]", -1)
@@ -720,7 +722,6 @@ func main() {
 			}
 			//err = stdin_bard.Close()
 			//if err != nil {panic(err)}
-			RESP = <-chb
 			//fmt.Println("get :", RESP)
 			//data , _ := ioutil.ReadFile("./bard.txt")
 
@@ -730,6 +731,7 @@ func main() {
 			save2clip_board(RESP)
 
 			last_ask = "bard"
+
 			//continue
 
 			/////////////
