@@ -513,6 +513,7 @@ func main() {
 			switch keyy {
 			case "Set Google Bard Cookie":
 				//bard_session_id = ""
+				bjs = ""
 				role = ".bard"
 				goto BARD
 			case "Set ChatGPT Web Token":
