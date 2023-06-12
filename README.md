@@ -34,13 +34,13 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 ## Prerequisites
 - For ChatGPT Web (free) you should have a free account to obtain a logged-in `accessToken` from [OpenAI](https://chat.openai.com/api/auth/session).
 - For ChatGPT API (paid) you should have a paid API on [Billing](https://platform.openai.com/account/billing/overview). 
-- For Google Bard, you should have a free [Google account](https://account.google.com) to obtain a cookie value of `__Secure-lPSID`.
+- For Google Bard, you should have a free [Google account](https://account.google.com) to obtain a cookie, [Chrome Browser](https://google.com/chrome), and undected_chromedriver.
 - For Bing Chat, you need to have a free [Microsoft account](https://account.microsoft.com) in order to obtain a cookie.
-- For Claude, you need a [Slack account](https://slack.com/get-started#/createnew) to [add Claude](https://www.anthropic.com/claude-in-slack) for a `channel_id`, then create an app to get your `User OAuth Token` .
+~- For Claude, you need a [Slack account](https://slack.com/get-started#/createnew) to [add Claude](https://www.anthropic.com/claude-in-slack) for a `channel_id`, then create an app to get your `User OAuth Token` .~ unstable
 
 ## How to get Cookies
-- For Google Bard cookie, you can log in and then add the [Cookie-Editor](https://cookie-editor.cgagnier.ca) extension. Click it on the top-right corner to copy the `__Secure-lPSID` value.
 - For Bing Chat cookie you can log in and then use Cookie-Editor -> click Cookie-Editor icon -> click "Export" -> click "Export as JSON" (This saves your cookies to the clipboard), then type `.key` to choose `Set Bing Chat Cookie` in Aih, you will see a prompt that says **"Please type << then paste Bing cookie then type >> then press Enter"**, by doing so you can set Bing Chat cookie via multiple lines input mode.
+- For Google Bard cookie, same as Bing.
 - For Cloude in Slack, [add Claude in your Slack](https://www.anthropic.com/claude-in-slack), then [create an Slack App](https://api.slack.com/apps) by click `Create New App`, then click `From scratch`, then click `Create App`, find `OAuth & Permissions`->`Scope`->`User Token Scope`, add these promisions: 
     - channels:history 
     - channels:read
@@ -69,7 +69,6 @@ then click `Install to Workspace` to find your `User OAuth Token`; You can obtai
 |------------|----------|
 |.speak      | Voice speak context(macOS only)|
 |.quiet      | Disable voice output |
-|.eng        | Play Movie clips about English word, including 30 related phrases or words|
 
 ## The previous version's commands could still be used for accommondation.
 | Command    | Operation|
@@ -93,6 +92,7 @@ then click `Install to Workspace` to find your `User OAuth Token`; You can obtai
 $ git clone https://github.com/Databingo/aih
 $ go clean -cache && go clean -modcache 
 $ cd aih && go mod tidy && go build 
+$ pip3 install undetected_chromedriver (for bard)
 ```
 - Or, download the executable [binary file](https://github.com/Databingo/aih/releases) according to your operating system.
 
@@ -100,9 +100,6 @@ $ cd aih && go mod tidy && go build
 This is an open plan based on the idea of "Co-relation's enhancement of AI and human beings". If you have any suggestions, please write them in the Issues section.
 
 ## Acknowledgements
-- github.com/rocketlaunchr/google-search
 - github.com/sashabaranov/go-openai 
-- github.com/CNZeroY/googleBard
 - github.com/pavel-one/EdgeGPT-Go
 - github.com/pengzhile/pandora
-- github.com/potapenko/playphraseme-site
