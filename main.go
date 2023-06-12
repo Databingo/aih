@@ -208,7 +208,7 @@ func main() {
 		go func(login_bard *bool) {
 	                scanner_bard  = bufio.NewScanner(stdout_bard)
 			for scanner_bard.Scan() {
-				RESP := scanner_bard.Text()
+				RESP = scanner_bard.Text()
 				//printer(color_bard, RESP, false)
 				if RESP == "login work" {
 					*login_bard = true
@@ -216,7 +216,7 @@ func main() {
 					//		chb <- "yes_we_need_relogin"
 				} else {
 					//printer(color_bard, RESP, false)
-					fmt.Println("ini scan stdout_bard RESP:", RESP)
+					//fmt.Println("ini scan stdout_bard RESP:", RESP)
 					chb <- RESP
 				}
 			}
@@ -371,7 +371,7 @@ func main() {
 			printer(color_chat, string(cnt), true)
 			continue
 		case ".exit":
-			cmd_bard.Process.Kill()
+			//cmd_bard.Process.Kill()
 			return
 		case ".new":
 			// For role .chat
@@ -634,79 +634,78 @@ func main() {
 		// Check role for correct actions
 		if role == ".bard" || (role == ".eng" && last_ask == "bard") {
 
-			if bjs == "" {
-				prom := "Please type << then paste Bard cookie then type >> then press Enter: "
-				cook := multiln_input(Liner, prom)
-
-				// Clear screen of input cookie string
-				clear()
-
-				// Check cookie
-				cook = strings.Replace(cook, "\r", "", -1)
-				cook = strings.Replace(cook, "\n", "", -1)
-				if len(cook) < 100 {
-					fmt.Println("Invalid cookie")
-					continue
-				}
-				if !json.Valid([]byte(cook)) {
-					fmt.Println("Invalid JSON format")
-					continue
-				}
-				if !strings.Contains(cook, ".google.com") {
-					fmt.Println("Invalid cookie, please make sure the tab is bard.google.com")
-					continue
-
-				}
-
-				// Save cookie
-				err = ioutil.WriteFile("./2.json", []byte(cook), 0644)
-				if err != nil {
-					fmt.Println("Save failed.")
-				}
-				// Reload bard cookie
-				bard_json, err = ioutil.ReadFile("./2.json")
-				bjs = gjson.Parse(string(bard_json)).String()
-				//		fmt.Println("bjs:", bjs)
-				//	var cmd *exec.Cmd
-				//	var stdout_bard io.ReadCloser
-				//	var stdin_bard io.WriteCloser
-				//	var login_bard bool
-				//		chb := make(chan string)
-				if bjs == "" {
-					continue
-				}
-				if bjs != "" {
-					cmd_bard = exec.Command("python3", "-u", "./uc.py", "load")
-					//fmt.Println("Please login google bard manually...")
-					stdout_bard, _ = cmd_bard.StdoutPipe()
-					stdin_bard, _ = cmd_bard.StdinPipe()
-					if err := cmd_bard.Start(); err != nil {
-						panic(err)
-					}
-					scanner_bard = bufio.NewScanner(stdout_bard)
-					login_bard = false
-					//ch := make(chan string)
-					go func(login_bard *bool) {
-						for scanner_bard.Scan() {
-							RESP := scanner_bard.Text()
-							//printer(color_bard, RESP, false)
-							if RESP == "login work" {
-								*login_bard = true
-							} else {
-								fmt.Println("scan stdout_bard RESP:", RESP)
-								chb <- RESP
-							}
-						}
-					}(&login_bard)
-				}
-			}
-
+//			if bjs == "" {
+//				prom := "Please type << then paste Bard cookie then type >> then press Enter: "
+//				cook := multiln_input(Liner, prom)
+//
+//				// Clear screen of input cookie string
+//				clear()
+//
+//				// Check cookie
+//				cook = strings.Replace(cook, "\r", "", -1)
+//				cook = strings.Replace(cook, "\n", "", -1)
+//				if len(cook) < 100 {
+//					fmt.Println("Invalid cookie")
+//					continue
+//				}
+//				if !json.Valid([]byte(cook)) {
+//					fmt.Println("Invalid JSON format")
+//					continue
+//				}
+//				if !strings.Contains(cook, ".google.com") {
+//					fmt.Println("Invalid cookie, please make sure the tab is bard.google.com")
+//					continue
+//
+//				}
+//
+//				// Save cookie
+//				err = ioutil.WriteFile("./2.json", []byte(cook), 0644)
+//				if err != nil {
+//					fmt.Println("Save failed.")
+//				}
+//				// Reload bard cookie
+//				bard_json, err = ioutil.ReadFile("./2.json")
+//				bjs = gjson.Parse(string(bard_json)).String()
+//				//		fmt.Println("bjs:", bjs)
+//				//	var cmd *exec.Cmd
+//				//	var stdout_bard io.ReadCloser
+//				//	var stdin_bard io.WriteCloser
+//				//	var login_bard bool
+//				//		chb := make(chan string)
+//				if bjs == "" {
+//					continue
+//				}
+//				if bjs != "" {
+//					cmd_bard = exec.Command("python3", "-u", "./uc.py", "load")
+//					//fmt.Println("Please login google bard manually...")
+//					stdout_bard, _ = cmd_bard.StdoutPipe()
+//					stdin_bard, _ = cmd_bard.StdinPipe()
+//					if err := cmd_bard.Start(); err != nil {
+//						panic(err)
+//					}
+//					scanner_bard = bufio.NewScanner(stdout_bard)
+//					login_bard = false
+//					//ch := make(chan string)
+//					go func(login_bard *bool) {
+//						for scanner_bard.Scan() {
+//							RESP := scanner_bard.Text()
+//							//printer(color_bard, RESP, false)
+//							if RESP == "login work" {
+//								*login_bard = true
+//							} else {
+//								fmt.Println("scan stdout_bard RESP:", RESP)
+//								chb <- RESP
+//							}
+//						}
+//					}(&login_bard)
+//				}
+//			}
+//
 			if login_bard != true {
 				fmt.Println("Bard initializing...")
 				continue
 			}
 
-			RESP = <-chb
 			//if RESP == "relogin" {
 			//	fmt.Println("Cookie not work, renew cookie please.")
 			//   continue
@@ -725,6 +724,7 @@ func main() {
 			//fmt.Println("get :", RESP)
 			//data , _ := ioutil.ReadFile("./bard.txt")
 
+			RESP = <-chb
 			RESP = strings.Replace(RESP, "(-:]", "\n", -1)
 			printer(color_bard, RESP, false)
 			//fmt.Println("RESP:",string(data))
