@@ -6,7 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/Databingo/aih/eng"
+	//"github.com/Databingo/aih/eng"
 	"io"
 	//	"github.com/Databingo/googleBard/bard"
 	"github.com/atotto/clipboard"
@@ -26,9 +26,9 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
-	"regexp"
+//	"regexp"
 	"runtime"
-	"sort"
+//	"sort"
 	"strconv"
 	"strings"
 	"syscall"
@@ -205,10 +205,10 @@ func main() {
 			panic(err)
 		}
 		login_bard = false
-	        relogin_bard = false
+		relogin_bard = false
 		//ch := make(chan string)
 		go func(login_bard, relogin_bard *bool) {
-	                scanner_bard  = bufio.NewScanner(stdout_bard)
+			scanner_bard = bufio.NewScanner(stdout_bard)
 			for scanner_bard.Scan() {
 				RESP = scanner_bard.Text()
 				//printer(color_bard, RESP, false)
@@ -273,7 +273,7 @@ func main() {
 	speak := 0
 	role := ".bard"
 	uInput := ""
-	last_ask := "bard"
+	//last_ask := "bard"
 	price := ""
 	chat_mode := openai.GPT3Dot5Turbo
 	chat_completion := true
@@ -617,98 +617,97 @@ func main() {
 
 		}
 
-		if role == ".eng" {
-			userInput = "Please give me 30 single words in python list format that are relate to, opposite of, synonym of, description of, hyponymy or hypernymy of, part or wholes of, or rhythmic with the meaning of `" + userInput + "`"
-			switch last_ask {
-			case "bard":
-				goto BARD
-			case "bing":
-				goto BING
-			case "chat":
-				goto CHAT
-			case "chatapi":
-				goto CHATAPI
-			case "claude":
-				goto CLAUDE
-			}
-		}
+	//	if role == ".eng" {
+	//		userInput = "Please give me 30 single words in python list format that are relate to, opposite of, synonym of, description of, hyponymy or hypernymy of, part or wholes of, or rhythmic with the meaning of `" + userInput + "`"
+	//		switch last_ask {
+	//		case "bard":
+	//			goto BARD
+	//		case "bing":
+	//			goto BING
+	//		case "chat":
+	//			goto CHAT
+	//		case "chatapi":
+	//			goto CHATAPI
+	//		case "claude":
+	//			goto CLAUDE
+	//		}
+	//	}
 	BARD:
 		// Check role for correct actions
-		if role == ".bard" || (role == ".eng" && last_ask == "bard") {
+		//if role == ".bard" || (role == ".eng" && last_ask == "bard") {
+		if role == ".bard" {
 
-//			if bjs == "" {
-//				prom := "Please type << then paste Bard cookie then type >> then press Enter: "
-//				cook := multiln_input(Liner, prom)
-//
-//				// Clear screen of input cookie string
-//				clear()
-//
-//				// Check cookie
-//				cook = strings.Replace(cook, "\r", "", -1)
-//				cook = strings.Replace(cook, "\n", "", -1)
-//				if len(cook) < 100 {
-//					fmt.Println("Invalid cookie")
-//					continue
-//				}
-//				if !json.Valid([]byte(cook)) {
-//					fmt.Println("Invalid JSON format")
-//					continue
-//				}
-//				if !strings.Contains(cook, ".google.com") {
-//					fmt.Println("Invalid cookie, please make sure the tab is bard.google.com")
-//					continue
-//
-//				}
-//
-//				// Save cookie
-//				err = ioutil.WriteFile("./2.json", []byte(cook), 0644)
-//				if err != nil {
-//					fmt.Println("Save failed.")
-//				}
-//				// Reload bard cookie
-//				bard_json, err = ioutil.ReadFile("./2.json")
-//				bjs = gjson.Parse(string(bard_json)).String()
-//				//		fmt.Println("bjs:", bjs)
-//				//	var cmd *exec.Cmd
-//				//	var stdout_bard io.ReadCloser
-//				//	var stdin_bard io.WriteCloser
-//				//	var login_bard bool
-//				//		channel_bard_answer := make(chan string)
-//				if bjs == "" {
-//					continue
-//				}
-//				if bjs != "" {
-//					cmd_bard = exec.Command("python3", "-u", "./uc.py", "load")
-//					//fmt.Println("Please login google bard manually...")
-//					stdout_bard, _ = cmd_bard.StdoutPipe()
-//					stdin_bard, _ = cmd_bard.StdinPipe()
-//					if err := cmd_bard.Start(); err != nil {
-//						panic(err)
-//					}
-//					scanner_bard = bufio.NewScanner(stdout_bard)
-//					login_bard = false
-//					//ch := make(chan string)
-//					go func(login_bard *bool) {
-//						for scanner_bard.Scan() {
-//							RESP := scanner_bard.Text()
-//							//printer(color_bard, RESP, false)
-//							if RESP == "login work" {
-//								*login_bard = true
-//							} else {
-//								fmt.Println("scan stdout_bard RESP:", RESP)
-//								channel_bard_answer <- RESP
-//							}
-//						}
-//					}(&login_bard)
-//				}
-//			}
-                        if relogin_bard == true {
+			if bjs == "" {
+				prom := "Please type << then paste Bard cookie then type >> then press Enter: "
+				cook := multiln_input(Liner, prom)
+
+				// Clear screen of input cookie string
+				clear()
+
+				// Check cookie
+				cook = strings.Replace(cook, "\r", "", -1)
+				cook = strings.Replace(cook, "\n", "", -1)
+				if len(cook) < 100 {
+					fmt.Println("Invalid cookie")
+					continue
+				}
+				if !json.Valid([]byte(cook)) {
+					fmt.Println("Invalid JSON format")
+					continue
+				}
+				if !strings.Contains(cook, ".google.com") {
+					fmt.Println("Invalid cookie, please make sure the tab is bard.google.com")
+					continue
+
+				}
+
+				// Save cookie
+				err = ioutil.WriteFile("./2.json", []byte(cook), 0644)
+				if err != nil {
+					fmt.Println("Save failed.")
+				}
+
+				// Reload bard cookie
+				bard_json, err = ioutil.ReadFile("./2.json")
+				bjs = gjson.Parse(string(bard_json)).String()
+				if bjs == "" {
+					continue
+				}
+				if bjs != "" {
+					cmd_bard = exec.Command("python3", "-u", "./uc.py", "load")
+					//fmt.Println("Please login google bard manually...")
+					stdout_bard, _ = cmd_bard.StdoutPipe()
+					stdin_bard, _ = cmd_bard.StdinPipe()
+					if err := cmd_bard.Start(); err != nil {
+						panic(err)
+					}
+					scanner_bard = bufio.NewScanner(stdout_bard)
+					login_bard = false
+					//ch := make(chan string)
+					go func(login_bard, relogin_bard *bool) {
+						for scanner_bard.Scan() {
+							RESP = scanner_bard.Text()
+							//printer(color_bard, RESP, false)
+							if RESP == "login work" {
+								*login_bard = true
+							} else if RESP == "relogin" {
+								*relogin_bard = true
+							} else {
+								//printer(color_bard, RESP, false)
+								//fmt.Println("ini scan stdout_bard RESP:", RESP)
+								channel_bard_answer <- RESP
+							}
+						}
+					}(&login_bard, &relogin_bard)
+				}
+			}
+			if relogin_bard == true {
 				fmt.Println("Cookie failed, please renew bard cookie...")
 				bjs = ""
 				continue
 
 			}
-//
+			//
 			if login_bard != true {
 				fmt.Println("Bard initializing...")
 				continue
@@ -719,9 +718,9 @@ func main() {
 
 			//  }
 
-			fmt.Println("userInput:", userInput)
+			//fmt.Println("userInput:", userInput)
 			spc := strings.Replace(userInput, "\n", "(-:]", -1)
-			fmt.Println("typed:", spc)
+			//fmt.Println("typed:", spc)
 			_, err = io.WriteString(stdin_bard, spc+"\n")
 			if err != nil {
 				panic(err)
@@ -737,7 +736,7 @@ func main() {
 			//fmt.Println("RESP:",string(data))
 			save2clip_board(RESP)
 
-			last_ask = "bard"
+			//last_ask = "bard"
 
 			//continue
 
@@ -791,7 +790,8 @@ func main() {
 			//			last_ask = "bard"
 		}
 	BING:
-		if role == ".bing" || (role == ".eng" && last_ask == "bing") {
+		//if role == ".bing" || (role == ".eng" && last_ask == "bing") {
+		if role == ".bing" {
 			// Check BingChat cookie
 			_, err := ioutil.ReadFile("./cookies/1.json")
 			if err != nil {
@@ -856,11 +856,12 @@ func main() {
 			//printer_bing.Println(RESP)
 			save2clip_board(RESP)
 			printer(color_bing, RESP, false)
-			last_ask = "bing"
+			//last_ask = "bing"
 		}
 
 	CHAT:
-		if role == ".chat" || (role == ".eng" && last_ask == "chat") {
+		//if role == ".chat" || (role == ".eng" && last_ask == "chat") {
+		if role == ".chat" {
 			if chat_access_token == "" {
 				chat_access_token, _ = Liner.Prompt("Please input your ChatGPT accessToken: ")
 				if chat_access_token == "" {
@@ -893,14 +894,15 @@ func main() {
 				//printer_chat.Println(RESP)
 				save2clip_board(RESP)
 				printer(color_chat, RESP, false)
-				last_ask = "chat"
+				//last_ask = "chat"
 
 			}
 
 		}
 
 	CHATAPI:
-		if role == ".chatapi" || (role == ".eng" && last_ask == "chatapi") {
+		//if role == ".chatapi" || (role == ".eng" && last_ask == "chatapi") {
+		if role == ".chatapi" {
 			// Check ChatGPT API Key
 			if OpenAI_Key == "" {
 				OpenAI_Key, _ = Liner.Prompt("Please input your OpenAI Key: ")
@@ -955,10 +957,11 @@ func main() {
 			//printer_chat.Println(RESP)
 			printer(color_chatapi, RESP, false)
 
-			last_ask = "chatapi"
+			//last_ask = "chatapi"
 		}
 	CLAUDE:
-		if role == ".claude" || (role == ".eng" && last_ask == "claude") {
+		//if role == ".claude" || (role == ".eng" && last_ask == "claude") {
+		if role == ".claude" {
 			if claude_user_token == "" {
 				claude_user_token, _ = Liner.Prompt("Please input your claude_user_token: ")
 				if claude_user_token == "" {
@@ -1025,7 +1028,7 @@ func main() {
 					if !strings.Contains(rsp, "_Typing") {
 						rsp = strings.Replace(rsp, "%!(EXTRA string= ", "", -1)
 						rsp = strings.Trim(rsp, " ")
-						last_ask = "claude"
+						//last_ask = "claude"
 						break
 					}
 				}
@@ -1074,25 +1077,25 @@ func main() {
 		}
 
 		// Play video
-		if role == ".eng" {
+		//if role == ".eng" {
 
-			// Match the regular expression against the Python list.
-			re := regexp.MustCompile(`(?s)\[[^\[\]]*\]`)
-			match := re.FindAllString(RESP, -1)
-			sort.Slice(match, func(i, j int) bool {
-				return len(match[i]) > len(match[j])
-			})
+		//	// Match the regular expression against the Python list.
+		//	re := regexp.MustCompile(`(?s)\[[^\[\]]*\]`)
+		//	match := re.FindAllString(RESP, -1)
+		//	sort.Slice(match, func(i, j int) bool {
+		//		return len(match[i]) > len(match[j])
+		//	})
 
-			if match != nil {
-				lt_str := match[0]
-				lt_str = lt_str[1 : len(lt_str)-1]
-				lt_str = strings.Replace(lt_str, `"`, "", -1)
-				lt_str = strings.Replace(lt_str, `'`, "", -1)
-				ar := strings.Split(lt_str, ",")
-				go eng.Play(ar)
-			}
+		//	if match != nil {
+		//		lt_str := match[0]
+		//		lt_str = lt_str[1 : len(lt_str)-1]
+		//		lt_str = strings.Replace(lt_str, `"`, "", -1)
+		//		lt_str = strings.Replace(lt_str, `'`, "", -1)
+		//		ar := strings.Split(lt_str, ",")
+		//		go eng.Play(ar)
+		//	}
 
-		}
+		//}
 
 	}
 }
