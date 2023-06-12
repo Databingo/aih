@@ -40,7 +40,7 @@ chrome_options.add_argument("--profile-directory=Default")
 chrome_options.add_argument("--ignore-certificate-errors")
 chrome_options.add_argument("--disable-plugins-discovery")
 chrome_options.add_argument("--incognito")
-#chrome_options.add_argument("--headless")
+chrome_options.add_argument("--headless")
 chrome_options.add_argument("user_agent=DN")
 driver = uc.Chrome(options=chrome_options)
 
@@ -65,11 +65,11 @@ except:
 
 wait = WebDriverWait(driver, 30000)
 while 1:
-    ori = input(":")
-    if ori:
-   #for line in sys.stdin:
-   #    message = line.strip()
-   #    ori = message.replace("(-:]", " ")
+   #ori = input(":")
+   #if ori:
+    for line in sys.stdin:
+        message = line.strip()
+        ori = message.replace("(-:]", " ")
         work.send_keys(ori)
         driver.find_element(By.XPATH, "//button[@mattooltip='Submit']").click()
        #ini_source = driver.page_source
