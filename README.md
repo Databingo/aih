@@ -93,6 +93,10 @@ $ go clean -cache && go clean -modcache
 $ cd aih && go mod tidy && go build 
 $ pip3 install undetected_chromedriver (for bard)
 ```
+- For Bard
+```
+$ pip3 install undetected_chromedriver (for bard)
+```
 - Or, download the executable [binary file](https://github.com/Databingo/aih/releases) according to your operating system.
 
 ## About Suggestions
