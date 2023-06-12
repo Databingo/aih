@@ -704,6 +704,7 @@ func main() {
 //			}
                         if relogin_bard == true {
 				fmt.Println("Cookie failed, please renew bard cookie...")
+				bjs = ""
 				continue
 
 			}
