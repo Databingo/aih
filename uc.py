@@ -137,22 +137,23 @@ while 1:
         if ori:
             try:
 
-               #img = wait.until(EC.presence_of_element_located((By.XPATH,  "//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')]")))
+                img = wait.until(EC.presence_of_element_located((By.XPATH,  "//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')]")))
                #time.sleep(0.5)
                #time.sleep(1)
-               #print("get img")
-                new_source = driver.page_source
-                print("get new source")
-                while 1:
-                    if new_source != ini_source:
-                        print("page changed")
-                        break
+                print("get img")
+               #new_source = driver.page_source
+               #print("get new source")
+               #while 1:
+               #    if new_source != ini_source:
+               #        print("page changed")
+               #        break
                #response = img.find_element(By.XPATH,  "./ancestor::model-response")
                #response = img.find_element(By.XPATH,  "ancestor::model-response")
-                response  = driver.find_element(By.XPATH,  "//model-response[last()]")
+               #response  = driver.find_element(By.XPATH,  "//model-response[last()]")
                #content = response.find_element(By.XPATH, ".//message-content")
                #content = driver.find_element(By.XPATH, "//message-content[last()]")
-                text = response.text 
+                text = driver.find_element(By.XPATH, "//body").text
+               #text = response.text 
                 print(text)
                #text = "content.text"
                #while 1:
