@@ -1,43 +1,6 @@
-
-Sure, here are 20 lines of Python code:
-Python
-# This program prints the first 20 Fibonacci numbers.
-
-def fib(n):
-    if n == 0 or n == 1:
-        return n
-    else:
-        return fib(n - 1) + fib(n - 2)
-
-for i in range(20):
-    print(fib(i))
-Use code with caution. Learn more
-content_copy
-This program will print the following output:
-Code snippet
-0
-1
-1
-2
-3
-5
-8
-13
-21
-34
-55
-89
-144
-233
-377
-610
-987
-1597
-2584
-4181
-Use code with caution. Learn more
-content_copy
-
-
-
-
+Hi there! How can I help you today?
+thumb_up
+thumb_down
+upload
+Google it
+more_vert

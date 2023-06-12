@@ -114,10 +114,12 @@ while 1:
    #lines = sys.stdin.readlines()
    #print("Received message:", " ".join(lines))
     last_response_text = ""
-    for line in sys.stdin:
-        message = line.strip()
-       #ori = message.replace("(-:]", "\n")
-        ori = message.replace("(-:]", " ")
+    ori = input(":")
+    if ori:
+   #for line in sys.stdin:
+   #    message = line.strip()
+   #   #ori = message.replace("(-:]", "\n")
+   #    ori = message.replace("(-:]", " ")
        #print("Received message:", message)
        #print("original message:", ori)
         work.send_keys(ori)
@@ -129,17 +131,35 @@ while 1:
        #response = wait.until(EC.visibility_of_element_located((By.XPATH, "//model-response[last()]")))
        #e = driver.find_element(By.XPATH,  "//model-response[last()]")
        #response = wait.until(EC.visibility_of_element_located((By.XPATH,  "//message-content[last()]")))
+       #content1 = driver.find_element(By.XPATH, "//message-content[last()]")
+       #t1 = content1.text
+        ini_source = driver.page_source
         if ori:
             try:
-                img = wait.until(EC.presence_of_element_located((By.XPATH,  "//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')]")))
+
+               #img = wait.until(EC.presence_of_element_located((By.XPATH,  "//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')]")))
                #time.sleep(0.5)
-                time.sleep(1)
+               #time.sleep(1)
                #print("get img")
+                new_source = driver.page_source
+                print("get new source")
+                while 1:
+                    if new_source != ini_source:
+                        print("page changed")
+                        break
                #response = img.find_element(By.XPATH,  "./ancestor::model-response")
                #response = img.find_element(By.XPATH,  "ancestor::model-response")
                 response  = driver.find_element(By.XPATH,  "//model-response[last()]")
-                content = response.find_element(By.XPATH, ".//message-content")
-                text = content.text
+               #content = response.find_element(By.XPATH, ".//message-content")
+               #content = driver.find_element(By.XPATH, "//message-content[last()]")
+                text = response.text 
+                print(text)
+               #text = "content.text"
+               #while 1:
+               #    content2 = driver.find_element(By.XPATH, "//message-content[last()]")
+               #    if content2.text != t1:
+               #        text = content2.text
+               #        break
 
                #xp = "//user-query//h2[text()='{}']".format(ori)
                #uq = driver.find_element(By.XPATH,  xp)
@@ -158,9 +178,10 @@ while 1:
                #text = text.replace("Google it","")
                #text = text.replace("more_vert","")
                #text = "(-:]".join(line for line in text.splitlines() if line)
-                with open("./bard.txt", "w") as file:
-                    file.write(text)
-                print("text[:10]")
+               #with open("./bard.txt", "w") as file:
+               #    file.write(text)
+               #print("text[:10]")
+               #print(text)
                 sys.stdout.flush()
 
                 cookies = driver.get_cookies()
