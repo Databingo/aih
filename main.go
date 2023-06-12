@@ -211,7 +211,7 @@ func main() {
 			 *x = true
 			} else {
 			//printer(color_bard, RESP, false)
-			fmt.Println("scan stdout RESP:", RESP)
+			//fmt.Println("scan stdout RESP:", RESP)
 			chb <- RESP
 		       }
 		}
@@ -641,11 +641,11 @@ func main() {
 		 //if err != nil {panic(err)}
                  RESP = <- chb
 		 fmt.Println("get :", RESP)
-		 data , _ := ioutil.ReadFile("./bard.txt")
+		//data , _ := ioutil.ReadFile("./bard.txt")
 
 		 //RESP = strings.Replace(RESP, "(-:]", "\n", -1)
 		 //printer(color_bard, RESP, false)
-		 fmt.Println("RESP:",string(data))
+		 //fmt.Println("RESP:",string(data))
 		 save2clip_board(RESP)
 
 

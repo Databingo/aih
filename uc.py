@@ -85,7 +85,8 @@ for c in ck:
 
 # Renew with cookie
 driver.get("https://bard.google.com")
-wait = WebDriverWait(driver, 10)
+#wait = WebDriverWait(driver, 10)
+wait = WebDriverWait(driver, 300000)
 try:
     work = wait.until(EC.visibility_of_element_located((By.XPATH,  "//textarea[@id='mat-input-0']")))
     print("login work")
@@ -113,7 +114,7 @@ while 1:
 
    #lines = sys.stdin.readlines()
    #print("Received message:", " ".join(lines))
-    last_response_text = ""
+   #last_response_text = ""
     ori = input(":")
     if ori:
    #for line in sys.stdin:
@@ -134,17 +135,31 @@ while 1:
        #content1 = driver.find_element(By.XPATH, "//message-content[last()]")
        #t1 = content1.text
         ini_source = driver.page_source
+       #responsea = wait.until(EC.presence_of_element_located((By.XPATH, "//model-response[last()]")))
+       #print("get responsea")
+       #texta = responsea.text
         if ori:
             try:
 
+                img_thinking = wait.until(EC.presence_of_element_located((By.XPATH,  "//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_thinking_v2_e272afd4f8d4bbd25efe.gif')]")))
+                print("get img_thinking")
                 img = wait.until(EC.presence_of_element_located((By.XPATH,  "//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')]")))
+                print("get img")
+                response = img.find_element(By.XPATH,  "ancestor::model-response")
+                print("get response content img")
+                google  = response.find_element(By.XPATH,  ".//button[@aria-label='Google it']")
+                print("get google it")
                #time.sleep(0.5)
                #time.sleep(1)
-                print("get img")
+               #print("get img")
+               #with open("./bard0.txt", "w") as file:
+               #    file.write("get ing")
                #new_source = driver.page_source
+               #textb = driver.find_element(By.XPATH,  "//model-response[last()]").text
                #print("get new source")
                #while 1:
-               #    if new_source != ini_source:
+               #   #if new_source != ini_source:
+               #    if textb != texta:
                #        print("page changed")
                #        break
                #response = img.find_element(By.XPATH,  "./ancestor::model-response")
@@ -152,8 +167,19 @@ while 1:
                #response  = driver.find_element(By.XPATH,  "//model-response[last()]")
                #content = response.find_element(By.XPATH, ".//message-content")
                #content = driver.find_element(By.XPATH, "//message-content[last()]")
-                text = driver.find_element(By.XPATH, "//body").text
-               #text = response.text 
+               #driver.refresh()
+                texth = driver.find_element(By.XPATH, "//body").text
+               #if not texth:
+               #    time.sleep(2)
+               #    texth = driver.find_element(By.XPATH, "//body").text
+                text = texth.split(ori)[-1]
+               #with open("./bard1.txt", "w") as file:
+               #    file.write(text)
+                text = "(-:]".join(line for line in text.splitlines() if line)
+               #with open("./bard2.txt", "w") as file:
+               #    file.write(text)
+
+               #text = content.text 
                 print(text)
                #text = "content.text"
                #while 1:
