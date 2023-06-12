@@ -91,7 +91,6 @@ then click `Install to Workspace` to find your `User OAuth Token`; You can obtai
 $ git clone https://github.com/Databingo/aih
 $ go clean -cache && go clean -modcache 
 $ cd aih && go mod tidy && go build 
-$ pip3 install undetected_chromedriver (for bard)
 ```
 - For Bard
 ```
