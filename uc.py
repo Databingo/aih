@@ -115,12 +115,12 @@ while 1:
    #lines = sys.stdin.readlines()
    #print("Received message:", " ".join(lines))
    #last_response_text = ""
-    ori = input(":")
-    if ori:
-   #for line in sys.stdin:
-   #    message = line.strip()
-   #   #ori = message.replace("(-:]", "\n")
-   #    ori = message.replace("(-:]", " ")
+   #ori = input(":")
+   #if ori:
+    for line in sys.stdin:
+        message = line.strip()
+       #ori = message.replace("(-:]", "\n")
+        ori = message.replace("(-:]", " ")
        #print("Received message:", message)
        #print("original message:", ori)
         work.send_keys(ori)
@@ -142,13 +142,13 @@ while 1:
             try:
 
                 img_thinking = wait.until(EC.presence_of_element_located((By.XPATH,  "//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_thinking_v2_e272afd4f8d4bbd25efe.gif')]")))
-                print("get img_thinking")
+               #print("get img_thinking")
                 img = wait.until(EC.presence_of_element_located((By.XPATH,  "//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')]")))
-                print("get img")
+               #print("get img")
                 response = img.find_element(By.XPATH,  "ancestor::model-response")
-                print("get response content img")
+               #print("get response content img")
                 google  = response.find_element(By.XPATH,  ".//button[@aria-label='Google it']")
-                print("get google it")
+               #print("get google it")
                #time.sleep(0.5)
                #time.sleep(1)
                #print("get img")
