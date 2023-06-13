@@ -105,3 +105,4 @@ This is an open plan based on the idea of "Co-relation's enhancement of AI and h
 - github.com/sashabaranov/go-openai 
 - github.com/pavel-one/EdgeGPT-Go
 - github.com/pengzhile/pandora
+- github.com/ultrafunkamsterdam/undetected-chromedriver
