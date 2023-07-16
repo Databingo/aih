@@ -184,7 +184,8 @@ func main() {
 	if err != nil {
 		err = ioutil.WriteFile("./2.json", []byte(""), 0644)
 	}
-	bjs := gjson.Parse(string(bard_json)).String()
+	var bjs string
+	bjs = gjson.Parse(string(bard_json)).String()
 	var cmd_bard *exec.Cmd
 	var stdout_bard io.ReadCloser
 	var stdin_bard io.WriteCloser
@@ -513,7 +514,9 @@ func main() {
 			switch keyy {
 			case "Set Google Bard Cookie":
 				//bard_session_id = ""
+				if bjs != "" {
 			        cmd_bard.Process.Kill()
+			       }
 			        switch runtime.GOOS {
 			        case "linux", "darwin":
 			        	cmd := exec.Command("pkill", "-f", "undetected_chromedriver")
@@ -1298,6 +1301,7 @@ while 1:
                 text = text.replace("upload","")
                 text = text.replace("Google it","")
                 text = text.replace("more_vert","")
+                text = text.replace("volume_up","")
                 text = "(-:]".join(line for line in text.splitlines() if line)
                 print(text)
                 sys.stdout.flush()
