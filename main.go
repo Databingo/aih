@@ -220,6 +220,52 @@ func main() {
 	}
 
 
+	// Set up client of Claude2 (chromedriver version)
+//	pf, _ := os.CreateTemp("", "pf.py")
+//	_, _  = pf.WriteString(ps)
+//	_ = pf.Close()
+//	defer os.Remove(pf.Name())
+
+	// Read cookie
+	claude2_json, err := ioutil.ReadFile("./3.json")
+	if err != nil {
+		err = ioutil.WriteFile("./3.json", []byte(""), 0644)
+	}
+	var c2js string
+	c2js = gjson.Parse(string(claude2_json)).String()
+	var cmd_claude2 *exec.Cmd
+	var stdout_claude2 io.ReadCloser
+	var stdin_claude2 io.WriteCloser
+	var login_claude2 bool
+	var relogin_claude2 bool
+	var scanner_claude2 *bufio.Scanner
+	channel_claude2_answer := make(chan string)
+	if c2js != "" {
+		cmd_claude2 = exec.Command("python3", "-u", "./claude2.py", "load")
+		//cmd_bard = exec.Command("python3", "-u", pf.Name(), "load")
+		stdout_claude2, _ = cmd_claude2.StdoutPipe()
+		stdin_claude2, _ = cmd_claude2.StdinPipe()
+		if err := cmd_claude2.Start(); err != nil {
+			panic(err)
+		}
+		login_claude2 = false
+		relogin_claude2 = false
+		go func(login_claude2, relogin_claude2 *bool) {
+			scanner_claude2 = bufio.NewScanner(stdout_claude2)
+			for scanner_claude2.Scan() {
+				RESP = scanner_claude2.Text()
+				//printer(color_bard, RESP, false)
+				if RESP == "login work" {
+					*login_claude2 = true
+				} else if RESP == "relogin" {
+					*relogin_claude2 = true
+				} else {
+					channel_claude2_answer <- RESP
+				}
+			}
+		}(&login_claude2, &relogin_claude2)
+	}
+
 	// Set up client of Bing Chat
 	var gpt *EdgeGPT.GPT
 	_, err = ioutil.ReadFile("./cookies/1.json")
@@ -322,6 +368,8 @@ func main() {
 			claude_channel_id = ""
 			role = ".claude"
 			goto CLAUDE
+		case ".claude1key":
+			goto CLAUDE1
 		case ".help":
 			fmt.Println("                           ")
 			//fmt.Println(" .bard           Bard")
@@ -367,6 +415,7 @@ func main() {
 			continue
 		case ".exit":
 			cmd_bard.Process.Kill()
+			cmd_claude2.Process.Kill()
 			switch runtime.GOOS {
 			case "linux", "darwin":
 				cmd := exec.Command("pkill", "-f", "undetected_chromedriver")
@@ -635,24 +684,8 @@ func main() {
 
 		}
 
-	//	if role == ".eng" {
-	//		userInput = "Please give me 30 single words in python list format that are relate to, opposite of, synonym of, description of, hyponymy or hypernymy of, part or wholes of, or rhythmic with the meaning of `" + userInput + "`"
-	//		switch last_ask {
-	//		case "bard":
-	//			goto BARD
-	//		case "bing":
-	//			goto BING
-	//		case "chat":
-	//			goto CHAT
-	//		case "chatapi":
-	//			goto CHATAPI
-	//		case "claude":
-	//			goto CLAUDE
-	//		}
-	//	}
 	BARD:
 		// Check role for correct actions
-		//if role == ".bard" || (role == ".eng" && last_ask == "bard") {
 		if role == ".bard" {
 
 			if bjs == "" {
@@ -737,57 +770,96 @@ func main() {
 			printer(color_bard, RESP, false)
 			save2clip_board(RESP)
 
-			/////////////
-			//			// Check GoogleBard session
-			//			if bard_session_id == "" {
-			//				bard_session_id, _ = Liner.Prompt("Please input your cookie value of __Secure-lPSID: ")
-			//				if bard_session_id == "" {
-			//					continue
-			//				}
-			//				aihj, err := ioutil.ReadFile("aih.json")
-			//				nj, _ := sjson.Set(string(aihj), "__Secure-lPSID", bard_session_id)
-			//				err = ioutil.WriteFile("aih.json", []byte(nj), 0644)
-			//				if err != nil {
-			//					fmt.Println("Save failed.")
-			//				}
-			//				// Renew GoogleBard client with __Secure-lPSID
-			//				bard_client = bard.NewBard(bard_session_id, "", "sn")
-			//				continue
-			//			}
-			//
-			//			// Handle Bard error to recover
-			//			var response *bard.ResponseBody
-			//			response = func(rsp *bard.ResponseBody) *bard.ResponseBody {
-			//				defer func(rp *bard.ResponseBody) {
-			//					if r := recover(); r != nil {
-			//						fmt.Println(r)
-			//						fmt.Println("Bard error, please renew Bard cookie & check Internet accessing.")
-			//						rp = nil
-			//					}
-			//				}(rsp)
-			//				// Send message
-			//				rsp, _ = bard_client.SendMessage(userInput, bardOptions)
-			//				return rsp
-			//			}(response)
-			//
-			//			all_resp := response
-			//			if all_resp != nil {
-			//				RESP = response.Choices[0].Answer
-			//				//printer_bard.Println(RESP)
-			//				//printer_bard.Println("RESP")
-			//				save2clip_board(RESP)
-			//				printer(color_bard, RESP, false)
-			//			} else {
-			//				//break
-			//				continue
-			//			}
-			//			bardOptions.ConversationID = response.ConversationID
-			//			bardOptions.ResponseID = response.ResponseID
-			//			bardOptions.ChoiceID = response.Choices[0].ChoiceID
-			//			last_ask = "bard"
+		}
+
+	CLAUDE:
+		// Check role for correct actions
+		if role == ".claude" {
+
+			if c2js == "" {
+				prom := "Please type << then paste Claude2 cookie then type >> then press Enter: "
+				cook := multiln_input(Liner, prom)
+
+				// Clear screen of input cookie string
+				clear()
+
+				// Check cookie
+				cook = strings.Replace(cook, "\r", "", -1)
+				cook = strings.Replace(cook, "\n", "", -1)
+				if len(cook) < 100 {
+					fmt.Println("Invalid cookie")
+					continue
+				}
+				if !json.Valid([]byte(cook)) {
+					fmt.Println("Invalid JSON format")
+					continue
+				}
+				if !strings.Contains(cook, ".claude") {
+					fmt.Println("Invalid cookie, please make sure the tab is claude.ai")
+					continue
+
+				}
+
+				// Save cookie
+				err = ioutil.WriteFile("./3.json", []byte(cook), 0644)
+				if err != nil {
+					fmt.Println("Save failed.")
+				}
+
+				// Reload claude2 cookie
+				claude2_json, err = ioutil.ReadFile("./3.json")
+				c2js = gjson.Parse(string(claude2_json)).String()
+				if c2js == "" {
+					continue
+				}
+				if c2js != "" {
+					cmd_claude2 = exec.Command("python3", "-u", "./claude2.py", "load")
+					//cmd_bard = exec.Command("python3", "-u", pf.Name(), "load")
+					stdout_claude2, _ = cmd_claude2.StdoutPipe()
+					stdin_claude2, _ = cmd_claude2.StdinPipe()
+					if err := cmd_claude2.Start(); err != nil {
+						panic(err)
+					}
+					scanner_claude2 = bufio.NewScanner(stdout_claude2)
+					login_claude2 = false
+					go func(login_claude2, relogin_claude2 *bool) {
+						for scanner_claude2.Scan() {
+							RESP = scanner_claude2.Text()
+							if RESP == "login work" {
+								*login_claude2 = true
+							} else if RESP == "relogin" {
+								*relogin_claude2 = true
+							} else {
+								channel_claude2_answer <- RESP
+							}
+						}
+					}(&login_claude2, &relogin_claude2)
+				}
+			}
+			if relogin_claude2 == true {
+				fmt.Println("Cookie failed, please renew claude2 cookie...")
+				c2js = ""
+				continue
+
+			}
+			if login_claude2 != true {
+				fmt.Println("Claude2 initializing...")
+				continue
+			}
+
+			spc := strings.Replace(userInput, "\n", "(-:]", -1)
+			_, err = io.WriteString(stdin_claude2, spc+"\n")
+			if err != nil {
+				panic(err)
+			}
+
+			RESP = <-channel_claude2_answer
+			RESP = strings.Replace(RESP, "(-:]", "\n", -1)
+			printer(color_claude, RESP, false)
+			save2clip_board(RESP)
+
 		}
 	BING:
-		//if role == ".bing" || (role == ".eng" && last_ask == "bing") {
 		if role == ".bing" {
 			// Check BingChat cookie
 			_, err := ioutil.ReadFile("./cookies/1.json")
@@ -956,9 +1028,9 @@ func main() {
 
 			//last_ask = "chatapi"
 		}
-	CLAUDE:
+	CLAUDE1:
 		//if role == ".claude" || (role == ".eng" && last_ask == "claude") {
-		if role == ".claude" {
+		if role == ".claude1" {
 			if claude_user_token == "" {
 				claude_user_token, _ = Liner.Prompt("Please input your claude_user_token: ")
 				if claude_user_token == "" {

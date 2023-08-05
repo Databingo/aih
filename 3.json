@@ -1,0 +1,80 @@
+[
+    {
+        "domain": ".claude.ai",
+        "expirationDate": 1691220119.623653,
+        "hostOnly": false,
+        "httpOnly": true,
+        "name": "__cf_bm",
+        "path": "/",
+        "sameSite": "no_restriction",
+        "secure": true,
+        "session": false,
+        "storeId": null,
+        "value": "Re3z.cpm06iYE0_8ebxAbbuf5aRl22QvwHFUV04ftCY-1691218319-0-AV4FEZ2ppv0ss5kk5dbZ2Ga4oIHQ6LgcizIWv26shiAClTJzUtL4qgxlC5fO7G3lDIco1YCkCCXJaifdvaUzYgc="
+    },
+    {
+        "domain": ".claude.ai",
+        "expirationDate": 1714548362,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "intercom-device-id-lupk8zyo",
+        "path": "/",
+        "sameSite": "lax",
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "33de3d6f-fac6-45f0-bf5c-74ac72f24ed3"
+    },
+    {
+        "domain": "claude.ai",
+        "expirationDate": 1693810356.991025,
+        "hostOnly": true,
+        "httpOnly": true,
+        "name": "sessionKey",
+        "path": "/",
+        "sameSite": "strict",
+        "secure": true,
+        "session": false,
+        "storeId": null,
+        "value": "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"
+    },
+    {
+        "domain": ".claude.ai",
+        "expirationDate": 1691823162,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "intercom-session-lupk8zyo",
+        "path": "/",
+        "sameSite": "lax",
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "SndLREhkUVk5QVRMOHpic2F4YkJTWjk4bUtubFNacjFaSjlaN0JmVUlMSUhvTlgza004OFEvT3d1Z3RUelpYOC0tM2FLQlhlbTVvbFBncHo0cTk1ZnArQT09--ebc93b6cecba007ce6b61d50a8253752f543fa07"
+    },
+    {
+        "domain": "claude.ai",
+        "expirationDate": 1722754363,
+        "hostOnly": true,
+        "httpOnly": false,
+        "name": "MicrosoftApplicationsTelemetryDeviceId",
+        "path": "/",
+        "sameSite": null,
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "7c36d67b-9b02-45c8-82aa-5c12e13ee463"
+    },
+    {
+        "domain": "claude.ai",
+        "expirationDate": 1722754363,
+        "hostOnly": true,
+        "httpOnly": false,
+        "name": "MicrosoftApplicationsTelemetryFirstLaunchTime",
+        "path": "/",
+        "sameSite": null,
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "2023-08-03T00:53:36.556Z"
+    }
+]

@@ -135,6 +135,9 @@ driver = uc.Chrome(options=chrome_options)
 
 # Load cookie
 driver.get("https://bard.google.com")
+wait = WebDriverWait(driver, 3000000000000000)
+work = wait.until(EC.visibility_of_element_located((By.XPATH,  "//textarea[@id='mat-input-0']")))
+
 with open("./2.json", "r", newline='') as inputdata:
     ck = json.load(inputdata)
 for c in ck:
