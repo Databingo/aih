@@ -34,23 +34,26 @@ for c in ck:
 
 # Renew with cookie
 driver.get("https://claude.ai")
-wait = WebDriverWait(driver, 20)
+wait = WebDriverWait(driver, 200)
 try:
-    work = wait.until(EC.visibility_of_element_located((By.XPATH,  "//textarea[@id='mat-input-0']")))
-    print("login work")
+    work = wait.until(EC.visibility_of_element_located((By.XPATH,  "//p[@data-placeholder='Message Claude or search past chats...']")))
+    print("login work")                                                
+   #driver.find_element(By.XPATH, "//button[@class='sc-dAOort']").click()
 except:
     print("relogin")
-    open("./2.json", "w").close()
+    open("./3.json", "w").close()
     driver.quit()
     os.exit()
 
 wait = WebDriverWait(driver, 30000)
+driver.find_element(By.XPATH, "//div[contains(text(), 'Start a new chat')]").click()
+work = wait.until(EC.visibility_of_element_located((By.XPATH,  "//p[@data-placeholder='Message Claude or search past chats...']")))
 while 1:
-    ori = input(":")
-    if ori:
-   #for line in sys.stdin:
-   #    message = line.strip()
-   #    ori = message.replace("(-:]", " ")
+   #ori = input(":")
+   #if ori:
+    for line in sys.stdin:
+        message = line.strip()
+        ori = message.replace("(-:]", " ")
         work.send_keys(ori)
         driver.find_element(By.XPATH, "//button[@mattooltip='Submit']").click()
        #ini_source = driver.page_source
