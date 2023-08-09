@@ -1,5 +1,4 @@
 import undetected_chromedriver as uc
-#from selenium import webdriver as uc
 import random,time,os,sys
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -22,11 +21,9 @@ chrome_options.add_argument("--incognito")
 chrome_options.add_argument("user_agent=DN")
 driver = uc.Chrome(options=chrome_options)
 
-# Load cookie
 driver.get("https://claude.ai")
-#wait = WebDriverWait(driver, 3000000000000000)
-#work = wait.until(EC.visibility_of_element_located((By.XPATH,  "//textarea[@id='mat-input-0']")))
 
+# Load cookie
 with open("./3.json", "r", newline='') as inputdata:
     ck = json.load(inputdata)
 for c in ck:
@@ -41,70 +38,32 @@ try:
    #driver.find_element(By.XPATH, "//button[@class='sc-dAOort']").click()
 except:
     print("relogin")
-    open("./3.json", "w").close()
+   #open("./3.json", "w").close()
     driver.quit()
     os.exit()
 
-#wait = WebDriverWait(driver, 30000)
 driver.find_element(By.XPATH, "//div[contains(text(), 'Start a new chat')]").click()
 input_space = wait.until(EC.visibility_of_element_located((By.XPATH,  "//p[@data-placeholder='Message Claude...']")))
-#img_thinking = wait.until(EC.presence_of_element_located((By.XPATH,  "//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_thinking_v2_e272afd4f8d4bbd25efe.gif')]")))
-#div class="ProseMirror"/p
-#button aria-label="Send Message"
+
 while 1:
-    ori = input(":")
-    if ori:
-   #for line in sys.stdin:
-   #    message = line.strip()
-   #    ori = message.replace("(-:]", " ")
-       #work.send_keys(ori)
+   #ori = input(":")
+   #if ori:
+    for line in sys.stdin:
+        message = line.strip()
+        ori = message.replace("(-:]", " ")
         input_space.send_keys(ori)
-       #driver.find_element(By.XPATH, "//button[@mattooltip='Submit']").click()
         driver.find_element(By.XPATH, "//button[@aria-label='Send Message']").click()
-       #ini_source = driver.page_source
         if ori:
             try:
-               #img_thinking = wait.until(EC.presence_of_element_located((By.XPATH,  "//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_thinking_v2_e272afd4f8d4bbd25efe.gif')]")))
-               #print("get img_thinking")
-               #copy_icon = wait.until(EC.presence_of_element_located((By.XPATH,  "//div[@class='contents']/button/svg[last()][contains(@xmlns, 'http://www.w3.org/2000/svg')]")))
-               #print("get last copy_icon")
-               #retry_icon = wait.until(EC.presence_of_element_located((By.XPATH,  "//button[contains(text(), 'Retry')]")))
                 retry_icon = wait.until(EC.presence_of_element_located((By.XPATH,  "//svg:path[@d= 'M224,128a96,96,0,0,1-94.71,96H128A95.38,95.38,0,0,1,62.1,197.8a8,8,0,0,1,11-11.63A80,80,0,1,0,71.43,71.39a3.07,3.07,0,0,1-.26.25L44.59,96H72a8,8,0,0,1,0,16H24a8,8,0,0,1-8-8V56a8,8,0,0,1,16,0V85.8L60.25,60A96,96,0,0,1,224,128Z']")))
-                print("get last retry_icon")
-               #img = wait.until(EC.presence_of_element_located((By.XPATH,  "//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')]")))
-               #print("get img")
-                
-               #reverse_2_content = driver.find_element(By.XPATH,  "//div[@class='contents'][last()-1]")
-               #reverse_2_content = wait.until(EC.presence_of_element_located((By.XPATH,  "//div[@class='contents'][last()-1]")))
-               #text = reverse_2_content.get_attribute("textContent")
-
+               #print("get last retry_icon")
                 content = retry_icon.find_element(By.XPATH,  "preceding::div[2]")
-               #text = content.text
                 text = content.get_attribute("textContent")
+                text = text.replace("\n","(-:]")
                 print(text)
-
-
-              # response = img.find_element(By.XPATH,  "ancestor::model-response")
-              ##print("get response content img")
-              # google  = response.find_element(By.XPATH,  ".//button[@aria-label='Google it']")
-              # 
-              # contents = response.find_elements(By.XPATH, ".//message-content")
-              # texts= "\n".join(content.text for content in contents)
-              # text = "(-:]".join(line for line in texts.splitlines() if line)
-
-              # text = response.text
-              # text = text.replace("\n","(-:]")
-              # text = text.replace("View other drafts","")
-              # text = text.replace("Regenerate draft","")
-              # text = text.replace("thumb_up","")
-              # text = text.replace("thumb_down","")
-              # text = text.replace("upload","")
-              # text = text.replace("Google it","")
-              # text = text.replace("more_vert","")
-              # text = "(-:]".join(line for line in text.splitlines() if line)
-              # print(text)
                 sys.stdout.flush()
-
+                
+                # Save cookie
                 cookies = driver.get_cookies()
                 with open("./3.json", "w", newline='') as outputdata:
                     json.dump(cookies, outputdata)
