@@ -74,8 +74,13 @@ while 1:
                #img = wait.until(EC.presence_of_element_located((By.XPATH,  "//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')]")))
                #print("get img")
                 
-                reverse_2_content = driver.find_element(By.XPATH,  "//div[@class='contents'][last()-1]")
-                text = reverse_2_content.text  
+               #reverse_2_content = driver.find_element(By.XPATH,  "//div[@class='contents'][last()-1]")
+               #reverse_2_content = wait.until(EC.presence_of_element_located((By.XPATH,  "//div[@class='contents'][last()-1]")))
+               #text = reverse_2_content.get_attribute("textContent")
+
+                content = retry_icon.find_element(By.XPATH,  "preceding::div[2]")
+               #text = content.text
+                text = content.get_attribute("textContent")
                 print(text)
 
 
