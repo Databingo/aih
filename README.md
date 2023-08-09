@@ -66,7 +66,7 @@ $ git clone https://github.com/Databingo/aih
 $ go clean -cache && go clean -modcache 
 $ cd aih && go mod tidy && go build 
 ```
-- For Bard
+- For Bard & Claude
 ```
 $ pip3 install undetected_chromedriver 
 ```
