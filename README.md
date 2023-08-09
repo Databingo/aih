@@ -11,7 +11,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 ## Command list
 | Command    | Operation|
 |------------|----------|
-|/           | Select AI mode of Bard/Bing/ChatGPT/Claude|
+|.           | Select AI mode of Bard/Bing/ChatGPT/Claude|
 |.key        | Set cookie of Bard/Bing/ChatGPT/Claude|
 |.proxy      | Set proxy, for example: socks5://127.0.0.1:7890|
 |<<          | Start multiple lines input mode|
@@ -30,33 +30,17 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 |.exit       | Exit Aih|
 
 
-
 ## Prerequisites
 - For ChatGPT Web (free) you should have a free account to obtain a logged-in `accessToken` from [OpenAI](https://chat.openai.com/api/auth/session).
 - For Bing Chat, you need to have a free [Microsoft account](https://account.microsoft.com) in order to obtain a cookie.
 - For Google Bard, you should have a free [Google account](https://account.google.com) to obtain a cookie, [Chrome Browser](https://google.com/chrome), `python3`, and `undected_chromedriver`.
 - For ChatGPT API (paid) you should have a paid API on [Billing](https://platform.openai.com/account/billing/overview). 
-- ~For Claude, you need a [Slack account](https://slack.com/get-started#/createnew) to [add Claude](https://www.anthropic.com/claude-in-slack) for a `channel_id`, then create an app to get your `User OAuth Token` .~ unstable
+- For Claude, you need login to https://claude.ai.
 
 ## How to get Cookies
 - For Google Bard cookie, same as Bing.
+- For Cloude cookie, same as Bing.
 - For Bing Chat cookie you can log in and then use [Cookie-Editor](https://cookie-editor.cgagnier.ca) -> click Cookie-Editor icon -> click "Export" -> click "Export as JSON" (This saves your cookies to the clipboard), then type `.key` to choose `Set Bing Chat Cookie` in Aih, you will see a prompt that says **"Please type << then paste Bing cookie then type >> then press Enter"**, by doing so you can set Bing Chat cookie via multiple lines input mode.
-- For Cloude in Slack, [add Claude in your Slack](https://www.anthropic.com/claude-in-slack), then [create an Slack App](https://api.slack.com/apps) by click `Create New App`, then click `From scratch`, then click `Create App`, find `OAuth & Permissions`->`Scope`->`User Token Scope`, add these promisions: 
-    - channels:history 
-    - channels:read
-    - chat:write
-    - files:write
-    - groups:history
-    - groups:read
-    - im:history
-    - im:read
-    - im:write
-    - mpim:history
-    - mpim:read
-    - team:read
-    - users:read
-
-then click `Install to Workspace` to find your `User OAuth Token`; You can obtain your `channel_id` by open the webside UI of chating with Apps -> Claude in Slack via format of `https://app.slack.com/client/xxxxx/yyyyy`, then `yyyyy` is it.  
 
 ## Tips
 - The returned text will be auotmatically saved in your system clipboard, so you can paste it anywhere directly.
@@ -68,16 +52,6 @@ then click `Install to Workspace` to find your `User OAuth Token`; You can obtai
 |------------|----------|
 |.speak      | Voice speak context(macOS only)|
 |.quiet      | Disable voice output |
-
-## The previous version's commands could still be used for accommondation.
-| Command    | Operation|
-|------------|----------|
-|.bard       | Bard|
-|.bing       | Bing|
-|.chat       | ChatGPT Web (free)|
-|.chatapi    | ChatGPT API (pay) |
-|.chatapi.   | Choose GPT3.5(default)/GPT4/GPT432K mode|
-|.claude     | Claude (Slack) |
 
 ## Supported Operating Systems:
 - Mac

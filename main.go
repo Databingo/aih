@@ -14,7 +14,6 @@ import (
 	"github.com/peterh/liner"
 	"github.com/rivo/tview"
 	openai "github.com/sashabaranov/go-openai"
-	"github.com/slack-go/slack"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 	"io"
@@ -189,9 +188,6 @@ func main() {
 		cmd_bard = exec.Command("python3", "-u", pf_bard.Name(), "load")
 		stdout_bard, _ = cmd_bard.StdoutPipe()
 		stdin_bard, _ = cmd_bard.StdinPipe()
-		//	if err := cmd_bard.Start(); err != nil {
-		//		panic(err)
-		//	}
 
 		go func(cmd *exec.Cmd) {
 			if err := cmd.Start(); err != nil {
@@ -242,9 +238,6 @@ func main() {
 		cmd_claude2 = exec.Command("python3", "-u", pf_claude.Name(), "load")
 		stdout_claude2, _ = cmd_claude2.StdoutPipe()
 		stdin_claude2, _ = cmd_claude2.StdinPipe()
-		//if err := cmd_claude2.Start(); err != nil {
-		//	panic(err)
-		//}
 
 		go func(cmd *exec.Cmd) {
 			if err := cmd.Start(); err != nil {
@@ -290,15 +283,6 @@ func main() {
 		<-ch
 	}
 
-	// Set up client fo Claude
-	claude_user_token := gjson.Get(string(aih_json), "claude_user_token").String()
-	claude_channel_id := gjson.Get(string(aih_json), "claude_channel_id").String()
-	var claude_client *slack.Client
-	if claude_user_token != "" {
-		claude_client = slack.New(claude_user_token)
-		//claude_client := slack.New(userToken, slack.OptionAppLevelToken(botToken))
-	}
-
 	// Clean screen
 	clear()
 
@@ -316,8 +300,7 @@ func main() {
 	speak := 0
 	role := ".bard"
 	uInput := ""
-	//last_ask := "bard"
-	price := ""
+	//price := ""
 	chat_mode := openai.GPT3Dot5Turbo
 	chat_completion := true
 
@@ -351,38 +334,9 @@ func main() {
 			fmt.Println("Please restart Aih for using proxy")
 			Liner.Close()
 			syscall.Exit(0)
-		case ".bardkey":
-			//bard_session_id = ""
-			role = ".bard"
-			goto BARD
-		case ".chatkey":
-			chat_access_token = ""
-			role = ".chat"
-			goto CHAT
-		case ".chatapikey":
-			OpenAI_Key = ""
-			role = ".chatapi"
-			goto CHATAPI
-		case ".bingkey":
-			_ = os.Remove("./cookies/1.json")
-			role = ".bing"
-			goto BING
-		case ".claudekey":
-			claude_user_token = ""
-			claude_channel_id = ""
-			role = ".claude"
-			goto CLAUDE
-		case ".claude1key":
-			goto CLAUDE1
 		case ".help":
 			fmt.Println("                           ")
-			//fmt.Println(" .bard           Bard")
-			//fmt.Println(" .bing           Bing")
-			//fmt.Println(" .chat           ChatGPT Web (free)")
-			//fmt.Println(" .chatapi        ChatGPT Api (pay)")
-			//fmt.Println(" .chatapi.       Choose GPT3.5(default)/GPT4/GPT432K mode")
-			//fmt.Println(" .claude         Claude (Slack)")
-			fmt.Println(" /               Select AI mode of Bard/Bing/ChatGPT/Claude")
+			fmt.Println(" .               Select AI mode of Bard/Bing/ChatGPT/Claude")
 			fmt.Println(" .key            Set cookie of Bard/Bing/ChatGPT/Claude")
 			fmt.Println(" .proxy          Set proxy")
 			fmt.Println(" <<              Start multiple lines input")
@@ -401,14 +355,8 @@ func main() {
 			fmt.Println(" .new            New conversation of ChatGPT")
 			fmt.Println(" .speak          Voice speak context (MasOS only)")
 			fmt.Println(" .quiet          Not speak")
-			fmt.Println(" .eng            Play movie clips")
 			fmt.Println("                           ")
 			fmt.Println("                           ")
-			//fmt.Println(".bardkey        Reset Google Bard cookie")
-			//fmt.Println(".bingkey        Reset Bing Chat coolie")
-			//fmt.Println(".chatkey        Reset ChatGPT Web accessToken")
-			//fmt.Println(".chatapikey     Reset ChatGPT Api key")
-			//fmt.Println(".claudekey      Reset Claude Slack keys")
 			continue
 		case ".c", ".clear":
 			clear()
@@ -446,35 +394,35 @@ func main() {
 			used_tokens = 0
 			left_tokens = max_tokens - used_tokens
 			continue
-		case ".bard":
-			role = ".bard"
-			left_tokens = 0
-			continue
-		case ".bing":
-			role = ".bing"
-			left_tokens = 0
-			continue
-		case ".chat":
-			role = ".chat"
-			left_tokens = 0
-			continue
-		case ".chatapi":
-			role = ".chatapi"
-			left_tokens = max_tokens - used_tokens
-			continue
-		case ".claude":
-			role = ".claude"
-			left_tokens = 0
-			continue
-		case "/":
-			prom := promptui.Select{
+		//case ".bard":
+		//	role = ".bard"
+		//	left_tokens = 0
+		//	continue
+		//case ".bing":
+		//	role = ".bing"
+		//	left_tokens = 0
+		//	continue
+		//case ".chat":
+		//	role = ".chat"
+		//	left_tokens = 0
+		//	continue
+		//case ".chatapi":
+		//	role = ".chatapi"
+		//	left_tokens = max_tokens - used_tokens
+		//	continue
+		//case ".claude":
+		//	role = ".claude"
+		//	left_tokens = 0
+		//	continue
+	        case ".", "/":
+			proms := promptui.Select{
 				Label: "Select AI mode to chat",
 				Size:  10,
 				Items: []string{
 					"Bard",
 					"Bing",
-					"ChatGPT Web (free)",
-					"Claude (Slack)",
+					"ChatGPT",
+					"Claude",
 					"ChatGPT API gpt-3.5-turbo, $0.002/1K tokens",
 					"ChatGPT API gpt-4 8K Prompt, $0.03/1K tokens",
 					"ChatGPT API gpt-4 8K Completion, $0.06/1K tokens",
@@ -484,7 +432,7 @@ func main() {
 				},
 			}
 
-			_, ai, err := prom.Run()
+			_, ai, err := proms.Run()
 			if err != nil {
 				panic(err)
 			}
@@ -498,11 +446,11 @@ func main() {
 				role = ".bing"
 				left_tokens = 0
 				continue
-			case "ChatGPT Web (free)":
+			case "ChatGPT":
 				role = ".chat"
 				left_tokens = 0
 				continue
-			case "Claude (Slack)":
+			case "Claude":
 				role = ".claude"
 				left_tokens = 0
 				continue
@@ -558,7 +506,7 @@ func main() {
 					"Set Bing Chat Cookie",
 					"Set ChatGPT Web Token",
 					"Set ChatGPT API Key",
-					"Set Claude Slack Key",
+					"Set Claude Cookie",
 					"Exit",
 				},
 			}
@@ -573,20 +521,6 @@ func main() {
 				//bard_session_id = ""
 				if bjs != "" {
 					cmd_bard.Process.Kill()
-				}
-				switch runtime.GOOS {
-				case "linux", "darwin":
-					cmd := exec.Command("pkill", "-f", "undetected_chromedriver")
-					err = cmd.Run()
-					if err != nil {
-						fmt.Println(err)
-					}
-				case "windows":
-					cmd := exec.Command("taskkill", "/IM", "undetected_chromedriver", "/F")
-					err = cmd.Run()
-					if err != nil {
-						fmt.Println(err)
-					}
 				}
 				bjs = ""
 				role = ".bard"
@@ -603,80 +537,22 @@ func main() {
 				_ = os.Remove("./cookies/1.json")
 				role = ".bing"
 				goto BING
-			case "Set Claude Slack Key":
-				claude_user_token = ""
-				claude_channel_id = ""
+			case "Set Claude  Cookie":
+				if c2js != "" {
+					cmd_claude2.Process.Kill()
+				}
+                                c2js  = ""
 				role = ".claude"
 				goto CLAUDE
 			case "Exit":
 				continue
 			}
 
-		case ".chatapi.", ".price":
-			role = ".chatapi"
-			prompt := promptui.Select{
-				Label: "Select model of OpenAI according to the offical pricing",
-				Size:  6,
-				Items: []string{
-					"gpt-3.5-turbo, $0.002/1K tokens",
-					"gpt-4 8K Prompt, $0.03/1K tokens",
-					"gpt-4 8K Completion, $0.06/1K tokens",
-					"gpt-4 32K Prompt, $0.06/1K tokens",
-					"gpt-4 32K Completion, $0.12/1K tokens",
-					"Exit",
-				},
-			}
-
-			_, price, err = prompt.Run()
-			if err != nil {
-				panic(err)
-			}
-
-			switch price {
-			case "gpt-3.5-turbo, $0.002/1K tokens":
-				chat_mode = openai.GPT3Dot5Turbo
-				max_tokens = 4097
-				used_tokens = 0
-				left_tokens = max_tokens - used_tokens
-				chat_completion = true
-			case "gpt-4 8K Prompt, $0.03/1K tokens":
-				chat_mode = openai.GPT4
-				max_tokens = 8192
-				used_tokens = 0
-				left_tokens = max_tokens - used_tokens
-				chat_completion = false
-			case "gpt-4 8K Completion, $0.06/1K tokens":
-				chat_mode = openai.GPT4
-				max_tokens = 8192
-				used_tokens = 0
-				left_tokens = max_tokens - used_tokens
-				chat_completion = true
-			case "gpt-4 32K Prompt, $0.06/1K tokens":
-				chat_mode = openai.GPT432K
-				max_tokens = 32768
-				used_tokens = 0
-				left_tokens = max_tokens - used_tokens
-				chat_completion = false
-			case "gpt-4 32K Completion, $0.12/1K tokens":
-				chat_mode = openai.GPT432K
-				max_tokens = 32768
-				used_tokens = 0
-				left_tokens = max_tokens - used_tokens
-				chat_completion = true
-			case "Exit":
-				continue
-			}
-			continue
 		case ".speak":
 			speak = 1
 			continue
 		case ".quiet":
 			speak = 0
-			continue
-		case ".eng":
-			role = ".eng"
-			speak = 0
-			left_tokens = 0
 			continue
 		default:
 			// Re-read user input history in case other process alternated
@@ -752,6 +628,7 @@ func main() {
 
 					scanner_bard = bufio.NewScanner(stdout_bard)
 					login_bard = false
+		                        relogin_bard = false
 					go func(login_bard, relogin_bard *bool) {
 						for scanner_bard.Scan() {
 							RESP = scanner_bard.Text()
@@ -831,14 +708,11 @@ func main() {
 					continue
 				}
 				if c2js != "" {
-					//cmd_claude2 = exec.Command("python3", "-u", "./claude2.py", "load")
+				//cmd_claude2 = exec.Command("python3", "-u", "./claude2.py", "load")
 					cmd_claude2 = exec.Command("python3", "-u", pf_claude.Name(), "load")
 					stdout_claude2, _ = cmd_claude2.StdoutPipe()
 					stdin_claude2, _ = cmd_claude2.StdinPipe()
 
-					//if err := cmd_claude2.Start(); err != nil {
-					//	panic(err)
-					//}
 					go func(cmd *exec.Cmd) {
 						if err := cmd.Start(); err != nil {
 							panic(err)
@@ -846,6 +720,7 @@ func main() {
 					}(cmd_claude2)
 					scanner_claude2 = bufio.NewScanner(stdout_claude2)
 					login_claude2 = false
+		                        relogin_claude2 = false
 					go func(login_claude2, relogin_claude2 *bool) {
 						for scanner_claude2.Scan() {
 							RESP = scanner_claude2.Text()
@@ -946,14 +821,11 @@ func main() {
 				continue
 			}
 			RESP = strings.TrimSpace(as.Answer.GetAnswer())
-			//printer_bing.Println(RESP)
 			save2clip_board(RESP)
 			printer(color_bing, RESP, false)
-			//last_ask = "bing"
 		}
 
 	CHAT:
-		//if role == ".chat" || (role == ".eng" && last_ask == "chat") {
 		if role == ".chat" {
 			if chat_access_token == "" {
 				chat_access_token, _ = Liner.Prompt("Please input your ChatGPT accessToken: ")
@@ -984,17 +856,14 @@ func main() {
 			if RESP == "" {
 				fmt.Println("ChatGPT Web error, please renew ChatGPT cookie & check Internet accessing.")
 			} else {
-				//printer_chat.Println(RESP)
 				save2clip_board(RESP)
 				printer(color_chat, RESP, false)
-				//last_ask = "chat"
 
 			}
 
 		}
 
 	CHATAPI:
-		//if role == ".chatapi" || (role == ".eng" && last_ask == "chatapi") {
 		if role == ".chatapi" {
 			// Check ChatGPT API Key
 			if OpenAI_Key == "" {
@@ -1050,88 +919,6 @@ func main() {
 			//printer_chat.Println(RESP)
 			printer(color_chatapi, RESP, false)
 
-			//last_ask = "chatapi"
-		}
-	CLAUDE1:
-		//if role == ".claude" || (role == ".eng" && last_ask == "claude") {
-		if role == ".claude1" {
-			if claude_user_token == "" {
-				claude_user_token, _ = Liner.Prompt("Please input your claude_user_token: ")
-				if claude_user_token == "" {
-					continue
-				}
-				aihj, err := ioutil.ReadFile("aih.json")
-				nj, _ := sjson.Set(string(aihj), "claude_user_token", claude_user_token)
-				err = ioutil.WriteFile("aih.json", []byte(nj), 0644)
-				if err != nil {
-					fmt.Println("Save failed.")
-				}
-				// Renew Claude client with user token
-				claude_client = slack.New(claude_user_token)
-			}
-
-			if claude_channel_id == "" {
-				claude_channel_id, _ = Liner.Prompt("Please input your claude_channel_id: ")
-				if claude_channel_id == "" {
-					continue
-				}
-				aihj, err := ioutil.ReadFile("aih.json")
-				nj, _ := sjson.Set(string(aihj), "claude_channel_id", claude_channel_id)
-				err = ioutil.WriteFile("aih.json", []byte(nj), 0644)
-				if err != nil {
-					fmt.Println("Save failed.")
-				}
-				continue
-			}
-
-			// Prepare history parameter
-			claude_hist_para := &slack.GetConversationHistoryParameters{
-				ChannelID: claude_channel_id,
-				Limit:     1,
-			}
-
-			// Handle Claude error to recover
-			var rsp string
-			RESP = func(slack_client *slack.Client, slack_channel string) string {
-				defer func(rp *string) {
-					if r := recover(); r != nil {
-						fmt.Println("Claude error, please check Claude user token, channel id & Internet accessing.")
-						*rp = ""
-					}
-				}(&RESP)
-
-				// Send message
-				_, ts, _ := slack_client.PostMessage(slack_channel, slack.MsgOptionText(userInput, false))
-
-				// Parameter for fetch the latest return message
-				claude_hist_para.Oldest = ts
-				claude_hist_para.Inclusive = false
-
-				for {
-					time.Sleep(1 * time.Second)
-					claude_history, err := slack_client.GetConversationHistory(claude_hist_para)
-					//fmt.Println(">>>", claude_history.Messages[0])
-					if err != nil {
-						fmt.Printf("Error history: %v\n", err)
-					}
-					if len(claude_history.Messages) == 0 {
-						continue
-					} // Wait Claude server to response
-					rsp = claude_history.Messages[0].Text
-					if !strings.Contains(rsp, "_Typing") {
-						rsp = strings.Replace(rsp, "%!(EXTRA string= ", "", -1)
-						rsp = strings.Trim(rsp, " ")
-						//last_ask = "claude"
-						break
-					}
-				}
-				return rsp
-			}(claude_client, claude_channel_id)
-
-			if RESP != "" {
-				save2clip_board(RESP)
-				printer(color_claude, RESP, false)
-			}
 		}
 
 		// -------------for all AI's RESP---------------
@@ -1168,27 +955,6 @@ func main() {
 
 			}()
 		}
-
-		// Play video
-		//if role == ".eng" {
-
-		//	// Match the regular expression against the Python list.
-		//	re := regexp.MustCompile(`(?s)\[[^\[\]]*\]`)
-		//	match := re.FindAllString(RESP, -1)
-		//	sort.Slice(match, func(i, j int) bool {
-		//		return len(match[i]) > len(match[j])
-		//	})
-
-		//	if match != nil {
-		//		lt_str := match[0]
-		//		lt_str = lt_str[1 : len(lt_str)-1]
-		//		lt_str = strings.Replace(lt_str, `"`, "", -1)
-		//		lt_str = strings.Replace(lt_str, `'`, "", -1)
-		//		ar := strings.Split(lt_str, ",")
-		//		go eng.Play(ar)
-		//	}
-
-		//}
 
 	}
 }
@@ -1340,7 +1106,7 @@ chrome_options.add_argument("--profile-directory=Default")
 chrome_options.add_argument("--ignore-certificate-errors")
 chrome_options.add_argument("--disable-plugins-discovery")
 chrome_options.add_argument("--incognito")
-#chrome_options.add_argument("--headless")
+chrome_options.add_argument("--headless")
 chrome_options.add_argument("user_agent=DN")
 driver = uc.Chrome(options=chrome_options)
 
@@ -1430,7 +1196,7 @@ chrome_options.add_argument("--profile-directory=Default")
 chrome_options.add_argument("--ignore-certificate-errors")
 chrome_options.add_argument("--disable-plugins-discovery")
 chrome_options.add_argument("--incognito")
-#chrome_options.add_argument("--headless")
+chrome_options.add_argument("--headless")
 chrome_options.add_argument("user_agent=DN")
 driver = uc.Chrome(options=chrome_options)
 
@@ -1447,6 +1213,8 @@ driver.get("https://claude.ai")
 wait = WebDriverWait(driver, 200)
 try:
     work = wait.until(EC.visibility_of_element_located((By.XPATH,  "//p[@data-placeholder='Message Claude or search past chats...']")))
+    driver.find_element(By.XPATH, "//div[contains(text(), 'Start a new chat')]").click()
+    input_space = wait.until(EC.visibility_of_element_located((By.XPATH,  "//p[@data-placeholder='Message Claude...']")))
     print("login work")                                                
    #driver.find_element(By.XPATH, "//button[@class='sc-dAOort']").click()
 except:
@@ -1454,9 +1222,6 @@ except:
    #open("./3.json", "w").close()
     driver.quit()
     os.exit()
-
-driver.find_element(By.XPATH, "//div[contains(text(), 'Start a new chat')]").click()
-input_space = wait.until(EC.visibility_of_element_located((By.XPATH,  "//p[@data-placeholder='Message Claude...']")))
 
 while 1:
    #ori = input(":")
