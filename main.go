@@ -414,7 +414,7 @@ func main() {
 			printer(color_chat, string(cnt), true)
 			continue
 		case ".exit":
-			cmd_bard.Process.Kill()
+			//cmd_bard.Process.Kill()
 			cmd_claude2.Process.Kill()
 			switch runtime.GOOS {
 			case "linux", "darwin":
