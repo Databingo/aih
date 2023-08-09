@@ -194,13 +194,21 @@ func main() {
 	var scanner_bard *bufio.Scanner
 	channel_bard_answer := make(chan string)
 	if bjs != "" {
-		cmd_bard = exec.Command("python3", "-u", "./uc.py", "load")
+		cmd_bard = exec.Command("python3", "-u", "./bard.py", "load")
+		//cmd_bard = exec.Command("python3", "-u", "./uc.py", "load")
 		//cmd_bard = exec.Command("python3", "-u", pf.Name(), "load")
 		stdout_bard, _ = cmd_bard.StdoutPipe()
 		stdin_bard, _ = cmd_bard.StdinPipe()
-		if err := cmd_bard.Start(); err != nil {
+	//	if err := cmd_bard.Start(); err != nil {
+	//		panic(err)
+	//	}
+
+		go func(cmd *exec.Cmd){
+		if err := cmd.Start(); err != nil {
 			panic(err)
-		}
+		       }
+		}(cmd_bard)
+
 		login_bard = false
 		relogin_bard = false
 		go func(login_bard, relogin_bard *bool) {
@@ -725,13 +733,19 @@ func main() {
 					continue
 				}
 				if bjs != "" {
-					cmd_bard = exec.Command("python3", "-u", "./uc.py", "load")
+					cmd_bard = exec.Command("python3", "-u", "./bard.py", "load")
 					//cmd_bard = exec.Command("python3", "-u", pf.Name(), "load")
 					stdout_bard, _ = cmd_bard.StdoutPipe()
 					stdin_bard, _ = cmd_bard.StdinPipe()
-					if err := cmd_bard.Start(); err != nil {
-						panic(err)
-					}
+					//if err := cmd_bard.Start(); err != nil {
+					//	panic(err)
+					//}
+	                        	go func(cmd *exec.Cmd){
+	                        	if err := cmd.Start(); err != nil {
+	                        		panic(err)
+	                        	       }
+	                        	}(cmd_bard)
+
 					scanner_bard = bufio.NewScanner(stdout_bard)
 					login_bard = false
 					go func(login_bard, relogin_bard *bool) {
