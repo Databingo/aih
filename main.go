@@ -194,8 +194,8 @@ func main() {
 	var scanner_bard *bufio.Scanner
 	channel_bard_answer := make(chan string)
 	if bjs != "" {
-		//cmd_bard = exec.Command("python3", "-u", "./uc.py", "load")
-		cmd_bard = exec.Command("python3", "-u", pf.Name(), "load")
+		cmd_bard = exec.Command("python3", "-u", "./uc.py", "load")
+		//cmd_bard = exec.Command("python3", "-u", pf.Name(), "load")
 		stdout_bard, _ = cmd_bard.StdoutPipe()
 		stdin_bard, _ = cmd_bard.StdinPipe()
 		if err := cmd_bard.Start(); err != nil {
@@ -725,8 +725,8 @@ func main() {
 					continue
 				}
 				if bjs != "" {
-					//cmd_bard = exec.Command("python3", "-u", "./uc.py", "load")
-					cmd_bard = exec.Command("python3", "-u", pf.Name(), "load")
+					cmd_bard = exec.Command("python3", "-u", "./uc.py", "load")
+					//cmd_bard = exec.Command("python3", "-u", pf.Name(), "load")
 					stdout_bard, _ = cmd_bard.StdoutPipe()
 					stdin_bard, _ = cmd_bard.StdinPipe()
 					if err := cmd_bard.Start(); err != nil {
@@ -1317,7 +1317,7 @@ chrome_options.add_argument("--profile-directory=Default")
 chrome_options.add_argument("--ignore-certificate-errors")
 chrome_options.add_argument("--disable-plugins-discovery")
 chrome_options.add_argument("--incognito")
-chrome_options.add_argument("--headless")
+#chrome_options.add_argument("--headless")
 chrome_options.add_argument("user_agent=DN")
 driver = uc.Chrome(options=chrome_options)
 
@@ -1336,7 +1336,7 @@ try:
     print("login work")
 except:
     print("relogin")
-    open("./2.json", "w").close()
+   #open("./2.json", "w").close()
     driver.quit()
     os.exit()
 
