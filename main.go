@@ -6,11 +6,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
-	"github.com/atotto/clipboard"
-	"github.com/google/uuid"
 	"github.com/Databingo/EdgeGPT-Go"
+	"github.com/atotto/clipboard"
 	"github.com/gdamore/tcell/v2"
+	"github.com/google/uuid"
 	"github.com/manifoldco/promptui"
 	"github.com/peterh/liner"
 	"github.com/rivo/tview"
@@ -18,6 +17,7 @@ import (
 	"github.com/slack-go/slack"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -164,20 +164,11 @@ func main() {
 	var conversation_id string
 	var parent_id string
 
-	// Set up client of Google Bard (not work since 2023.6)
-	//	bard_session_id := gjson.Get(string(aih_json), "__Secure-lPSID").String()
-	//	bard_client := bard.NewBard(bard_session_id, "", "sn")
-	//	bardOptions := bard.Options{
-	//		ConversationID: "",
-	//		ResponseID:     "",
-	//		ChoiceID:       "",
-	//	}
-
 	// Set up client of Bard (chromedriver version)
-	pf, _ := os.CreateTemp("", "pf.py")
-	_, _  = pf.WriteString(ps)
-	_ = pf.Close()
-	defer os.Remove(pf.Name())
+	pf_bard, _ := os.CreateTemp("", "pf_bard.py")
+	_, _ = pf_bard.WriteString(ps_bard)
+	_ = pf_bard.Close()
+	defer os.Remove(pf_bard.Name())
 
 	// Read cookie
 	bard_json, err := ioutil.ReadFile("./2.json")
@@ -194,19 +185,18 @@ func main() {
 	var scanner_bard *bufio.Scanner
 	channel_bard_answer := make(chan string)
 	if bjs != "" {
-		cmd_bard = exec.Command("python3", "-u", "./bard.py", "load")
-		//cmd_bard = exec.Command("python3", "-u", "./uc.py", "load")
-		//cmd_bard = exec.Command("python3", "-u", pf.Name(), "load")
+		//cmd_bard = exec.Command("python3", "-u", "./bard.py", "load")
+		cmd_bard = exec.Command("python3", "-u", pf_bard.Name(), "load")
 		stdout_bard, _ = cmd_bard.StdoutPipe()
 		stdin_bard, _ = cmd_bard.StdinPipe()
-	//	if err := cmd_bard.Start(); err != nil {
-	//		panic(err)
-	//	}
+		//	if err := cmd_bard.Start(); err != nil {
+		//		panic(err)
+		//	}
 
-		go func(cmd *exec.Cmd){
-		if err := cmd.Start(); err != nil {
-			panic(err)
-		       }
+		go func(cmd *exec.Cmd) {
+			if err := cmd.Start(); err != nil {
+				panic(err)
+			}
 		}(cmd_bard)
 
 		login_bard = false
@@ -227,10 +217,9 @@ func main() {
 		}(&login_bard, &relogin_bard)
 	}
 
-
 	// Set up client of Claude2 (chromedriver version)
 	pf_claude, _ := os.CreateTemp("", "pf_claude.py")
-	_, _  = pf_claude.WriteString(ps_claude)
+	_, _ = pf_claude.WriteString(ps_claude)
 	_ = pf_claude.Close()
 	defer os.Remove(pf_claude.Name())
 
@@ -253,9 +242,16 @@ func main() {
 		cmd_claude2 = exec.Command("python3", "-u", pf_claude.Name(), "load")
 		stdout_claude2, _ = cmd_claude2.StdoutPipe()
 		stdin_claude2, _ = cmd_claude2.StdinPipe()
-		if err := cmd_claude2.Start(); err != nil {
-			panic(err)
-		}
+		//if err := cmd_claude2.Start(); err != nil {
+		//	panic(err)
+		//}
+
+		go func(cmd *exec.Cmd) {
+			if err := cmd.Start(); err != nil {
+				panic(err)
+			}
+		}(cmd_claude2)
+
 		login_claude2 = false
 		relogin_claude2 = false
 		go func(login_claude2, relogin_claude2 *bool) {
@@ -422,17 +418,21 @@ func main() {
 			printer(color_chat, string(cnt), true)
 			continue
 		case ".exit":
-			//cmd_bard.Process.Kill()
+			cmd_bard.Process.Kill()
 			cmd_claude2.Process.Kill()
 			switch runtime.GOOS {
 			case "linux", "darwin":
 				cmd := exec.Command("pkill", "-f", "undetected_chromedriver")
 				err = cmd.Run()
-				if err != nil { fmt.Println(err) }
+				if err != nil {
+					fmt.Println(err)
+				}
 			case "windows":
 				cmd := exec.Command("taskkill", "/IM", "undetected_chromedriver", "/F")
 				err = cmd.Run()
-				if err != nil { fmt.Println(err) }
+				if err != nil {
+					fmt.Println(err)
+				}
 			}
 
 			return
@@ -572,18 +572,22 @@ func main() {
 			case "Set Google Bard Cookie":
 				//bard_session_id = ""
 				if bjs != "" {
-			        cmd_bard.Process.Kill()
-			       }
-			        switch runtime.GOOS {
-			        case "linux", "darwin":
-			        	cmd := exec.Command("pkill", "-f", "undetected_chromedriver")
-			        	err = cmd.Run()
-			        	if err != nil { fmt.Println(err) }
-			        case "windows":
-			        	cmd := exec.Command("taskkill", "/IM", "undetected_chromedriver", "/F")
-			        	err = cmd.Run()
-			        	if err != nil { fmt.Println(err) }
-			        }
+					cmd_bard.Process.Kill()
+				}
+				switch runtime.GOOS {
+				case "linux", "darwin":
+					cmd := exec.Command("pkill", "-f", "undetected_chromedriver")
+					err = cmd.Run()
+					if err != nil {
+						fmt.Println(err)
+					}
+				case "windows":
+					cmd := exec.Command("taskkill", "/IM", "undetected_chromedriver", "/F")
+					err = cmd.Run()
+					if err != nil {
+						fmt.Println(err)
+					}
+				}
 				bjs = ""
 				role = ".bard"
 				goto BARD
@@ -733,18 +737,18 @@ func main() {
 					continue
 				}
 				if bjs != "" {
-					cmd_bard = exec.Command("python3", "-u", "./bard.py", "load")
-					//cmd_bard = exec.Command("python3", "-u", pf.Name(), "load")
+					//cmd_bard = exec.Command("python3", "-u", "./bard.py", "load")
+					cmd_bard = exec.Command("python3", "-u", pf_bard.Name(), "load")
 					stdout_bard, _ = cmd_bard.StdoutPipe()
 					stdin_bard, _ = cmd_bard.StdinPipe()
 					//if err := cmd_bard.Start(); err != nil {
 					//	panic(err)
 					//}
-	                        	go func(cmd *exec.Cmd){
-	                        	if err := cmd.Start(); err != nil {
-	                        		panic(err)
-	                        	       }
-	                        	}(cmd_bard)
+					go func(cmd *exec.Cmd) {
+						if err := cmd.Start(); err != nil {
+							panic(err)
+						}
+					}(cmd_bard)
 
 					scanner_bard = bufio.NewScanner(stdout_bard)
 					login_bard = false
@@ -831,9 +835,15 @@ func main() {
 					cmd_claude2 = exec.Command("python3", "-u", pf_claude.Name(), "load")
 					stdout_claude2, _ = cmd_claude2.StdoutPipe()
 					stdin_claude2, _ = cmd_claude2.StdinPipe()
-					if err := cmd_claude2.Start(); err != nil {
-						panic(err)
-					}
+
+					//if err := cmd_claude2.Start(); err != nil {
+					//	panic(err)
+					//}
+					go func(cmd *exec.Cmd) {
+						if err := cmd.Start(); err != nil {
+							panic(err)
+						}
+					}(cmd_claude2)
 					scanner_claude2 = bufio.NewScanner(stdout_claude2)
 					login_claude2 = false
 					go func(login_claude2, relogin_claude2 *bool) {
@@ -1309,8 +1319,7 @@ func printer(colour tcell.Color, context string, history bool) {
 
 }
 
-
-var ps = `
+var ps_bard = `
 import undetected_chromedriver as uc
 #from selenium import webdriver as uc
 import random,time,os,sys
@@ -1401,8 +1410,7 @@ while 1:
 
 `
 
-
-var ps_claude =  `
+var ps_claude = `
 import undetected_chromedriver as uc
 import random,time,os,sys
 from selenium.webdriver.common.keys import Keys
