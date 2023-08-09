@@ -46,11 +46,11 @@ driver.find_element(By.XPATH, "//div[contains(text(), 'Start a new chat')]").cli
 input_space = wait.until(EC.visibility_of_element_located((By.XPATH,  "//p[@data-placeholder='Message Claude...']")))
 
 while 1:
-   #ori = input(":")
-   #if ori:
-    for line in sys.stdin:
-        message = line.strip()
-        ori = message.replace("(-:]", " ")
+    ori = input(":")
+    if ori:
+   #for line in sys.stdin:
+   #    message = line.strip()
+   #    ori = message.replace("(-:]", " ")
         input_space.send_keys(ori)
         driver.find_element(By.XPATH, "//button[@aria-label='Send Message']").click()
         if ori:

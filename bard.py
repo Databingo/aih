@@ -80,29 +80,6 @@ while 1:
                 text = text.replace("volume_up","")
                 text = "(-:]".join(line for line in text.splitlines() if line)
                 print(text)
-
-
-
-              # response = img.find_element(By.XPATH,  "ancestor::model-response")
-              ##print("get response content img")
-              # google  = response.find_element(By.XPATH,  ".//button[@aria-label='Google it']")
-              # 
-              # contents = response.find_elements(By.XPATH, ".//message-content")
-              # texts= "\n".join(content.text for content in contents)
-              # text = "(-:]".join(line for line in texts.splitlines() if line)
-
-              # text = response.text
-              # text = text.replace("\n","(-:]")
-              # text = text.replace("View other drafts","")
-              # text = text.replace("Regenerate draft","")
-              # text = text.replace("thumb_up","")
-              # text = text.replace("thumb_down","")
-              # text = text.replace("upload","")
-              # text = text.replace("Google it","")
-              # text = text.replace("more_vert","")
-              # text = text.replace("volume_up","")
-              # text = "(-:]".join(line for line in text.splitlines() if line)
-              # print(text)
                 sys.stdout.flush()
 
                 cookies = driver.get_cookies()
