@@ -6,7 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	//"github.com/Databingo/EdgeGPT-Go"
+	"github.com/Databingo/EdgeGPT-Go"
 	"github.com/atotto/clipboard"
 	"github.com/gdamore/tcell/v2"
 	//"github.com/google/uuid"
@@ -33,7 +33,6 @@ var color_bing = tcell.ColorDarkMagenta
 var color_chat = tcell.ColorWhite
 var color_chatapi = tcell.ColorWhite
 var color_claude = tcell.ColorYellow
-var color_huggingchat = tcell.ColorDarkMagenta
 
 func clear() {
 	switch runtime.GOOS {
@@ -158,7 +157,6 @@ func main() {
 	client := openai.NewClientWithConfig(config)
 	messages := make([]openai.ChatCompletionMessage, 0)
 
-	//////////////////////0////////////////////////////
 	// Set up client of ChatGPT (chromedriver version)
 	pf_chatgpt, _ := os.CreateTemp("", "pf_chatgpt.py")
 	_, _ = pf_chatgpt.WriteString(ps_chatgpt)
@@ -186,7 +184,6 @@ func main() {
 		stdin_chatgpt, _ = cmd_chatgpt.StdinPipe()
 
 		go func(cmd *exec.Cmd) {
-			time.Sleep(3 * 0 * time.Second)
 			if err := cmd.Start(); err != nil {
 				panic(err)
 			}
@@ -195,7 +192,6 @@ func main() {
 		login_chatgpt = false
 		relogin_chatgpt = false
 		go func(login_chatgpt, relogin_chatgpt *bool) {
-			time.Sleep(3 * 0 * time.Second)
 			scanner_chatgpt = bufio.NewScanner(stdout_chatgpt)
 			for scanner_chatgpt.Scan() {
 				RESP = scanner_chatgpt.Text()
@@ -210,7 +206,6 @@ func main() {
 		}(&login_chatgpt, &relogin_chatgpt)
 	}
 
-	//////////////////////1////////////////////////////
 	// Set up client of Bard (chromedriver version)
 	pf_bard, _ := os.CreateTemp("", "pf_bard.py")
 	_, _ = pf_bard.WriteString(ps_bard)
@@ -238,7 +233,6 @@ func main() {
 		stdin_bard, _ = cmd_bard.StdinPipe()
 
 		go func(cmd *exec.Cmd) {
-			time.Sleep(3 * 1 * time.Second)
 			if err := cmd.Start(); err != nil {
 				panic(err)
 			}
@@ -247,7 +241,6 @@ func main() {
 		login_bard = false
 		relogin_bard = false
 		go func(login_bard, relogin_bard *bool) {
-			time.Sleep(3 * 1 * time.Second)
 			scanner_bard = bufio.NewScanner(stdout_bard)
 			for scanner_bard.Scan() {
 				RESP = scanner_bard.Text()
@@ -262,7 +255,6 @@ func main() {
 		}(&login_bard, &relogin_bard)
 	}
 
-	//////////////////////2////////////////////////////
 	// Set up client of Claude2 (chromedriver version)
 	pf_claude, _ := os.CreateTemp("", "pf_claude.py")
 	_, _ = pf_claude.WriteString(ps_claude)
@@ -290,7 +282,6 @@ func main() {
 		stdin_claude2, _ = cmd_claude2.StdinPipe()
 
 		go func(cmd *exec.Cmd) {
-			time.Sleep(3 * 2 * time.Second)
 			if err := cmd.Start(); err != nil {
 				panic(err)
 			}
@@ -299,7 +290,6 @@ func main() {
 		login_claude2 = false
 		relogin_claude2 = false
 		go func(login_claude2, relogin_claude2 *bool) {
-			time.Sleep(3 * 2 * time.Second)
 			scanner_claude2 = bufio.NewScanner(stdout_claude2)
 			for scanner_claude2.Scan() {
 				RESP = scanner_claude2.Text()
@@ -314,78 +304,25 @@ func main() {
 		}(&login_claude2, &relogin_claude2)
 	}
 
-	//////////////////////3////////////////////////////
-	// Set up client of huggingchat (chromedriver version)
-	pf_hc, _ := os.CreateTemp("", "pf_hc.py")
-	_, _ = pf_hc.WriteString(ps_huggingchat)
-	_ = pf_hc.Close()
-	defer os.Remove(pf_hc.Name())
-
-	// Read cookie
-	hc_json, err := ioutil.ReadFile("./5.json")
-	if err != nil {
-		err = ioutil.WriteFile("./5.json", []byte(""), 0644)
-	}
-	var hcjs string
-	hcjs = gjson.Parse(string(hc_json)).String()
-	var cmd_hc *exec.Cmd
-	var stdout_hc io.ReadCloser
-	var stdin_hc io.WriteCloser
-	var login_hc bool
-	var relogin_hc bool
-	var scanner_hc *bufio.Scanner
-	channel_hc_answer := make(chan string)
-	if hcjs != "" {
-		//cmd_hc = exec.Command("python3", "-u", "./huggingchat.py", "load")
-		cmd_hc = exec.Command("python3", "-u", pf_hc.Name(), "load")
-		stdout_hc, _ = cmd_hc.StdoutPipe()
-		stdin_hc, _ = cmd_hc.StdinPipe()
-
-		//time.Sleep(time.Duration(3*3) * time.Second)
-		go func(cmd *exec.Cmd) {
-			time.Sleep(3 * 3 * time.Second)
-			if err := cmd.Start(); err != nil {
-				panic(err)
-			}
-		}(cmd_hc)
-
-		login_hc = false
-		relogin_hc = false
-		go func(login_hc, relogin_hc *bool) {
-			time.Sleep(3 * 3 * time.Second)
-			scanner_hc = bufio.NewScanner(stdout_hc)
-			for scanner_hc.Scan() {
-				RESP = scanner_hc.Text()
-				if RESP == "login work" {
-					*login_hc = true
-				} else if RESP == "relogin" {
-					*relogin_hc = true
-				} else {
-					channel_hc_answer <- RESP
-				}
-			}
-		}(&login_hc, &relogin_hc)
-	}
-
 	// Set up client of Bing Chat
-	//var gpt *EdgeGPT.GPT
-	//_, err = ioutil.ReadFile("./cookies/1.json")
-	//if err == nil {
-	//	s := EdgeGPT.NewStorage()
-	//	ch := make(chan bool)
-	//	go func() {
-	//		defer func() {
-	//			if r := recover(); r != nil {
-	//				_ = os.Remove("./cookies/1.json")
-	//				ch <- true
-	//				return
-	//			}
-	//		}()
-	//		gpt, err = s.GetOrSet("any-key")
-	//		ch <- true
-	//	}()
-	//	<-ch
-	//}
+	var gpt *EdgeGPT.GPT
+	_, err = ioutil.ReadFile("./cookies/1.json")
+	if err == nil {
+		s := EdgeGPT.NewStorage()
+		ch := make(chan bool)
+		go func() {
+			defer func() {
+				if r := recover(); r != nil {
+					_ = os.Remove("./cookies/1.json")
+					ch <- true
+					return
+				}
+			}()
+			gpt, err = s.GetOrSet("any-key")
+			ch <- true
+		}()
+		<-ch
+	}
 
 	// Clean screen
 	clear()
@@ -473,7 +410,6 @@ func main() {
 			cmd_bard.Process.Kill()
 			cmd_claude2.Process.Kill()
 			cmd_chatgpt.Process.Kill()
-			cmd_hc.Process.Kill()
 			switch runtime.GOOS {
 			case "linux", "darwin":
 				cmd := exec.Command("pkill", "-f", "undetected_chromedriver")
@@ -500,16 +436,35 @@ func main() {
 			used_tokens = 0
 			left_tokens = max_tokens - used_tokens
 			continue
+			//case ".bard":
+			//	role = ".bard"
+			//	left_tokens = 0
+			//	continue
+			//case ".bing":
+			//	role = ".bing"
+			//	left_tokens = 0
+			//	continue
+			//case ".chat":
+			//	role = ".chat"
+			//	left_tokens = 0
+			//	continue
+			//case ".chatapi":
+			//	role = ".chatapi"
+			//	left_tokens = max_tokens - used_tokens
+			//	continue
+			//case ".claude":
+			//	role = ".claude"
+			//	left_tokens = 0
+			//	continue
 		case ".", "/":
 			proms := promptui.Select{
 				Label: "Select AI mode to chat",
 				Size:  10,
 				Items: []string{
 					"Bard",
-					//"Bing",
+					"Bing",
 					"ChatGPT",
 					"Claude",
-					"HuggingChat",
 					"ChatGPT API gpt-3.5-turbo, $0.002/1K tokens",
 					"ChatGPT API gpt-4 8K Prompt, $0.03/1K tokens",
 					"ChatGPT API gpt-4 8K Completion, $0.06/1K tokens",
@@ -539,10 +494,6 @@ func main() {
 				continue
 			case "Claude":
 				role = ".claude"
-				left_tokens = 0
-				continue
-			case "HuggingChat":
-				role = ".huggingchat"
 				left_tokens = 0
 				continue
 			case "ChatGPT API gpt-3.5-turbo, $0.002/1K tokens":
@@ -593,11 +544,11 @@ func main() {
 				Label: "Select:",
 				Size:  6,
 				Items: []string{
-					"Set Bard Cookie",
-					"Set ChatGPT Cookie",
-					"Set Claude Cookie",
-					"Set HuggingChat Cookie",
+					"Set Google Bard Cookie",
+					"Set Bing Chat Cookie",
+					"Set ChatGPT Web Token",
 					"Set ChatGPT API Key",
+					"Set Claude Cookie",
 					"Exit",
 				},
 			}
@@ -608,14 +559,14 @@ func main() {
 			}
 
 			switch keyy {
-			case "Set Bard Cookie":
+			case "Set Google Bard Cookie":
 				if bjs != "" {
 					cmd_bard.Process.Kill()
 				}
 				bjs = ""
 				role = ".bard"
 				goto BARD
-			case "Set ChatGPT Cookie":
+			case "Set ChatGPT Web Token":
 				if chatgptjs != "" {
 					cmd_chatgpt.Process.Kill()
 				}
@@ -626,10 +577,10 @@ func main() {
 				OpenAI_Key = ""
 				role = ".chatapi"
 				goto CHATAPI
-			//case "Set Bing Chat Cookie":
-			//	_ = os.Remove("./cookies/1.json")
-			//	role = ".bing"
-			//	goto BING
+			case "Set Bing Chat Cookie":
+				_ = os.Remove("./cookies/1.json")
+				role = ".bing"
+				goto BING
 			case "Set Claude Cookie":
 				if c2js != "" {
 					cmd_claude2.Process.Kill()
@@ -637,14 +588,6 @@ func main() {
 				c2js = ""
 				role = ".claude"
 				goto CLAUDE
-			case "Set HuggingChat Cookie":
-				if hcjs != "" {
-					cmd_hc.Process.Kill()
-				}
-				hcjs = ""
-				role = ".huggingchat"
-				goto HUGGINGCHAT
-
 			case "Exit":
 				continue
 			}
@@ -856,73 +799,73 @@ func main() {
 			save2clip_board(RESP)
 
 		}
-		//	BING:
-		//		if role == ".bing" {
-		//			// Check BingChat cookie
-		//			_, err := ioutil.ReadFile("./cookies/1.json")
-		//			if err != nil {
-		//				prom := "Please type << then paste Bing cookie then type >> then press Enter: "
-		//				cook := multiln_input(Liner, prom)
-		//
-		//				// Clear screen of input cookie string
-		//				clear()
-		//
-		//				// Check cookie
-		//				cook = strings.Replace(cook, "\r", "", -1)
-		//				cook = strings.Replace(cook, "\n", "", -1)
-		//				if len(cook) < 100 {
-		//					fmt.Println("Invalid cookie")
-		//					continue
-		//				}
-		//				if !json.Valid([]byte(cook)) {
-		//					fmt.Println("Invalid JSON format")
-		//					continue
-		//				}
-		//				if !strings.Contains(cook, ".bing.com") {
-		//					fmt.Println("Invalid cookie, please make sure the tab is bing.com")
-		//					continue
-		//
-		//				}
-		//
-		//				// Save cookie
-		//				_ = os.MkdirAll("./cookies", 0755)
-		//				err = ioutil.WriteFile("./cookies/1.json", []byte(cook), 0644)
-		//				if err != nil {
-		//					fmt.Println("Save failed.")
-		//				}
-		//
-		//				// Renew BingChat client with cookie
-		//				s := EdgeGPT.NewStorage()
-		//				// Test gpt with cookie in gorountine
-		//				ch := make(chan bool)
-		//				go func() {
-		//					// If invalid, remove cookie
-		//					defer func() {
-		//						if r := recover(); r != nil {
-		//							_ = os.Remove("./cookies/1.json")
-		//							fmt.Println("Invalid cookie value")
-		//							ch <- true
-		//							return
-		//						}
-		//					}()
-		//					gpt, err = s.GetOrSet("any-key")
-		//					ch <- true
-		//				}()
-		//				<-ch
-		//				continue
-		//			}
-		//
-		//			// Send message
-		//			as, err := gpt.AskSync("creative", userInput)
-		//			if err != nil {
-		//				fmt.Println(err)
-		//				continue
-		//			}
-		//			RESP = strings.TrimSpace(as.Answer.GetAnswer())
-		//			save2clip_board(RESP)
-		//			printer(color_bing, RESP, false)
-		//		}
-		//
+	BING:
+		if role == ".bing" {
+			// Check BingChat cookie
+			_, err := ioutil.ReadFile("./cookies/1.json")
+			if err != nil {
+				prom := "Please type << then paste Bing cookie then type >> then press Enter: "
+				cook := multiln_input(Liner, prom)
+
+				// Clear screen of input cookie string
+				clear()
+
+				// Check cookie
+				cook = strings.Replace(cook, "\r", "", -1)
+				cook = strings.Replace(cook, "\n", "", -1)
+				if len(cook) < 100 {
+					fmt.Println("Invalid cookie")
+					continue
+				}
+				if !json.Valid([]byte(cook)) {
+					fmt.Println("Invalid JSON format")
+					continue
+				}
+				if !strings.Contains(cook, ".bing.com") {
+					fmt.Println("Invalid cookie, please make sure the tab is bing.com")
+					continue
+
+				}
+
+				// Save cookie
+				_ = os.MkdirAll("./cookies", 0755)
+				err = ioutil.WriteFile("./cookies/1.json", []byte(cook), 0644)
+				if err != nil {
+					fmt.Println("Save failed.")
+				}
+
+				// Renew BingChat client with cookie
+				s := EdgeGPT.NewStorage()
+				// Test gpt with cookie in gorountine
+				ch := make(chan bool)
+				go func() {
+					// If invalid, remove cookie
+					defer func() {
+						if r := recover(); r != nil {
+							_ = os.Remove("./cookies/1.json")
+							fmt.Println("Invalid cookie value")
+							ch <- true
+							return
+						}
+					}()
+					gpt, err = s.GetOrSet("any-key")
+					ch <- true
+				}()
+				<-ch
+				continue
+			}
+
+			// Send message
+			as, err := gpt.AskSync("creative", userInput)
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+			RESP = strings.TrimSpace(as.Answer.GetAnswer())
+			save2clip_board(RESP)
+			printer(color_bing, RESP, false)
+		}
+
 	CHAT:
 		if role == ".chat" {
 			if chatgptjs == "" {
@@ -1014,96 +957,6 @@ func main() {
 
 		}
 
-	HUGGINGCHAT:
-		if role == ".huggingchat" {
-			if hcjs == "" {
-				prom := "Please type << then paste HuggingChat cookie then type >> then press Enter: "
-				cook := multiln_input(Liner, prom)
-
-				// Clear screen of input cookie string
-				clear()
-
-				// Check cookie
-				cook = strings.Replace(cook, "\r", "", -1)
-				cook = strings.Replace(cook, "\n", "", -1)
-				if len(cook) < 100 {
-					fmt.Println("Invalid cookie")
-					continue
-				}
-				if !json.Valid([]byte(cook)) {
-					fmt.Println("Invalid JSON format")
-					continue
-				}
-				if !strings.Contains(cook, "huggingface.co") {
-					fmt.Println("Invalid cookie, please make sure the tab is huggingface.co")
-					continue
-
-				}
-
-				// Save cookie
-				err = ioutil.WriteFile("./5.json", []byte(cook), 0644)
-				if err != nil {
-					fmt.Println("Save failed.")
-				}
-
-				// Reload huggingchat cookie
-				hc_json, err = ioutil.ReadFile("./5.json")
-				hcjs = gjson.Parse(string(hc_json)).String()
-				if hcjs == "" {
-					continue
-				}
-				if hcjs != "" {
-					//cmd_hc = exec.Command("python3", "-u", "./huggingchat.py", "load")
-					cmd_hc = exec.Command("python3", "-u", pf_hc.Name(), "load")
-					stdout_hc, _ = cmd_hc.StdoutPipe()
-					stdin_hc, _ = cmd_hc.StdinPipe()
-
-					go func(cmd *exec.Cmd) {
-						if err := cmd.Start(); err != nil {
-							panic(err)
-						}
-					}(cmd_hc)
-
-					login_hc = false
-					relogin_hc = false
-					go func(login_hc, relogin_hc *bool) {
-						scanner_hc = bufio.NewScanner(stdout_hc)
-						for scanner_hc.Scan() {
-							RESP = scanner_hc.Text()
-							if RESP == "login work" {
-								*login_hc = true
-							} else if RESP == "relogin" {
-								*relogin_hc = true
-							} else {
-								channel_hc_answer <- RESP
-							}
-						}
-					}(&login_hc, &relogin_hc)
-				}
-			}
-			if relogin_hc == true {
-				fmt.Println("Cookie failed, please renew huggingchat cookie...")
-				hcjs = ""
-				continue
-
-			}
-			if login_hc != true {
-				fmt.Println("huggingchat initializing...")
-				continue
-			}
-
-			spc := strings.Replace(userInput, "\n", "(-:]", -1)
-			_, err = io.WriteString(stdin_hc, spc+"\n")
-			if err != nil {
-				panic(err)
-			}
-
-			RESP = <-channel_hc_answer
-			RESP = strings.Replace(RESP, "(-:]", "\n", -1)
-			printer(color_huggingchat, RESP, false)
-			save2clip_board(RESP)
-
-		}
 	CHATAPI:
 		if role == ".chatapi" {
 			// Check ChatGPT API Key
@@ -1483,8 +1336,6 @@ try:
    #print("next3.click")
     driver.find_element(By.XPATH, "//a[contains(text(), 'New chat')]").click()
     input_space = wait.until(EC.visibility_of_element_located((By.XPATH,  "//textarea[@id='prompt-textarea']")))
-    input_space.send_keys("hello")
-    driver.find_element(By.XPATH, "//button//svg:path[@d='M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z']").click()
     print("login work")
 except:
     print("relogin")
@@ -1498,7 +1349,6 @@ while 1:
     for line in sys.stdin:
         message = line.strip()
         ori = message.replace("(-:]", " ")
-        input_space = wait.until(EC.visibility_of_element_located((By.XPATH,  "//textarea[@id='prompt-textarea']")))
         input_space.send_keys(ori)
         driver.find_element(By.XPATH, "//button//svg:path[@d='M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z']").click()
        #ini_source = driver.page_source
@@ -1515,77 +1365,6 @@ while 1:
                 sys.stdout.flush()
                 cookies = driver.get_cookies()
                 with open("./4.json", "w", newline='') as outputdata:
-                    json.dump(cookies, outputdata)
-
-            except Exception as e:
-                pass
-`
-
-var ps_huggingchat = `
-import undetected_chromedriver as uc
-import random,time,os,sys
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support    import expected_conditions as EC
-import json
-import sys
-
-#########################
-chrome_options = uc.ChromeOptions()
-chrome_options.add_argument("--disable-extensions")
-chrome_options.add_argument("--disable-popup-blocking")
-chrome_options.add_argument("--profile-directory=Default")
-chrome_options.add_argument("--ignore-certificate-errors")
-chrome_options.add_argument("--disable-plugins-discovery")
-chrome_options.add_argument("--incognito")
-#chrome_options.add_argument("--headless")
-chrome_options.add_argument("user_agent=DN")
-driver = uc.Chrome(options=chrome_options)
-
-driver.get("https://huggingface.co/chat")
-with open("./5.json", "r", newline='') as inputdata:
-    ck = json.load(inputdata)
-for c in ck:
-    driver.add_cookie({k:c[k] for k in {'name', 'value'}})
-
-# Renew with cookie
-driver.get("https://huggingface.co/chat")
-wait = WebDriverWait(driver, 200)
-try:
-    input_space = wait.until(EC.visibility_of_element_located((By.XPATH,  "//textarea[@enterkeyhint='send']")))
-    print("login work")
-    input_space.send_keys("hello")
-    driver.find_element(By.XPATH, "//button//svg:path[@d='M27.71 4.29a1 1 0 0 0-1.05-.23l-22 8a1 1 0 0 0 0 1.87l8.59 3.43L19.59 11L21 12.41l-6.37 6.37l3.44 8.59A1 1 0 0 0 19 28a1 1 0 0 0 .92-.66l8-22a1 1 0 0 0-.21-1.05Z']").click()
-except:
-    print("relogin")
-    driver.quit()
-    os.exit()
-
-while 1:
-   #ori = input(":")
-   #if ori:
-    for line in sys.stdin:
-        message = line.strip()
-        ori = message.replace("(-:]", " ")
-        input_space = wait.until(EC.visibility_of_element_located((By.XPATH,  "//textarea[@enterkeyhint='send']")))
-        input_space.send_keys(ori)
-        driver.find_element(By.XPATH, "//button//svg:path[@d='M27.71 4.29a1 1 0 0 0-1.05-.23l-22 8a1 1 0 0 0 0 1.87l8.59 3.43L19.59 11L21 12.41l-6.37 6.37l3.44 8.59A1 1 0 0 0 19 28a1 1 0 0 0 .92-.66l8-22a1 1 0 0 0-.21-1.05Z']").click()
-        if ori:
-            try:
-                stop_icon = wait.until(EC.presence_of_element_located((By.XPATH,  "//svg:path[@d='M24 6H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z']")))
-               #print("get stop_icon")
-                wait.until(EC.staleness_of(stop_icon))
-               #print("disappear stop_icon")
-                img = driver.find_element(By.XPATH,  "(//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')])[last()]")
-               #print("img")
-                content = img.find_element(By.XPATH,  "following-sibling::div[1]")
-                text = content.get_attribute("textContent")
-                text = text.replace("\n","(-:]")
-                print(text)
-                sys.stdout.flush()
-                cookies = driver.get_cookies()
-                with open("./5.json", "w", newline='') as outputdata:
                     json.dump(cookies, outputdata)
 
             except Exception as e:
