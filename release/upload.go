@@ -31,10 +31,10 @@ func main() {
 
 	// Create a new release
 	release, _, err := client.Repositories.CreateRelease(ctx, owner, repo, &github.RepositoryRelease{
-		TagName:         github.String("v0.1.3"),
+		TagName:         github.String("v0.1.3.1"),
 		TargetCommitish: github.String("master"),
-		Name:            github.String("Release v0.1.3"),
-		Body:            github.String("Welcome to Aih! Make claude re-work by using undetected_chrome mode."),
+		Name:            github.String("Release v0.1.3.1"),
+		Body:            github.String("Welcome to Aih! Change ChatGPT web to undetected_chrome mode."),
 		Draft:           github.Bool(false),
 		Prerelease:      github.Bool(false),
 	})
