@@ -183,6 +183,7 @@ func main() {
 	var relogin_bard bool
 	var scanner_bard *bufio.Scanner
 	channel_bard_answer := make(chan string)
+	//bard_done := make(chan bool)
 	if bjs != "" {
 		//cmd_bard = exec.Command("python3", "-u", "./bard.py", "load")
 		cmd_bard = exec.Command("python3", "-u", pf_bard.Name(), "load")
@@ -193,6 +194,7 @@ func main() {
 			if err := cmd.Start(); err != nil {
 				panic(err)
 			}
+			//bard_done <- true
 		}(cmd_bard)
 
 		login_bard = false
@@ -233,6 +235,7 @@ func main() {
 	var relogin_claude2 bool
 	var scanner_claude2 *bufio.Scanner
 	channel_claude2_answer := make(chan string)
+	//claude2_done := make(chan bool)
 	if c2js != "" {
 		//cmd_claude2 = exec.Command("python3", "-u", "./claude2.py", "load")
 		cmd_claude2 = exec.Command("python3", "-u", pf_claude.Name(), "load")
@@ -243,6 +246,7 @@ func main() {
 			if err := cmd.Start(); err != nil {
 				panic(err)
 			}
+			//claude2_done <- true
 		}(cmd_claude2)
 
 		login_claude2 = false
@@ -367,7 +371,9 @@ func main() {
 			continue
 		case ".exit":
 			cmd_bard.Process.Kill()
+			//<-bard_done
 			cmd_claude2.Process.Kill()
+			//<-claude2_done
 			switch runtime.GOOS {
 			case "linux", "darwin":
 				cmd := exec.Command("pkill", "-f", "undetected_chromedriver")
@@ -394,27 +400,27 @@ func main() {
 			used_tokens = 0
 			left_tokens = max_tokens - used_tokens
 			continue
-		//case ".bard":
-		//	role = ".bard"
-		//	left_tokens = 0
-		//	continue
-		//case ".bing":
-		//	role = ".bing"
-		//	left_tokens = 0
-		//	continue
-		//case ".chat":
-		//	role = ".chat"
-		//	left_tokens = 0
-		//	continue
-		//case ".chatapi":
-		//	role = ".chatapi"
-		//	left_tokens = max_tokens - used_tokens
-		//	continue
-		//case ".claude":
-		//	role = ".claude"
-		//	left_tokens = 0
-		//	continue
-	        case ".", "/":
+			//case ".bard":
+			//	role = ".bard"
+			//	left_tokens = 0
+			//	continue
+			//case ".bing":
+			//	role = ".bing"
+			//	left_tokens = 0
+			//	continue
+			//case ".chat":
+			//	role = ".chat"
+			//	left_tokens = 0
+			//	continue
+			//case ".chatapi":
+			//	role = ".chatapi"
+			//	left_tokens = max_tokens - used_tokens
+			//	continue
+			//case ".claude":
+			//	role = ".claude"
+			//	left_tokens = 0
+			//	continue
+		case ".", "/":
 			proms := promptui.Select{
 				Label: "Select AI mode to chat",
 				Size:  10,
@@ -499,7 +505,7 @@ func main() {
 			}
 		case ".key":
 			prom := promptui.Select{
-				Label: "Select cookie/key to set",
+				Label: "Select:",
 				Size:  6,
 				Items: []string{
 					"Set Google Bard Cookie",
@@ -521,6 +527,7 @@ func main() {
 				//bard_session_id = ""
 				if bjs != "" {
 					cmd_bard.Process.Kill()
+					//<-bard_done
 				}
 				bjs = ""
 				role = ".bard"
@@ -537,11 +544,12 @@ func main() {
 				_ = os.Remove("./cookies/1.json")
 				role = ".bing"
 				goto BING
-			case "Set Claude  Cookie":
+			case "Set Claude Cookie":
 				if c2js != "" {
 					cmd_claude2.Process.Kill()
+					//<-claude2_done
 				}
-                                c2js  = ""
+				c2js = ""
 				role = ".claude"
 				goto CLAUDE
 			case "Exit":
@@ -628,7 +636,7 @@ func main() {
 
 					scanner_bard = bufio.NewScanner(stdout_bard)
 					login_bard = false
-		                        relogin_bard = false
+					relogin_bard = false
 					go func(login_bard, relogin_bard *bool) {
 						for scanner_bard.Scan() {
 							RESP = scanner_bard.Text()
@@ -708,7 +716,7 @@ func main() {
 					continue
 				}
 				if c2js != "" {
-				//cmd_claude2 = exec.Command("python3", "-u", "./claude2.py", "load")
+					//cmd_claude2 = exec.Command("python3", "-u", "./claude2.py", "load")
 					cmd_claude2 = exec.Command("python3", "-u", pf_claude.Name(), "load")
 					stdout_claude2, _ = cmd_claude2.StdoutPipe()
 					stdin_claude2, _ = cmd_claude2.StdinPipe()
@@ -720,7 +728,7 @@ func main() {
 					}(cmd_claude2)
 					scanner_claude2 = bufio.NewScanner(stdout_claude2)
 					login_claude2 = false
-		                        relogin_claude2 = false
+					relogin_claude2 = false
 					go func(login_claude2, relogin_claude2 *bool) {
 						for scanner_claude2.Scan() {
 							RESP = scanner_claude2.Text()
