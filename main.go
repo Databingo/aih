@@ -158,10 +158,60 @@ func main() {
 	messages := make([]openai.ChatCompletionMessage, 0)
 
 	// Set up client of ChatGPT Web
-	chat_access_token := gjson.Get(string(aih_json), "chat_access_token").String()
-	var client_chat = &http.Client{}
-	var conversation_id string
-	var parent_id string
+	//chat_access_token := gjson.Get(string(aih_json), "chat_access_token").String()
+	//var client_chat = &http.Client{}
+	//var conversation_id string
+	//var parent_id string
+
+	// Set up client of ChatGPT (chromedriver version)
+	pf_chatgpt, _ := os.CreateTemp("", "pf_chatgpt.py")
+	_, _ = pf_chatgpt.WriteString(ps_chatgpt)
+	_ = pf_chatgpt.Close()
+	defer os.Remove(pf_chatgpt.Name())
+
+	// Read cookie
+	chatgpt_json, err := ioutil.ReadFile("./4.json")
+	if err != nil {
+		err = ioutil.WriteFile("./4.json", []byte(""), 0644)
+	}
+	var chatgptjs string
+	chatgptjs = gjson.Parse(string(chatgpt_json)).String()
+	var cmd_chatgpt *exec.Cmd
+	var stdout_chatgpt io.ReadCloser
+	var stdin_chatgpt io.WriteCloser
+	var login_chatgpt bool
+	var relogin_chatgpt bool
+	var scanner_chatgpt *bufio.Scanner
+	channel_chatgpt_answer := make(chan string)
+	//bard_done := make(chan bool)
+	if chatgptjs != "" {
+		//cmd_bard = exec.Command("python3", "-u", "./bard.py", "load")
+		cmd_chatgpt = exec.Command("python3", "-u", pf_chatgpt.Name(), "load")
+		stdout_chatgpt, _ = cmd_chatgpt.StdoutPipe()
+		stdin_chatgpt, _ = cmd_chatgpt.StdinPipe()
+
+		go func(cmd *exec.Cmd) {
+			if err := cmd.Start(); err != nil {
+				panic(err)
+			}
+		}(cmd_chatgpt)
+
+		login_chatgpt = false
+		relogin_chatgpt = false
+		go func(login_chatgpt, relogin_chatgpt *bool) {
+			scanner_chatgpt = bufio.NewScanner(stdout_chatgpt)
+			for scanner_chatgpt.Scan() {
+				RESP = scanner_chatgpt.Text()
+				if RESP == "login work" {
+					*login_chatgpt = true
+				} else if RESP == "relogin" {
+					*relogin_chatgpt = true
+				} else {
+					channel_chatgpt_answer <- RESP
+				}
+			}
+		}(&login_chatgpt, &relogin_chatgpt)
+	}
 
 	// Set up client of Bard (chromedriver version)
 	pf_bard, _ := os.CreateTemp("", "pf_bard.py")
@@ -371,9 +421,8 @@ func main() {
 			continue
 		case ".exit":
 			cmd_bard.Process.Kill()
-			//<-bard_done
 			cmd_claude2.Process.Kill()
-			//<-claude2_done
+			cmd_chatgpt.Process.Kill()
 			switch runtime.GOOS {
 			case "linux", "darwin":
 				cmd := exec.Command("pkill", "-f", "undetected_chromedriver")
@@ -527,13 +576,16 @@ func main() {
 				//bard_session_id = ""
 				if bjs != "" {
 					cmd_bard.Process.Kill()
-					//<-bard_done
 				}
 				bjs = ""
 				role = ".bard"
 				goto BARD
 			case "Set ChatGPT Web Token":
-				chat_access_token = ""
+				//chat_access_token = ""
+				if chatgptjs != "" {
+					cmd_chatgpt.Process.Kill()
+				}
+				chatgptjs = ""
 				role = ".chat"
 				goto CHAT
 			case "Set ChatGPT API Key":
@@ -835,39 +887,125 @@ func main() {
 
 	CHAT:
 		if role == ".chat" {
-			if chat_access_token == "" {
-				chat_access_token, _ = Liner.Prompt("Please input your ChatGPT accessToken: ")
-				if chat_access_token == "" {
+			//if chat_access_token == "" {
+			//	chat_access_token, _ = Liner.Prompt("Please input your ChatGPT accessToken: ")
+			//	if chat_access_token == "" {
+			//		continue
+			//	}
+			//	aihj, err := ioutil.ReadFile("aih.json")
+			//	nj, _ := sjson.Set(string(aihj), "chat_access_token", chat_access_token)
+			//	err = ioutil.WriteFile("aih.json", []byte(nj), 0644)
+			//	if err != nil {
+			//		fmt.Println("Save failed.")
+			//	}
+			//	continue
+			//}
+
+			//// Handle ChatGPT Web error to recover
+			//RESP = func(rsp *string) string {
+			//	defer func(rp *string) {
+			//		if r := recover(); r != nil {
+			//			*rp = ""
+			//		}
+			//	}(rsp)
+			//	// Send message
+			//	*rsp = chatgpt_web(client_chat, &chat_access_token, &userInput, &conversation_id, &parent_id)
+			//	return *rsp
+			//}(&RESP)
+
+			//if RESP == "" {
+			//	fmt.Println("ChatGPT Web error, please renew ChatGPT cookie & check Internet accessing.")
+			//} else {
+			//	save2clip_board(RESP)
+			//	printer(color_chat, RESP, false)
+
+			//}
+			if chatgptjs == "" {
+				prom := "Please type << then paste ChatGPT cookie then type >> then press Enter: "
+				cook := multiln_input(Liner, prom)
+
+				// Clear screen of input cookie string
+				clear()
+
+				// Check cookie
+				cook = strings.Replace(cook, "\r", "", -1)
+				cook = strings.Replace(cook, "\n", "", -1)
+				if len(cook) < 100 {
+					fmt.Println("Invalid cookie")
 					continue
 				}
-				aihj, err := ioutil.ReadFile("aih.json")
-				nj, _ := sjson.Set(string(aihj), "chat_access_token", chat_access_token)
-				err = ioutil.WriteFile("aih.json", []byte(nj), 0644)
+				if !json.Valid([]byte(cook)) {
+					fmt.Println("Invalid JSON format")
+					continue
+				}
+				if !strings.Contains(cook, "chat.openai.com") {
+					fmt.Println("Invalid cookie, please make sure the tab is chat.openai.com")
+					continue
+
+				}
+
+				// Save cookie
+				err = ioutil.WriteFile("./4.json", []byte(cook), 0644)
 				if err != nil {
 					fmt.Println("Save failed.")
 				}
+
+				// Reload claude2 cookie
+				chatgpt_json, err = ioutil.ReadFile("./4.json")
+				chatgptjs = gjson.Parse(string(chatgpt_json)).String()
+				if chatgptjs == "" {
+					continue
+				}
+				if chatgptjs != "" {
+					//cmd_bard = exec.Command("python3", "-u", "./bard.py", "load")
+					cmd_chatgpt = exec.Command("python3", "-u", pf_chatgpt.Name(), "load")
+					stdout_chatgpt, _ = cmd_chatgpt.StdoutPipe()
+					stdin_chatgpt, _ = cmd_chatgpt.StdinPipe()
+
+					go func(cmd *exec.Cmd) {
+						if err := cmd.Start(); err != nil {
+							panic(err)
+						}
+					}(cmd_chatgpt)
+
+					login_chatgpt = false
+					relogin_chatgpt = false
+					go func(login_chatgpt, relogin_chatgpt *bool) {
+						scanner_chatgpt = bufio.NewScanner(stdout_chatgpt)
+						for scanner_chatgpt.Scan() {
+							RESP = scanner_chatgpt.Text()
+							if RESP == "login work" {
+								*login_chatgpt = true
+							} else if RESP == "relogin" {
+								*relogin_chatgpt = true
+							} else {
+								channel_chatgpt_answer <- RESP
+							}
+						}
+					}(&login_chatgpt, &relogin_chatgpt)
+				}
+			}
+			if relogin_chatgpt == true {
+				fmt.Println("Cookie failed, please renew chatgpt cookie...")
+				chatgptjs = ""
+				continue
+
+			}
+			if login_chatgpt != true {
+				fmt.Println("chatgpt initializing...")
 				continue
 			}
 
-			// Handle ChatGPT Web error to recover
-			RESP = func(rsp *string) string {
-				defer func(rp *string) {
-					if r := recover(); r != nil {
-						*rp = ""
-					}
-				}(rsp)
-				// Send message
-				*rsp = chatgpt_web(client_chat, &chat_access_token, &userInput, &conversation_id, &parent_id)
-				return *rsp
-			}(&RESP)
-
-			if RESP == "" {
-				fmt.Println("ChatGPT Web error, please renew ChatGPT cookie & check Internet accessing.")
-			} else {
-				save2clip_board(RESP)
-				printer(color_chat, RESP, false)
-
+			spc := strings.Replace(userInput, "\n", "(-:]", -1)
+			_, err = io.WriteString(stdin_chatgpt, spc+"\n")
+			if err != nil {
+				panic(err)
 			}
+
+			RESP = <-channel_chatgpt_answer
+			RESP = strings.Replace(RESP, "(-:]", "\n", -1)
+			printer(color_chatgpt, RESP, false)
+			save2clip_board(RESP)
 
 		}
 
@@ -1256,5 +1394,99 @@ while 1:
 
             except Exception as e:
                 pass
+
+`
+
+var ps_chatgpt = `
+import undetected_chromedriver as uc
+import random,time,os,sys
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support    import expected_conditions as EC
+import json
+import sys
+
+# Restart session
+#########################
+#driver = uc.Chrome(options=chrome_options, headless=True)
+chrome_options = uc.ChromeOptions()
+chrome_options.add_argument("--disable-extensions")
+chrome_options.add_argument("--disable-popup-blocking")
+chrome_options.add_argument("--profile-directory=Default")
+chrome_options.add_argument("--ignore-certificate-errors")
+chrome_options.add_argument("--disable-plugins-discovery")
+chrome_options.add_argument("--incognito")
+#chrome_options.add_argument("--headless")
+chrome_options.add_argument("user_agent=DN")
+driver = uc.Chrome(options=chrome_options)
+
+# Load cookie
+driver.get("https://chat.openai.com")
+with open("./4.json", "r", newline='') as inputdata:
+    ck = json.load(inputdata)
+for c in ck:
+    driver.add_cookie({k:c[k] for k in {'name', 'value'}})
+
+# Renew with cookie
+driver.get("https://chat.openai.com")
+wait = WebDriverWait(driver, 200)
+try:
+    notice1 = wait.until(EC.visibility_of_element_located((By.XPATH,  "//h4[contains(text(), 'This is a free research preview.')]")))
+   #print("notice1")
+    next1 = wait.until(EC.visibility_of_element_located((By.XPATH,  "//button/div[contains(text(), 'Next')]")))
+   #print("next1")
+    next1.click()
+   #print("next1.click")
+    notice2 = wait.until(EC.visibility_of_element_located((By.XPATH,  "//h4[contains(text(), 'How we collect data')]")))
+   #print("notice2")
+    next2 = wait.until(EC.visibility_of_element_located((By.XPATH,  "//button/div[contains(text(), 'Next')]")))
+   #print("next2")
+    next2.click()
+   #print("next2.click")
+    notice3 = wait.until(EC.visibility_of_element_located((By.XPATH,  "//h4[contains(text(), 'love your feedback!')]")))
+   #print("notice3")
+    next3 = wait.until(EC.visibility_of_element_located((By.XPATH,  "//button/div[contains(text(), 'Done')]")))
+   #print("next3")
+    next3.click()
+   #print("next3.click")
+    driver.find_element(By.XPATH, "//a[contains(text(), 'New chat')]").click()
+    input_space = wait.until(EC.visibility_of_element_located((By.XPATH,  "//textarea[@id='prompt-textarea']")))
+   #print("login work")
+except:
+    print("relogin")
+   #open("./2.json", "w").close()
+    driver.quit()
+    os.exit()
+
+while 1:
+    ori = input(":")
+    if ori:
+   #for line in sys.stdin:
+   #    message = line.strip()
+   #    ori = message.replace("(-:]", " ")
+        input_space.send_keys(ori)
+        driver.find_element(By.XPATH, "//button//svg:path[@d='M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z']").click()
+       #ini_source = driver.page_source
+        if ori:
+            try:
+                retry_icon = wait.until(EC.presence_of_element_located((By.XPATH,  "//svg:path[@d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']")))
+               #print("get retry_icon")
+                content = retry_icon.find_element(By.XPATH,  "(//div[contains(@class, 'group w-full')])[last()]")
+                text = content.get_attribute("textContent")
+                text = text.replace("ChatGPTChatGPT","")
+                text = text.replace("1 / 1","")
+                text = text.replace("\n","(-:]")
+                print(text)
+                sys.stdout.flush()
+                cookies = driver.get_cookies()
+                with open("./4.json", "w", newline='') as outputdata:
+                    json.dump(cookies, outputdata)
+
+            except Exception as e:
+                pass
+
+
+
 
 `
