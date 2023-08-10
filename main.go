@@ -441,8 +441,8 @@ func main() {
 			return
 		case ".new":
 			// For role .chat
-			conversation_id = ""
-			parent_id = ""
+			//conversation_id = ""
+			//parent_id = ""
 			// For role .chatapi
 			messages = make([]openai.ChatCompletionMessage, 0)
 			//max_tokens = 4097
@@ -1004,7 +1004,7 @@ func main() {
 
 			RESP = <-channel_chatgpt_answer
 			RESP = strings.Replace(RESP, "(-:]", "\n", -1)
-			printer(color_chatgpt, RESP, false)
+			printer(color_chat, RESP, false)
 			save2clip_board(RESP)
 
 		}
@@ -1417,7 +1417,7 @@ chrome_options.add_argument("--profile-directory=Default")
 chrome_options.add_argument("--ignore-certificate-errors")
 chrome_options.add_argument("--disable-plugins-discovery")
 chrome_options.add_argument("--incognito")
-#chrome_options.add_argument("--headless")
+chrome_options.add_argument("--headless")
 chrome_options.add_argument("user_agent=DN")
 driver = uc.Chrome(options=chrome_options)
 
@@ -1452,7 +1452,7 @@ try:
    #print("next3.click")
     driver.find_element(By.XPATH, "//a[contains(text(), 'New chat')]").click()
     input_space = wait.until(EC.visibility_of_element_located((By.XPATH,  "//textarea[@id='prompt-textarea']")))
-   #print("login work")
+    print("login work")
 except:
     print("relogin")
    #open("./2.json", "w").close()
@@ -1460,11 +1460,11 @@ except:
     os.exit()
 
 while 1:
-    ori = input(":")
-    if ori:
-   #for line in sys.stdin:
-   #    message = line.strip()
-   #    ori = message.replace("(-:]", " ")
+   #ori = input(":")
+   #if ori:
+    for line in sys.stdin:
+        message = line.strip()
+        ori = message.replace("(-:]", " ")
         input_space.send_keys(ori)
         driver.find_element(By.XPATH, "//button//svg:path[@d='M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z']").click()
        #ini_source = driver.page_source
