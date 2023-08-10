@@ -47,7 +47,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 ## Tips
 - The returned text will be auotmatically saved in your system clipboard, so you can paste it anywhere directly.
 - You can see more usages of command line operation from [here](https://github.com/peterh/liner#Line-editing).
-- All conversation history was persisted locally in `history.txt`, in the same directory as the aih binary .
+- All conversation history was persisted locally in `history.txt`, in the same directory as the Aih binary .
 
 ## Supported Operating Systems:
 - Mac
