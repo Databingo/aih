@@ -34,16 +34,16 @@ driver.get("https://claude.ai")
 wait = WebDriverWait(driver, 200)
 try:
     work = wait.until(EC.visibility_of_element_located((By.XPATH,  "//p[@data-placeholder='Message Claude or search past chats...']")))
-    print("login work")                                                
    #driver.find_element(By.XPATH, "//button[@class='sc-dAOort']").click()
+    driver.find_element(By.XPATH, "//div[contains(text(), 'Start a new chat')]").click()
+    input_space = wait.until(EC.visibility_of_element_located((By.XPATH,  "//p[@data-placeholder='Message Claude...']")))
+    print("login work")                                                
 except:
     print("relogin")
    #open("./3.json", "w").close()
     driver.quit()
     os.exit()
 
-driver.find_element(By.XPATH, "//div[contains(text(), 'Start a new chat')]").click()
-input_space = wait.until(EC.visibility_of_element_located((By.XPATH,  "//p[@data-placeholder='Message Claude...']")))
 
 while 1:
     ori = input(":")
