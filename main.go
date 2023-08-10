@@ -2,14 +2,14 @@ package main
 
 import (
 	"bufio"
-	"bytes"
+	//"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/Databingo/EdgeGPT-Go"
 	"github.com/atotto/clipboard"
 	"github.com/gdamore/tcell/v2"
-	"github.com/google/uuid"
+	//"github.com/google/uuid"
 	"github.com/manifoldco/promptui"
 	"github.com/peterh/liner"
 	"github.com/rivo/tview"
@@ -18,7 +18,7 @@ import (
 	"github.com/tidwall/sjson"
 	"io"
 	"io/ioutil"
-	"net/http"
+	//"net/http"
 	"os"
 	"os/exec"
 	"runtime"
@@ -157,12 +157,6 @@ func main() {
 	client := openai.NewClientWithConfig(config)
 	messages := make([]openai.ChatCompletionMessage, 0)
 
-	// Set up client of ChatGPT Web
-	//chat_access_token := gjson.Get(string(aih_json), "chat_access_token").String()
-	//var client_chat = &http.Client{}
-	//var conversation_id string
-	//var parent_id string
-
 	// Set up client of ChatGPT (chromedriver version)
 	pf_chatgpt, _ := os.CreateTemp("", "pf_chatgpt.py")
 	_, _ = pf_chatgpt.WriteString(ps_chatgpt)
@@ -183,7 +177,6 @@ func main() {
 	var relogin_chatgpt bool
 	var scanner_chatgpt *bufio.Scanner
 	channel_chatgpt_answer := make(chan string)
-	//bard_done := make(chan bool)
 	if chatgptjs != "" {
 		//cmd_bard = exec.Command("python3", "-u", "./bard.py", "load")
 		cmd_chatgpt = exec.Command("python3", "-u", pf_chatgpt.Name(), "load")
@@ -233,7 +226,6 @@ func main() {
 	var relogin_bard bool
 	var scanner_bard *bufio.Scanner
 	channel_bard_answer := make(chan string)
-	//bard_done := make(chan bool)
 	if bjs != "" {
 		//cmd_bard = exec.Command("python3", "-u", "./bard.py", "load")
 		cmd_bard = exec.Command("python3", "-u", pf_bard.Name(), "load")
@@ -244,7 +236,6 @@ func main() {
 			if err := cmd.Start(); err != nil {
 				panic(err)
 			}
-			//bard_done <- true
 		}(cmd_bard)
 
 		login_bard = false
@@ -253,7 +244,6 @@ func main() {
 			scanner_bard = bufio.NewScanner(stdout_bard)
 			for scanner_bard.Scan() {
 				RESP = scanner_bard.Text()
-				//printer(color_bard, RESP, false)
 				if RESP == "login work" {
 					*login_bard = true
 				} else if RESP == "relogin" {
@@ -285,7 +275,6 @@ func main() {
 	var relogin_claude2 bool
 	var scanner_claude2 *bufio.Scanner
 	channel_claude2_answer := make(chan string)
-	//claude2_done := make(chan bool)
 	if c2js != "" {
 		//cmd_claude2 = exec.Command("python3", "-u", "./claude2.py", "load")
 		cmd_claude2 = exec.Command("python3", "-u", pf_claude.Name(), "load")
@@ -296,7 +285,6 @@ func main() {
 			if err := cmd.Start(); err != nil {
 				panic(err)
 			}
-			//claude2_done <- true
 		}(cmd_claude2)
 
 		login_claude2 = false
@@ -305,7 +293,6 @@ func main() {
 			scanner_claude2 = bufio.NewScanner(stdout_claude2)
 			for scanner_claude2.Scan() {
 				RESP = scanner_claude2.Text()
-				//printer(color_bard, RESP, false)
 				if RESP == "login work" {
 					*login_claude2 = true
 				} else if RESP == "relogin" {
@@ -573,7 +560,6 @@ func main() {
 
 			switch keyy {
 			case "Set Google Bard Cookie":
-				//bard_session_id = ""
 				if bjs != "" {
 					cmd_bard.Process.Kill()
 				}
@@ -581,7 +567,6 @@ func main() {
 				role = ".bard"
 				goto BARD
 			case "Set ChatGPT Web Token":
-				//chat_access_token = ""
 				if chatgptjs != "" {
 					cmd_chatgpt.Process.Kill()
 				}
@@ -599,7 +584,6 @@ func main() {
 			case "Set Claude Cookie":
 				if c2js != "" {
 					cmd_claude2.Process.Kill()
-					//<-claude2_done
 				}
 				c2js = ""
 				role = ".claude"
@@ -677,9 +661,6 @@ func main() {
 					cmd_bard = exec.Command("python3", "-u", pf_bard.Name(), "load")
 					stdout_bard, _ = cmd_bard.StdoutPipe()
 					stdin_bard, _ = cmd_bard.StdinPipe()
-					//if err := cmd_bard.Start(); err != nil {
-					//	panic(err)
-					//}
 					go func(cmd *exec.Cmd) {
 						if err := cmd.Start(); err != nil {
 							panic(err)
@@ -887,39 +868,6 @@ func main() {
 
 	CHAT:
 		if role == ".chat" {
-			//if chat_access_token == "" {
-			//	chat_access_token, _ = Liner.Prompt("Please input your ChatGPT accessToken: ")
-			//	if chat_access_token == "" {
-			//		continue
-			//	}
-			//	aihj, err := ioutil.ReadFile("aih.json")
-			//	nj, _ := sjson.Set(string(aihj), "chat_access_token", chat_access_token)
-			//	err = ioutil.WriteFile("aih.json", []byte(nj), 0644)
-			//	if err != nil {
-			//		fmt.Println("Save failed.")
-			//	}
-			//	continue
-			//}
-
-			//// Handle ChatGPT Web error to recover
-			//RESP = func(rsp *string) string {
-			//	defer func(rp *string) {
-			//		if r := recover(); r != nil {
-			//			*rp = ""
-			//		}
-			//	}(rsp)
-			//	// Send message
-			//	*rsp = chatgpt_web(client_chat, &chat_access_token, &userInput, &conversation_id, &parent_id)
-			//	return *rsp
-			//}(&RESP)
-
-			//if RESP == "" {
-			//	fmt.Println("ChatGPT Web error, please renew ChatGPT cookie & check Internet accessing.")
-			//} else {
-			//	save2clip_board(RESP)
-			//	printer(color_chat, RESP, false)
-
-			//}
 			if chatgptjs == "" {
 				prom := "Please type << then paste ChatGPT cookie then type >> then press Enter: "
 				cook := multiln_input(Liner, prom)
@@ -1105,69 +1053,6 @@ func main() {
 	}
 }
 
-func chatgpt_web(c *http.Client, chat_access_token, prompt, c_id, p_id *string) string {
-	// Set the endpoint URL.
-	var api = "https://ai.fakeopen.com/api"
-	url := api + "/conversation"
-
-	x := `{"action": "next", "messages": [{"id": null, "role": "user", "author": {"role": "user"}, "content": {"content_type": "text", "parts": [""]}}], 
-                             "conversation_id": null, 
-			     "parent_message_id": "", 
-			     "model": "text-davinci-002-render-sha"}`
-
-	x, _ = sjson.Set(x, "messages.0.content.parts.0", *prompt)
-
-	m_id := uuid.New().String()
-	x, _ = sjson.Set(x, "messages.0.id", m_id)
-
-	if *p_id == "" {
-		*p_id = uuid.New().String()
-	}
-	x, _ = sjson.Set(x, "parent_message_id", *p_id)
-
-	if *c_id != "" {
-		x, _ = sjson.Set(x, "conversation_id", *c_id)
-	}
-
-	// Create a new request.
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(x)))
-	if err != nil {
-		panic(err)
-	}
-
-	// Set the headers.
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", *chat_access_token))
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Accept", "text/event-stream")
-
-	// Send the request.
-	resp, err := c.Do(req)
-	if err != nil {
-		fmt.Println(err, "service not work, please try again ...")
-	}
-	defer resp.Body.Close()
-
-	// Check the response status code.
-	if resp.StatusCode != 200 {
-		panic(resp.Status)
-	}
-
-	// Read the response body.
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		panic(err)
-	}
-	// Find the whole response
-	long_str := string(body)
-	lines := strings.Split(long_str, "\n")
-	long_str = lines[len(lines)-5]
-
-	answer := gjson.Get(long_str[5:], "message.content.parts.0").String()
-	*c_id = gjson.Get(long_str[5:], "conversation_id").String()
-	*p_id = gjson.Get(long_str[5:], "message.id").String()
-	return answer
-}
-
 func scrollUp(textView *tview.TextView) {
 	row, _ := textView.GetScrollOffset()
 	if row > 0 {
@@ -1252,7 +1137,7 @@ chrome_options.add_argument("--profile-directory=Default")
 chrome_options.add_argument("--ignore-certificate-errors")
 chrome_options.add_argument("--disable-plugins-discovery")
 chrome_options.add_argument("--incognito")
-chrome_options.add_argument("--headless")
+#chrome_options.add_argument("--headless")
 chrome_options.add_argument("user_agent=DN")
 driver = uc.Chrome(options=chrome_options)
 
@@ -1342,7 +1227,7 @@ chrome_options.add_argument("--profile-directory=Default")
 chrome_options.add_argument("--ignore-certificate-errors")
 chrome_options.add_argument("--disable-plugins-discovery")
 chrome_options.add_argument("--incognito")
-chrome_options.add_argument("--headless")
+#chrome_options.add_argument("--headless")
 chrome_options.add_argument("user_agent=DN")
 driver = uc.Chrome(options=chrome_options)
 
@@ -1394,7 +1279,6 @@ while 1:
 
             except Exception as e:
                 pass
-
 `
 
 var ps_chatgpt = `
@@ -1417,7 +1301,7 @@ chrome_options.add_argument("--profile-directory=Default")
 chrome_options.add_argument("--ignore-certificate-errors")
 chrome_options.add_argument("--disable-plugins-discovery")
 chrome_options.add_argument("--incognito")
-chrome_options.add_argument("--headless")
+#chrome_options.add_argument("--headless")
 chrome_options.add_argument("user_agent=DN")
 driver = uc.Chrome(options=chrome_options)
 
@@ -1485,8 +1369,4 @@ while 1:
 
             except Exception as e:
                 pass
-
-
-
-
 `
