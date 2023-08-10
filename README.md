@@ -31,11 +31,12 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 
 
 ## Prerequisites
-- For Google Bard, you should have a free [Google account](https://account.google.com) to obtain a cookie, and [Chrome Browser](https://google.com/chrome), `python3`, `undected_chromedriver`.
-- For Claude, you need a logged-in cookie of [Claude](https://claude.ai).
-- For ChatGPT Web (free) you should have a free account to obtain a logged-in cookie from [OpenAI](https://chat.openai.com).
-- For ChatGPT API (paid) you should have a paid API on [Billing](https://platform.openai.com/account/billing/overview). 
-- For Bing Chat, you need to have a free [Microsoft account](https://account.microsoft.com) in order to obtain a cookie.
+- [Chrome Browser](https://google.com/chrome), `python3`, `undected_chromedriver`.
+- For Bard, you need a free logged-in cookie of [Bard](https://bard.google.com).
+- For Claude, you need a free logged-in cookie of [Claude](https://claude.ai).
+- For ChatGPT, you need a free logged-in cookie of [OpenAI](https://chat.openai.com).
+- For ChatGPT API (paid) you need a paid API on [Billing](https://platform.openai.com/account/billing/overview). 
+- For Bing Chat, you need a free logged-in cookie of [Bing](https://account.microsoft.com) 
 
 ## How to get Cookies
 - For Bing Chat cookie you can log in and then use [Cookie-Editor](https://cookie-editor.cgagnier.ca) -> click Cookie-Editor icon -> click "Export" -> click "Export as JSON" (This saves your cookies to the clipboard), then type `.key` to choose `Set Bing Chat Cookie` in Aih, you will see a prompt that says **"Please type << then paste Bing cookie then type >> then press Enter"**, by doing so you can set Bing Chat cookie via multiple lines input mode.
