@@ -1,4 +1,5 @@
 import undetected_chromedriver as uc
+#from selenium import webdriver as uc
 import random,time,os,sys
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -17,7 +18,7 @@ chrome_options.add_argument("--profile-directory=Default")
 chrome_options.add_argument("--ignore-certificate-errors")
 chrome_options.add_argument("--disable-plugins-discovery")
 chrome_options.add_argument("--incognito")
-#chrome_options.add_argument("--headless")
+chrome_options.add_argument("--headless")
 chrome_options.add_argument("user_agent=DN")
 driver = uc.Chrome(options=chrome_options)
 
@@ -56,10 +57,6 @@ while 1:
                #print("get img_thinking")
                 img = wait.until(EC.presence_of_element_located((By.XPATH,  "//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')]")))
                #print("get img")
-               #content = img.find_element(By.XPATH,  "preceding::div[5]")
-               #text = content.get_attribute("textContent")
-               #text = text.replace("\n","(-:]")
-               #print(text)
                 response = img.find_element(By.XPATH,  "ancestor::model-response")
                #print("get response content img")
                 google  = response.find_element(By.XPATH,  ".//button[@aria-label='Google it']")
@@ -88,5 +85,4 @@ while 1:
 
             except Exception as e:
                 pass
-
 
