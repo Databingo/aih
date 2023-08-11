@@ -10,8 +10,8 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 ## Command list
 | Command    | Operation|
 |------------|----------|
-|.           | Select AI mode of Bard/Bing/ChatGPT/Claude|
-|.key        | Set cookie of Bard/Bing/ChatGPT/Claude|
+|.           | Select AI mode of Bard/ChatGPT/Claude/HuggingChat|
+|.key        | Set cookie of Bard/ChatGPT/Claude/HuggingChat|
 |.proxy      | Set proxy, for example: socks5://127.0.0.1:7890|
 |<<          | Start multiple lines input mode|
 |>>          | End multiple lines input mode|
@@ -32,17 +32,15 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 
 ## Prerequisites
 - [Chrome Browser](https://google.com/chrome), `python3`, `pip3 install undetected_chromedriver`
-- For Bard, you need a free logged-in cookie of [Bard](https://bard.google.com).
-- For Claude, you need a free logged-in cookie of [Claude](https://claude.ai).
-- For ChatGPT, you need a free logged-in cookie of [OpenAI](https://chat.openai.com).
-- For HuggingChat, you need a free logged-in cookie of [HuggingChat](https://huggingface.co/chat).
-- For ChatGPT API (paid) you need a paid API on [Billing](https://platform.openai.com/account/billing/overview). 
+- A free logged-in cookie of [Bard](https://bard.google.com).
+- A free logged-in cookie of [Claude](https://claude.ai).
+- A free logged-in cookie of [OpenAI](https://chat.openai.com).
+- A free logged-in cookie of [HuggingChat](https://huggingface.co/chat).
+- A paid ChatGPT API on [Billing](https://platform.openai.com/account/billing/overview). 
 
 ## How to get Cookies
 - For Bard cookie, you can log in and then use [Cookie-Editor](https://cookie-editor.cgagnier.ca) -> click Cookie-Editor icon -> click "Export" -> click "Export as JSON" (This saves your cookies to the clipboard), then type `.key` to choose `Set Bard Cookie` in Aih, you will see a prompt that says **"Please type << then paste Bard cookie then type >> then press Enter"**, by doing so you can set Bard cookie via multiple lines input mode.
-- For Chatgpt cookie, same.
-- For Cloude cookie, same.
-- For HuggingChat cookie, same.
+- Else same.
 
 ## Tips
 - The returned text will be auotmatically saved in your system clipboard, so you can paste it anywhere directly.
