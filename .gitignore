@@ -14,3 +14,6 @@ cookies/1.json
 history.txt
 test.go
 login.txt
+user.json
+tmp
+tmp/*
