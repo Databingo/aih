@@ -154,11 +154,11 @@ func main() {
 	// Open rod browser
 	var browser *rod.Browser
 	//if Proxy != "" {
-		browser = rod.New().
-			//Trace(true).
-			ControlURL(proxy_url).
-			Timeout(60 * 24 * time.Minute).
-			MustConnect()
+	browser = rod.New().
+		//Trace(true).
+		ControlURL(proxy_url).
+		Timeout(60 * 24 * time.Minute).
+		MustConnect()
 		//.NoDefaultDevice()
 	//} else {
 	//	browser = rod.New().
@@ -251,7 +251,7 @@ func main() {
 				select {
 				case question := <-channel_bard:
 					//fmt.Println("question:", question)
-			                page_bard.Activate()
+					page_bard.Activate()
 					page_bard.MustElementX("//textarea[@id='mat-input-0']").MustWaitVisible().MustInput(question)
 					page_bard.MustElementX("//button[@mattooltip='Submit']").MustClick()
 					page_bard.MustElementX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_thinking_v2_e272afd4f8d4bbd25efe.gif')]").MustWaitVisible()
@@ -286,7 +286,7 @@ func main() {
 				page_claude.MustElementX("//div[contains(text(), 'Start a new chat')]").MustWaitVisible().MustClick()
 				//page_claude.MustElementX("//p[@data-placeholder='Message Claude...']").MustWaitVisible()
 				relogin_claude = false
-			        //page_bard.MustWindowMinimize()
+				//page_bard.MustWindowMinimize()
 				break
 			}
 			if page_claude.Timeout(10 * time.Second).MustHasX("//h2[contains(text(), 'Talk to Claude')]") {
@@ -304,7 +304,7 @@ func main() {
 				select {
 				case question := <-channel_claude:
 					//fmt.Println("question:", question)
-			                page_claude.Activate()
+					page_claude.Activate()
 					page_claude.MustElementX("//p[contains(@data-placeholder, 'Message Claude')]").MustInput(question)
 					page_claude.MustElementX("//button[@aria-label='Send Message']").MustClick()
 					//page_claude.MustElement("button div svg path[d='M232,127.89a16,16,0,0,1-8.18,14L55.91,237.9A16.14,16.14,0,0,1,48,240a16,16,0,0,1-15.05-21.34L60.3,138.71A4,4,0,0,1,64.09,136H136a8,8,0,0,0,8-8.53,8.19,8.19,0,0,0-8.26-7.47H64.16a4,4,0,0,1-3.79-2.7l-27.44-80A16,16,0,0,1,55.85,18.07l168,95.89A16,16,0,0,1,232,127.89Z']").MustWaitVisible().MustClick()
@@ -347,12 +347,12 @@ func main() {
 				select {
 				case question := <-channel_hc:
 					//fmt.Println("question:", question)
-			                page_hc.Activate()
+					page_hc.Activate()
 					page_hc.MustElementX("//textarea[@enterkeyhint='send']").MustInput(question)
 					page_hc.MustElement("button svg path[d='M27.71 4.29a1 1 0 0 0-1.05-.23l-22 8a1 1 0 0 0 0 1.87l8.59 3.43L19.59 11L21 12.41l-6.37 6.37l3.44 8.59A1 1 0 0 0 19 28a1 1 0 0 0 .92-.66l8-22a1 1 0 0 0-.21-1.05Z']").MustClick()
 					page_hc.MustElement("svg path[d='M24 6H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z']").MustWaitInvisible() // stop_icon
 					img := page_hc.MustElementX("(//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')])[last()]")
-					content := img.MustElementX("following-sibling::div[1]") 
+					content := img.MustElementX("following-sibling::div[1]")
 					answer := content.MustText()
 					channel_hc <- answer
 				}
@@ -421,7 +421,7 @@ func main() {
 				select {
 				case question := <-channel_chatgpt:
 					//fmt.Println("question:", question)
-			                page_chatgpt.Activate()
+					page_chatgpt.Activate()
 					page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustWaitVisible().MustInput(question)
 					sends := page_chatgpt.MustElements("button:last-of-type svg path[d='M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z']")
 					sends[len(sends)-1].MustClick()
