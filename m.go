@@ -155,14 +155,14 @@ func main() {
 	var browser *rod.Browser
 	if Proxy != "" {
 		browser = rod.New().
-			Trace(true).
+			//Trace(true).
 			ControlURL(proxy_url).
 			Timeout(60 * 24 * time.Minute).
 			MustConnect()
 		//.NoDefaultDevice()
 	} else {
 		browser = rod.New().
-			Trace(true).
+			//Trace(true).
 			Timeout(60 * 24 * time.Minute).
 			MustConnect()
 		//.NoDefaultDevice()
@@ -255,9 +255,8 @@ func main() {
 	var page_bard *rod.Page
 	var relogin_bard bool
 	channel_bard := make(chan string)
-	//page_bard = browser.MustPage("https://bard.google.com")
 	go func() {
-	        page_bard = browser.MustPage("https://bard.google.com")
+		page_bard = browser.MustPage("https://bard.google.com")
 		for {
 			if page_bard.Timeout(10 * time.Second).MustHasX("//textarea[@id='mat-input-0']") {
 				relogin_bard = false
@@ -277,27 +276,21 @@ func main() {
 			for {
 				select {
 				case question := <-channel_bard:
-					fmt.Println("question:", question)
-
+					//fmt.Println("question:", question)
 					page_bard.MustElementX("//textarea[@id='mat-input-0']").MustWaitVisible().MustInput(question)
 					page_bard.MustElementX("//button[@mattooltip='Submit']").MustClick()
 					page_bard.MustElementX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_thinking_v2_e272afd4f8d4bbd25efe.gif')]").MustWaitVisible()
 					img := page_bard.MustElementX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')]").MustWaitVisible()
 					response := img.MustElementX("ancestor::model-response").MustWaitVisible()
-					//google  = response.MustElementX(".//button[@aria-label='Google it']").MustWaitVisible()
-					//contents = response.MustElementsX(".//message-content")
-					//z := ""
-					//for _, content := range contents {
-					// t := content.MustText()
-					// z = z + "\n" + t
-					//}
 					answer := response.MustText()
-
-					//page_chatgpt.MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
-					////page_chatgpt.MustScreenshot("")
-					////page_chatgpt.MustScreenshot("")
-					//fmt.Println("Retry icon show")
-					//answer := page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()
+					answer = strings.Replace(answer, "View other drafts", "", -1)
+					answer = strings.Replace(answer, "Regenerate draft", "", -1)
+					answer = strings.Replace(answer, "thumb_up", "", -1)
+					answer = strings.Replace(answer, "thumb_down", "", -1)
+					answer = strings.Replace(answer, "volume_up", "", -1)
+					answer = strings.Replace(answer, "more_vert", "", -1)
+					answer = strings.Replace(answer, "Google it", "", -1)
+					answer = answer[8 : len(answer)-12]
 					channel_bard <- answer
 				}
 			}
@@ -312,85 +305,75 @@ func main() {
 
 	//////////////////////4////////////////////////////
 	// Set up client of chatgpt (rod version)
-
-	// Login
 	var page_chatgpt *rod.Page
 	var relogin_chatgpt bool
 	channel_chatgpt := make(chan string)
-	if chatgpt_user != "" && chatgpt_password != "" {
-		//cookie?
-		go func() {
-			//page_chatgpt = stealth.MustPage(browser)
-			page_chatgpt = browser.MustPage("https://chat.openai.com")
+	go func() {
+		//page_chatgpt = stealth.MustPage(browser)
+		page_chatgpt = browser.MustPage("https://chat.openai.com")
+		for {
+			if page_chatgpt.Timeout(10 * time.Second).MustHasX("//textarea[@id='prompt-textarea']") {
+				relogin_chatgpt = false
+				break
+			}
+			if page_chatgpt.Timeout(10 * time.Second).MustHasX("//div[contains(text(), 'Log in with your OpenAI account to continue')]") {
+				relogin_chatgpt = true
+				break
+			}
+			time.Sleep(time.Second)
+		}
+
+		if relogin_chatgpt == true {
+			fmt.Println("✘ ChatGPT")
+			//page_chatgpt.MustElementX("//div[contains(text(), 'Welcome to ChatGPT')] | //h2[contains(text(), 'Get started')]").MustWaitVisible()
+			//page_chatgpt.MustElementX("//div[not(contains(@class, 'mb-4')) and contains(text(), 'Log in')]").MustClick()
+			//utils.Sleep(1.5)
+			//page_chatgpt.MustElementX("//input[@id='username']").MustWaitVisible().MustInput(chatgpt_user)
+			//utils.Sleep(1.5)
+			//page_chatgpt.MustElementX("//button[contains(text(), 'Continue')]").MustClick()
+			//utils.Sleep(1.5)
+			//page_chatgpt.MustElementX("//input[@id='password']").MustWaitVisible().MustInput(chatgpt_password)
+			//utils.Sleep(1.5)
+			//page_chatgpt.MustElementX("//button[not(contains(@aria-hidden, 'true')) and contains(text(), 'Continue')]").MustClick()
+			////page_chatgpt.MustElementX("//h4[contains(text(), 'This is a free research preview.')]").MustWaitVisible()
+			////utils.Sleep(1.5)
+			////page_chatgpt.MustElementX("//button/div[contains(text(), 'Next')]").MustClick()
+			////page_chatgpt.MustElementX("//h4[contains(text(), 'How we collect data')]").MustWaitVisible()
+			////utils.Sleep(1.5)
+			////page_chatgpt.MustElementX("//button/div[contains(text(), 'Next')]").MustClick()
+			////page_chatgpt.MustElementX("//h4[contains(text(), 'love your feedback!')]").MustWaitVisible()
+			////utils.Sleep(1.5)
+			////page_chatgpt.MustElementX("//button/div[contains(text(), 'Done')]").MustClick()
+			////utils.Sleep(1.5)
+			//page_chatgpt.MustElementX("//a[contains(text(), 'New chat')]").MustWaitVisible().MustClick()
+			//page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustWaitVisible()
+			//utils.Sleep(1.5)
+			//page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustInput("hello")
+			//utils.Sleep(1.5)
+			//sends := page_chatgpt.MustElements("button:last-of-type svg path[d='M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z']")
+			//sends[len(sends)-1].MustClick()
+			//page_chatgpt.MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
+			//fmt.Println("Retry icon show")
+			//page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()
+			//fmt.Println("✔ ChatGPT Ready")
+		}
+		if relogin_chatgpt == false {
+			fmt.Println("✔ ChatGPT")
 			for {
-				if page_chatgpt.Timeout(10 * time.Second).MustHasX("//textarea[@id='prompt-textarea']") {
-					relogin_chatgpt = false
-					break
-				}
-				if page_chatgpt.Timeout(10 * time.Second).MustHasX("//div[contains(text(), 'Log in with your OpenAI account to continue')]") {
-					relogin_chatgpt = true
-					break
-				}
-				time.Sleep(time.Second)
-			}
-
-			if relogin_chatgpt == true {
-				fmt.Println("✘ ChatGPT")
-				//page_chatgpt.MustElementX("//div[contains(text(), 'Welcome to ChatGPT')] | //h2[contains(text(), 'Get started')]").MustWaitVisible()
-				//page_chatgpt.MustElementX("//div[not(contains(@class, 'mb-4')) and contains(text(), 'Log in')]").MustClick()
-				//utils.Sleep(1.5)
-				//page_chatgpt.MustElementX("//input[@id='username']").MustWaitVisible().MustInput(chatgpt_user)
-				//utils.Sleep(1.5)
-				//page_chatgpt.MustElementX("//button[contains(text(), 'Continue')]").MustClick()
-				//utils.Sleep(1.5)
-				//page_chatgpt.MustElementX("//input[@id='password']").MustWaitVisible().MustInput(chatgpt_password)
-				//utils.Sleep(1.5)
-				//page_chatgpt.MustElementX("//button[not(contains(@aria-hidden, 'true')) and contains(text(), 'Continue')]").MustClick()
-				////page_chatgpt.MustElementX("//h4[contains(text(), 'This is a free research preview.')]").MustWaitVisible()
-				////utils.Sleep(1.5)
-				////page_chatgpt.MustElementX("//button/div[contains(text(), 'Next')]").MustClick()
-				////page_chatgpt.MustElementX("//h4[contains(text(), 'How we collect data')]").MustWaitVisible()
-				////utils.Sleep(1.5)
-				////page_chatgpt.MustElementX("//button/div[contains(text(), 'Next')]").MustClick()
-				////page_chatgpt.MustElementX("//h4[contains(text(), 'love your feedback!')]").MustWaitVisible()
-				////utils.Sleep(1.5)
-				////page_chatgpt.MustElementX("//button/div[contains(text(), 'Done')]").MustClick()
-				////utils.Sleep(1.5)
-				//page_chatgpt.MustElementX("//a[contains(text(), 'New chat')]").MustWaitVisible().MustClick()
-				//page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustWaitVisible()
-				//utils.Sleep(1.5)
-				//page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustInput("hello")
-				//utils.Sleep(1.5)
-				//sends := page_chatgpt.MustElements("button:last-of-type svg path[d='M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z']")
-				//sends[len(sends)-1].MustClick()
-				//page_chatgpt.MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
-				//fmt.Println("Retry icon show")
-				//page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()
-				//fmt.Println("✔ ChatGPT Ready")
-			}
-			if relogin_chatgpt == false {
-				fmt.Println("✔ ChatGPT")
-				for {
-					select {
-					case question := <-channel_chatgpt:
-						fmt.Println("question:", question)
-
-						page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustWaitVisible().MustInput(question)
-						//sends = page_chatgpt.Timeout(200 * time.Second).MustElements("button:last-of-type svg path[d='M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z']")
-						sends := page_chatgpt.MustElements("button:last-of-type svg path[d='M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z']")
-						sends[len(sends)-1].MustClick()
-						//page_chatgpt.Timeout(200 * time.Second).MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
-						page_chatgpt.MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
-						//page_chatgpt.MustScreenshot("")
-						//page_chatgpt.MustScreenshot("")
-						fmt.Println("Retry icon show")
-						answer := page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()
-						channel_chatgpt <- answer
-					}
+				select {
+				case question := <-channel_chatgpt:
+					//fmt.Println("question:", question)
+					page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustWaitVisible().MustInput(question)
+					sends := page_chatgpt.MustElements("button:last-of-type svg path[d='M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z']")
+					sends[len(sends)-1].MustClick()
+					page_chatgpt.MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
+					//fmt.Println("Retry icon show")
+					answer := page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()
+					channel_chatgpt <- answer
 				}
 			}
-		}()
-	}
+		}
+	}()
 
 	// Clean screen
 	clear()
@@ -658,18 +641,19 @@ func main() {
 		if role == ".bard" {
 			//fmt.Println("type question:", userInput)
 			if relogin_bard == true {
-			fmt.Println("Login Bard please.")
+				fmt.Println("Login Bard please.")
 			} else {
-			channel_bard <- userInput
-			answer := <-channel_bard
+				page_bard.Activate()
+				channel_bard <- userInput
+				answer := <-channel_bard
 
-			// Print the response to the terminal
-			RESP = strings.TrimSpace(answer)
-			//used_tokens = resp.Usage.TotalTokens
-			//left_tokens = max_tokens - used_tokens
-			//printer_chat.Println(RESP)
-			printer(color_bard, RESP, false)
-		       }
+				// Print the response to the terminal
+				RESP = strings.TrimSpace(answer)
+				//used_tokens = resp.Usage.TotalTokens
+				//left_tokens = max_tokens - used_tokens
+				//printer_chat.Println(RESP)
+				printer(color_bard, RESP, false)
+			}
 
 		}
 
@@ -682,18 +666,19 @@ func main() {
 		if role == ".chat" {
 			//fmt.Println("type question:", userInput)
 			if relogin_chatgpt == true {
-			 fmt.Println("Login ChatGPT please.")
+				fmt.Println("Login ChatGPT please.")
 			} else {
-			channel_chatgpt <- userInput
-			answer := <-channel_chatgpt
+				page_chatgpt.Activate()
+				channel_chatgpt <- userInput
+				answer := <-channel_chatgpt
 
-			// Print the response to the terminal
-			RESP = strings.TrimSpace(answer)
-			//used_tokens = resp.Usage.TotalTokens
-			//left_tokens = max_tokens - used_tokens
-			//printer_chat.Println(RESP)
-			printer(color_chatapi, RESP, false)
-		       }
+				// Print the response to the terminal
+				RESP = strings.TrimSpace(answer)
+				//used_tokens = resp.Usage.TotalTokens
+				//left_tokens = max_tokens - used_tokens
+				//printer_chat.Println(RESP)
+				printer(color_chatapi, RESP, false)
+			}
 
 		}
 
