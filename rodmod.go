@@ -9,9 +9,9 @@ import (
 	"github.com/tidwall/gjson"
 
 	"github.com/go-rod/rod"
-	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/stealth"
 	"github.com/go-rod/rod/lib/utils"
+	"github.com/go-rod/rod/lib/launcher"
 )
 
 //func init() {
@@ -67,7 +67,16 @@ func main() {
 	// You can also use stealth.JS directly without rod
 	//fmt.Printf("js: %x\n\n", md5.Sum([]byte(stealth.JS)))
 
+	// Read cookie
+	//chatgpt_json, err := ioutil.ReadFile("cookies/chatgpt.json")
+	//if err != nil {
+	//	err = ioutil.WriteFile("cookies/chatgpt.json", []byte(""), 0644)
+	//}
+	//var chatgptjs string
+	//chatgptjs = gjson.Parse(string(chatgpt_json)).String()
+
 	page := stealth.MustPage(browser)
+	//page.Call("Network.setCookies", cdp.Object{ "cookies": []cdp.Object{{
 
 	//page.MustNavigate("https://bot.sannysoft.com")
 	page.MustNavigate("https://chat.openai.com")
