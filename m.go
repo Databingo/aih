@@ -148,12 +148,12 @@ func main() {
 		browser = rod.New().
 			Trace(true).
 			ControlURL(proxy_url).
-			Timeout(3 * time.Minute).
+			Timeout(60 * 24  * time.Minute).
 			MustConnect()
 	} else {
 		browser = rod.New().
 			Trace(true).
-			Timeout(3 * time.Minute).
+			Timeout(60 * 24  * time.Minute).
 			MustConnect()
 	}
 
@@ -265,20 +265,33 @@ func main() {
 			page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustInput("hello")
 			utils.Sleep(1.5)
 			//utils.Pause()
-			sends := page_chatgpt.Timeout(200 * time.Second).MustElements("button:last-of-type svg path[d='M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z']")
+			//sends := page_chatgpt.Timeout(200 * time.Second).MustElements("button:last-of-type svg path[d='M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z']")
+			sends := page_chatgpt.MustElements("button:last-of-type svg path[d='M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z']")
 			sends[len(sends)-1].MustClick()
-			page_chatgpt.Timeout(20000 * time.Second).MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
+			//page_chatgpt.Timeout(200 * time.Second).MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
+			page_chatgpt.MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
 			//page_chatgpt.MustScreenshot("")
 			//page_chatgpt.MustScreenshot("")
 			fmt.Println("Retry icon show")
-			content := page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()
-			fmt.Println(content)
+			page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()
+			fmt.Println("✔ ChatGPT ready")
 			//utils.Pause()
 			for {
 				select {
 				case question := <-channel_chatgpt:
 					fmt.Println("question:", question)
-					channel_chatgpt <- question + "^^^"
+
+					page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustWaitVisible().MustInput(question)
+					//sends = page_chatgpt.Timeout(200 * time.Second).MustElements("button:last-of-type svg path[d='M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z']")
+					sends = page_chatgpt.MustElements("button:last-of-type svg path[d='M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z']")
+					sends[len(sends)-1].MustClick()
+					//page_chatgpt.Timeout(200 * time.Second).MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
+					page_chatgpt.MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
+					//page_chatgpt.MustScreenshot("")
+					//page_chatgpt.MustScreenshot("")
+					fmt.Println("Retry icon show")
+					answer := page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()
+					channel_chatgpt <- answer
 				}
 			}
 		}()
@@ -558,8 +571,8 @@ func main() {
 		}
 	CHAT:
 		if role == ".chat" {
-		        fmt.Println("type question:",  userInput )
-                        channel_chatgpt <-  userInput
+			fmt.Println("type question:", userInput)
+			channel_chatgpt <- userInput
 			answer := <-channel_chatgpt
 
 			// Print the response to the terminal
