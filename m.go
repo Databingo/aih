@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
-	"github.com/go-rod/rod/lib/utils"
+	//"github.com/go-rod/rod/lib/utils"
 	//"github.com/go-rod/stealth"
 
 	//"bufio"
@@ -157,15 +157,15 @@ func main() {
 		browser = rod.New().
 			Trace(true).
 			ControlURL(proxy_url).
-			Timeout(60 * 24  * time.Minute).
+			Timeout(60 * 24 * time.Minute).
 			MustConnect()
-			//.NoDefaultDevice()
+		//.NoDefaultDevice()
 	} else {
 		browser = rod.New().
 			Trace(true).
-			Timeout(60 * 24  * time.Minute).
+			Timeout(60 * 24 * time.Minute).
 			MustConnect()
-			//.NoDefaultDevice()
+		//.NoDefaultDevice()
 	}
 
 	// Read user.json
@@ -227,30 +227,49 @@ func main() {
 	//////////////////////1////////////////////////////
 	// Set up client of Bard (chromedriver version)
 	var page_bard *rod.Page
-	if bard_user != "" && bard_password != "" {
-		//cookie?
-		//page_bard = stealth.MustPage(browser)
-		page_bard = browser.MustPage("https://bard.google.com")
-                var relogin_bard bool
-		for {
-		    if page_bard.Timeout(10 * time.Second).MustHasX("//textarea[@id='mat-input-0']"){
-		    relogin_bard = false
-		    break
-		   }
-		    if page_bard.Timeout(10 * time.Second).MustHasX("//span[contains(text(), 'Sign in')]"){
-		    relogin_bard = true
-		    break
-		   }
-		   time.Sleep(time.Second)
-		}
+	//if bard_user != "" && bard_password != "" {
+	//	//cookie?
+	//	//page_bard = stealth.MustPage(browser)
+	//	page_bard = browser.MustPage("https://bard.google.com")
+	//	var relogin_bard bool
+	//	for {
+	//		if page_bard.Timeout(10 * time.Second).MustHasX("//textarea[@id='mat-input-0']") {
+	//			relogin_bard = false
+	//			break
+	//		}
+	//		if page_bard.Timeout(10 * time.Second).MustHasX("//span[contains(text(), 'Sign in')]") {
+	//			relogin_bard = true
+	//			break
+	//		}
+	//		time.Sleep(time.Second)
+	//	}
 
-	        // Login
-		if relogin_bard == true {
-		page_bard = browser.MustPage("https://accounts.google.com")
-		//page_bard.MustNavigate("https://accounts.google.com")
-		page_bard.MustElementX("//input[@id='identifierId']").MustWaitVisible().MustInput(bard_user)
-		page_bard.MustElementX("//span[contains(text(), 'Next')]").MustWaitVisible().MustClick()
-	       }
+	//	// Login
+	//	if relogin_bard == true {
+	//		page_bard = browser.MustPage("https://accounts.google.com")
+	//		//page_bard.MustNavigate("https://accounts.google.com")
+	//		page_bard.MustElementX("//input[@id='identifierId']").MustWaitVisible().MustInput(bard_user)
+	//		page_bard.MustElementX("//span[contains(text(), 'Next')]").MustWaitVisible().MustClick()
+	//	}
+	//}
+	page_bard = browser.MustPage("https://bard.google.com")
+	var relogin_bard bool
+	for {
+		if page_bard.Timeout(10 * time.Second).MustHasX("//textarea[@id='mat-input-0']") {
+			relogin_bard = false
+			break
+		}
+		if page_bard.Timeout(10 * time.Second).MustHasX("//span[contains(text(), 'Sign in')]") {
+			relogin_bard = true
+			break
+		}
+		time.Sleep(time.Second)
+	}
+	if relogin_bard == true {
+		fmt.Println("✘ Bard Login")
+	}
+	if relogin_bard == false {
+		fmt.Println("✔ Bard Ready")
 	}
 
 	//////////////////////2////////////////////////////
@@ -269,77 +288,73 @@ func main() {
 		//cookie?
 		go func() {
 			//page_chatgpt = stealth.MustPage(browser)
-                        var relogin_chatgpt bool
-		        page_chatgpt = browser.MustPage("https://chat.openai.com")
-		for {
-		    if page_chatgpt.Timeout(10 * time.Second).MustHasX("//textarea[@id='prompt-textarea']"){
-		    relogin_chatgpt = false
-		    break
-		   }
-		    if page_chatgpt.Timeout(10 * time.Second).MustHasX("//div[contains(text(), 'Log in with your OpenAI account to continue')]"){
-		    relogin_chatgpt = true
-		    break
-		   }
-		   time.Sleep(time.Second)
-		}
-
-		if relogin_chatgpt == true {
-		        //page_chatgpt = browser.MustPage("https://chat.openai.com")
-			//page_chatgpt.MustNavigate("https://chat.openai.com")
-			page_chatgpt.MustElementX("//div[contains(text(), 'Welcome to ChatGPT')] | //h2[contains(text(), 'Get started')]").MustWaitVisible()
-			page_chatgpt.MustElementX("//div[not(contains(@class, 'mb-4')) and contains(text(), 'Log in')]").MustClick()
-			utils.Sleep(1.5)
-			page_chatgpt.MustElementX("//input[@id='username']").MustWaitVisible().MustInput(chatgpt_user)
-			utils.Sleep(1.5)
-			page_chatgpt.MustElementX("//button[contains(text(), 'Continue')]").MustClick()
-			utils.Sleep(1.5)
-			page_chatgpt.MustElementX("//input[@id='password']").MustWaitVisible().MustInput(chatgpt_password)
-			utils.Sleep(1.5)
-			page_chatgpt.MustElementX("//button[not(contains(@aria-hidden, 'true')) and contains(text(), 'Continue')]").MustClick()
-			//page_chatgpt.MustElementX("//h4[contains(text(), 'This is a free research preview.')]").MustWaitVisible()
-			//utils.Sleep(1.5)
-			//page_chatgpt.MustElementX("//button/div[contains(text(), 'Next')]").MustClick()
-			//page_chatgpt.MustElementX("//h4[contains(text(), 'How we collect data')]").MustWaitVisible()
-			//utils.Sleep(1.5)
-			//page_chatgpt.MustElementX("//button/div[contains(text(), 'Next')]").MustClick()
-			//page_chatgpt.MustElementX("//h4[contains(text(), 'love your feedback!')]").MustWaitVisible()
-			//utils.Sleep(1.5)
-			//page_chatgpt.MustElementX("//button/div[contains(text(), 'Done')]").MustClick()
-			//utils.Sleep(1.5)
-			page_chatgpt.MustElementX("//a[contains(text(), 'New chat')]").MustWaitVisible().MustClick()
-			page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustWaitVisible()
-			utils.Sleep(1.5)
-			page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustInput("hello")
-			utils.Sleep(1.5)
-			//utils.Pause()
-			//sends := page_chatgpt.Timeout(200 * time.Second).MustElements("button:last-of-type svg path[d='M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z']")
-			sends := page_chatgpt.MustElements("button:last-of-type svg path[d='M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z']")
-			sends[len(sends)-1].MustClick()
-			//page_chatgpt.Timeout(200 * time.Second).MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
-			page_chatgpt.MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
-			//page_chatgpt.MustScreenshot("")
-			//page_chatgpt.MustScreenshot("")
-			fmt.Println("Retry icon show")
-			page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()
-			fmt.Println("✔ ChatGPT ready")
-		       }
-			//utils.Pause()
+			var relogin_chatgpt bool
+			page_chatgpt = browser.MustPage("https://chat.openai.com")
 			for {
-				select {
-				case question := <-channel_chatgpt:
-					fmt.Println("question:", question)
+				if page_chatgpt.Timeout(10 * time.Second).MustHasX("//textarea[@id='prompt-textarea']") {
+					relogin_chatgpt = false
+					break
+				}
+				if page_chatgpt.Timeout(10 * time.Second).MustHasX("//div[contains(text(), 'Log in with your OpenAI account to continue')]") {
+					relogin_chatgpt = true
+					break
+				}
+				time.Sleep(time.Second)
+			}
 
-					page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustWaitVisible().MustInput(question)
-					//sends = page_chatgpt.Timeout(200 * time.Second).MustElements("button:last-of-type svg path[d='M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z']")
-					sends := page_chatgpt.MustElements("button:last-of-type svg path[d='M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z']")
-					sends[len(sends)-1].MustClick()
-					//page_chatgpt.Timeout(200 * time.Second).MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
-					page_chatgpt.MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
-					//page_chatgpt.MustScreenshot("")
-					//page_chatgpt.MustScreenshot("")
-					fmt.Println("Retry icon show")
-					answer := page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()
-					channel_chatgpt <- answer
+			if relogin_chatgpt == true {
+				fmt.Println("✘ ChatGPT Login")
+				//page_chatgpt.MustElementX("//div[contains(text(), 'Welcome to ChatGPT')] | //h2[contains(text(), 'Get started')]").MustWaitVisible()
+				//page_chatgpt.MustElementX("//div[not(contains(@class, 'mb-4')) and contains(text(), 'Log in')]").MustClick()
+				//utils.Sleep(1.5)
+				//page_chatgpt.MustElementX("//input[@id='username']").MustWaitVisible().MustInput(chatgpt_user)
+				//utils.Sleep(1.5)
+				//page_chatgpt.MustElementX("//button[contains(text(), 'Continue')]").MustClick()
+				//utils.Sleep(1.5)
+				//page_chatgpt.MustElementX("//input[@id='password']").MustWaitVisible().MustInput(chatgpt_password)
+				//utils.Sleep(1.5)
+				//page_chatgpt.MustElementX("//button[not(contains(@aria-hidden, 'true')) and contains(text(), 'Continue')]").MustClick()
+				////page_chatgpt.MustElementX("//h4[contains(text(), 'This is a free research preview.')]").MustWaitVisible()
+				////utils.Sleep(1.5)
+				////page_chatgpt.MustElementX("//button/div[contains(text(), 'Next')]").MustClick()
+				////page_chatgpt.MustElementX("//h4[contains(text(), 'How we collect data')]").MustWaitVisible()
+				////utils.Sleep(1.5)
+				////page_chatgpt.MustElementX("//button/div[contains(text(), 'Next')]").MustClick()
+				////page_chatgpt.MustElementX("//h4[contains(text(), 'love your feedback!')]").MustWaitVisible()
+				////utils.Sleep(1.5)
+				////page_chatgpt.MustElementX("//button/div[contains(text(), 'Done')]").MustClick()
+				////utils.Sleep(1.5)
+				//page_chatgpt.MustElementX("//a[contains(text(), 'New chat')]").MustWaitVisible().MustClick()
+				//page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustWaitVisible()
+				//utils.Sleep(1.5)
+				//page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustInput("hello")
+				//utils.Sleep(1.5)
+				//sends := page_chatgpt.MustElements("button:last-of-type svg path[d='M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z']")
+				//sends[len(sends)-1].MustClick()
+				//page_chatgpt.MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
+				//fmt.Println("Retry icon show")
+				//page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()
+				//fmt.Println("✔ ChatGPT Ready")
+			}
+			if relogin_chatgpt == false {
+				fmt.Println("✔ ChatGPT Ready")
+				for {
+					select {
+					case question := <-channel_chatgpt:
+						fmt.Println("question:", question)
+
+						page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustWaitVisible().MustInput(question)
+						//sends = page_chatgpt.Timeout(200 * time.Second).MustElements("button:last-of-type svg path[d='M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z']")
+						sends := page_chatgpt.MustElements("button:last-of-type svg path[d='M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z']")
+						sends[len(sends)-1].MustClick()
+						//page_chatgpt.Timeout(200 * time.Second).MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
+						page_chatgpt.MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
+						//page_chatgpt.MustScreenshot("")
+						//page_chatgpt.MustScreenshot("")
+						fmt.Println("Retry icon show")
+						answer := page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()
+						channel_chatgpt <- answer
+					}
 				}
 			}
 		}()
