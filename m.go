@@ -226,7 +226,7 @@ func main() {
 
 	//////////////////////1////////////////////////////
 	// Set up client of Bard (chromedriver version)
-	var page_bard *rod.Page
+	//var page_bard *rod.Page
 	//if bard_user != "" && bard_password != "" {
 	//	//cookie?
 	//	//page_bard = stealth.MustPage(browser)
@@ -252,26 +252,58 @@ func main() {
 	//		page_bard.MustElementX("//span[contains(text(), 'Next')]").MustWaitVisible().MustClick()
 	//	}
 	//}
-	page_bard = browser.MustPage("https://bard.google.com")
+	var page_bard *rod.Page
 	var relogin_bard bool
-	for {
-		if page_bard.Timeout(10 * time.Second).MustHasX("//textarea[@id='mat-input-0']") {
-			relogin_bard = false
-			break
+	channel_bard := make(chan string)
+	//page_bard = browser.MustPage("https://bard.google.com")
+	go func() {
+	        page_bard = browser.MustPage("https://bard.google.com")
+		for {
+			if page_bard.Timeout(10 * time.Second).MustHasX("//textarea[@id='mat-input-0']") {
+				relogin_bard = false
+				break
+			}
+			if page_bard.Timeout(10 * time.Second).MustHasX("//span[contains(text(), 'Sign in')]") {
+				relogin_bard = true
+				break
+			}
+			time.Sleep(time.Second)
 		}
-		if page_bard.Timeout(10 * time.Second).MustHasX("//span[contains(text(), 'Sign in')]") {
-			relogin_bard = true
-			break
+		if relogin_bard == true {
+			fmt.Println("✘ Bard")
 		}
-		time.Sleep(time.Second)
-	}
-	if relogin_bard == true {
-		fmt.Println("✘ Bard Login")
-	}
-	if relogin_bard == false {
-		fmt.Println("✔ Bard Ready")
-	}
+		if relogin_bard == false {
+			fmt.Println("✔ Bard")
+			for {
+				select {
+				case question := <-channel_bard:
+					fmt.Println("question:", question)
 
+					page_bard.MustElementX("//textarea[@id='mat-input-0']").MustWaitVisible().MustInput(question)
+					page_bard.MustElementX("//button[@mattooltip='Submit']").MustClick()
+					page_bard.MustElementX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_thinking_v2_e272afd4f8d4bbd25efe.gif')]").MustWaitVisible()
+					img := page_bard.MustElementX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')]").MustWaitVisible()
+					response := img.MustElementX("ancestor::model-response").MustWaitVisible()
+					//google  = response.MustElementX(".//button[@aria-label='Google it']").MustWaitVisible()
+					//contents = response.MustElementsX(".//message-content")
+					//z := ""
+					//for _, content := range contents {
+					// t := content.MustText()
+					// z = z + "\n" + t
+					//}
+					answer := response.MustText()
+
+					//page_chatgpt.MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
+					////page_chatgpt.MustScreenshot("")
+					////page_chatgpt.MustScreenshot("")
+					//fmt.Println("Retry icon show")
+					//answer := page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()
+					channel_bard <- answer
+				}
+			}
+		}
+
+	}()
 	//////////////////////2////////////////////////////
 	// Set up client of Claude2 (chromedriver version)
 
@@ -283,12 +315,12 @@ func main() {
 
 	// Login
 	var page_chatgpt *rod.Page
+	var relogin_chatgpt bool
 	channel_chatgpt := make(chan string)
 	if chatgpt_user != "" && chatgpt_password != "" {
 		//cookie?
 		go func() {
 			//page_chatgpt = stealth.MustPage(browser)
-			var relogin_chatgpt bool
 			page_chatgpt = browser.MustPage("https://chat.openai.com")
 			for {
 				if page_chatgpt.Timeout(10 * time.Second).MustHasX("//textarea[@id='prompt-textarea']") {
@@ -303,7 +335,7 @@ func main() {
 			}
 
 			if relogin_chatgpt == true {
-				fmt.Println("✘ ChatGPT Login")
+				fmt.Println("✘ ChatGPT")
 				//page_chatgpt.MustElementX("//div[contains(text(), 'Welcome to ChatGPT')] | //h2[contains(text(), 'Get started')]").MustWaitVisible()
 				//page_chatgpt.MustElementX("//div[not(contains(@class, 'mb-4')) and contains(text(), 'Log in')]").MustClick()
 				//utils.Sleep(1.5)
@@ -337,7 +369,7 @@ func main() {
 				//fmt.Println("✔ ChatGPT Ready")
 			}
 			if relogin_chatgpt == false {
-				fmt.Println("✔ ChatGPT Ready")
+				fmt.Println("✔ ChatGPT")
 				for {
 					select {
 					case question := <-channel_chatgpt:
@@ -624,6 +656,20 @@ func main() {
 	BARD:
 		// Check role for correct actions
 		if role == ".bard" {
+			//fmt.Println("type question:", userInput)
+			if relogin_bard == true {
+			fmt.Println("Login Bard please.")
+			} else {
+			channel_bard <- userInput
+			answer := <-channel_bard
+
+			// Print the response to the terminal
+			RESP = strings.TrimSpace(answer)
+			//used_tokens = resp.Usage.TotalTokens
+			//left_tokens = max_tokens - used_tokens
+			//printer_chat.Println(RESP)
+			printer(color_bard, RESP, false)
+		       }
 
 		}
 
@@ -634,7 +680,10 @@ func main() {
 		}
 	CHAT:
 		if role == ".chat" {
-			fmt.Println("type question:", userInput)
+			//fmt.Println("type question:", userInput)
+			if relogin_chatgpt == true {
+			 fmt.Println("Login ChatGPT please.")
+			} else {
 			channel_chatgpt <- userInput
 			answer := <-channel_chatgpt
 
@@ -644,6 +693,7 @@ func main() {
 			//left_tokens = max_tokens - used_tokens
 			//printer_chat.Println(RESP)
 			printer(color_chatapi, RESP, false)
+		       }
 
 		}
 

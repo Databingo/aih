@@ -432,8 +432,6 @@ func main() {
 	    utils.Pause()
 	}
 
-
-
 	// Set up client of Bing Chat
 	//var gpt *EdgeGPT.GPT
 	//_, err = ioutil.ReadFile("./cookies/1.json")
