@@ -136,7 +136,7 @@ func main() {
 
 	// Set proxy for rod
 	//proxy_url := launcher.New().Proxy(Proxy).Delete("use-mock-keychain").MustLaunch()
-	proxy_url := launcher.New().Proxy(Proxy).MustLaunch()
+	proxy_url := launcher.New().StartURL("about:blank").Proxy(Proxy).MustLaunch()
 
 	// Open rod browser
 	var browser *rod.Browser
@@ -152,6 +152,28 @@ func main() {
 			Timeout(3 * time.Minute).
 			MustConnect()
 	}
+
+	// Read user.json
+	user_json, _ := ioutil.ReadFile("user.json")
+	if err != nil {
+		err = ioutil.WriteFile("user.json", []byte(""), 0644)
+	}
+
+	// Read user/password
+	var chatgpt_user string
+	var chatgpt_password string
+	var bard_user string
+	var bard_password string
+	chatgpt_user = gjson.Get(string(user_json), "chatgpt.user").String()
+	chatgpt_password = gjson.Get(string(user_json), "chatgpt.password").String()
+	bard_user = gjson.Get(string(user_json), "bard.user").String()
+	bard_password = gjson.Get(string(user_json), "bard.password").String()
+
+	fmt.Println(chatgpt_user)
+	fmt.Println(chatgpt_password)
+	fmt.Println(bard_user)
+	fmt.Println(bard_password)
+
 	// Test Proxy
 	//TEST_PROXY:
 	//	fmt.Println("Checking network accessing...")
@@ -187,6 +209,13 @@ func main() {
 
 	//////////////////////1////////////////////////////
 	// Set up client of Bard (chromedriver version)
+	// Login
+	var page_bard *rod.Page
+	if bard_user != "" && bard_password != "" {
+		//cookie?
+		page_bard = stealth.MustPage(browser)
+		page_bard.MustNavigate("https://bard.google.com")
+	       }
 
 	//////////////////////2////////////////////////////
 	// Set up client of Claude2 (chromedriver version)
@@ -197,43 +226,10 @@ func main() {
 	//////////////////////4////////////////////////////
 	// Set up client of chatgpt (rod version)
 
-	// Read user/password
-	u_json, _ := ioutil.ReadFile("user.json")
-	if err != nil {
-		err = ioutil.WriteFile("user.json", []byte(""), 0644)
-	}
-	var chatgpt_user string
-	var chatgpt_password string
-	chatgpt_user = gjson.Get(string(u_json), "chatgpt.user").String()
-	chatgpt_password = gjson.Get(string(u_json), "chatgpt.password").String()
-	if chatgpt_user == "Name" {
-		chatgpt_user = ""
-	}
-	if chatgpt_password == "Password" {
-		chatgpt_password = ""
-	}
-	fmt.Println(chatgpt_user)
-	fmt.Println(chatgpt_password)
-
-	//// Read cookie
-	//chatgpt_json, err := ioutil.ReadFile("cookies/chatgpt.json")
-	//if err != nil {
-	//	err = ioutil.WriteFile("cookies/chatgpt.json", []byte(""), 0644)
-	//}
-	//var chatgptjs string
-	//chatgptjs = gjson.Parse(string(chatgpt_json)).String()
-
-	//// Open page_chatgpt with cookie
-	//if chatgptjs != "" {
-	//    //cookie
-	//    page_chatgpt := stealth.MustPage(browser)
-	//    page_chatgpt.MustNavigate("https://chat.openai.com")
-	//}
-
-	// Open page_chatgpt with password
+	// Login
 	var page_chatgpt *rod.Page
 	if chatgpt_user != "" && chatgpt_password != "" {
-		//cookie
+		//cookie?
 		page_chatgpt = stealth.MustPage(browser)
 		page_chatgpt.MustNavigate("https://chat.openai.com")
 		page_chatgpt.MustElementX("//div[contains(text(), 'Welcome to ChatGPT')] | //h2[contains(text(), 'Get started')]").MustWaitVisible()
