@@ -434,47 +434,6 @@ func main() {
 
 
 
-
-	//var cmd_chatgpt *exec.Cmd
-	//var stdout_chatgpt io.ReadCloser
-	//var stdin_chatgpt io.WriteCloser
-	//var login_chatgpt bool
-	//var relogin_chatgpt bool
-	//var scanner_chatgpt *bufio.Scanner
-	//channel_chatgpt_answer := make(chan string)
-	//if chatgptjs != "" {
-	//	//cmd_bard = exec.Command("python3", "-u", "./bard.py", "load")
-	//	cmd_chatgpt = exec.Command("python3", "-u", pf_chatgpt.Name(), "load")
-	//	stdout_chatgpt, _ = cmd_chatgpt.StdoutPipe()
-	//	stdin_chatgpt, _ = cmd_chatgpt.StdinPipe()
-
-	//	go func(cmd *exec.Cmd) {
-	//		time.Sleep(3 * 0 * time.Second)
-	//		if err := cmd.Start(); err != nil {
-	//			panic(err)
-	//		}
-	//	}(cmd_chatgpt)
-
-	//	login_chatgpt = false
-	//	relogin_chatgpt = false
-	//	go func(login_chatgpt, relogin_chatgpt *bool) {
-	//		time.Sleep(3 * 0 * time.Second)
-	//		scanner_chatgpt = bufio.NewScanner(stdout_chatgpt)
-	//		for scanner_chatgpt.Scan() {
-	//			RESP = scanner_chatgpt.Text()
-	//			if RESP == "login work" {
-	//				*login_chatgpt = true
-	//			} else if RESP == "relogin" {
-	//				*relogin_chatgpt = true
-	//			} else {
-	//				channel_chatgpt_answer <- RESP
-	//			}
-	//		}
-	//	}(&login_chatgpt, &relogin_chatgpt)
-	//}
-
-
-
 	// Set up client of Bing Chat
 	//var gpt *EdgeGPT.GPT
 	//_, err = ioutil.ReadFile("./cookies/1.json")

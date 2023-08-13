@@ -29,7 +29,7 @@ func main() {
 	//chatgpt_js = gjson.Parse(string(chatgpt_json)).String()
 
 	// Read user/password
-	u_json, _ := ioutil.ReadFile("./user.json")
+	u_json, _ := ioutil.ReadFile("user.json")
 	var chatgpt_user string
 	var chatgpt_password string
 	chatgpt_user = gjson.Get(string(u_json), "chatgpt.user").String()
@@ -49,7 +49,7 @@ func main() {
 	//           Timeout(3 * time.Minute).
 	//	   MustConnect()
         var browser *rod.Browser
-	if "1" != "" {
+	if "1" != "1" {
 	browser = rod.New().
 	           Trace(true).
 		   ControlURL(proxy_url).
