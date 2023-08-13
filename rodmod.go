@@ -9,15 +9,15 @@ import (
 	"github.com/tidwall/gjson"
 
 	"github.com/go-rod/rod"
-	"github.com/go-rod/rod/lib/launcher"
+//	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/stealth"
 	"github.com/go-rod/rod/lib/utils"
 )
 
-func init() {
-	launcher.NewBrowser().MustGet()
-}
-
+//func init() {
+//	launcher.NewBrowser().MustGet()
+//}
+//
 func main() {
 
 	// Read cookie
@@ -81,7 +81,11 @@ func main() {
 	page.MustElementX("//textarea[@id='prompt-textarea']").MustInput("hello")
 	utils.Sleep(1.5)
 	//utils.Pause()
-	page.MustElement("button svg path[d='M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z']").MustClick()
+	//page.MustElement("button:last-of-type svg path[d='M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z']").MustWaitStable().MustClick()
+	sends := page.MustElements("button:last-of-type svg path[d='M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z']")
+	//sends := page.MustElementsByJS(` const buttons=document.querySelectorAll("button svg path[d='M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z']"); buttons[buttons.length-1]`)
+	sends[len(sends)-1].MustClick()
+	//page.MustScreenshot("")
 	//page.MustScreenshot("")
 	page.MustScreenshot("")
 	utils.Pause()
