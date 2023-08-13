@@ -31,16 +31,9 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 |.exit       | Exit Aih|
 
 ## Prerequisites
-- [Chrome Browser](https://google.com/chrome), `python3`, `pip3 install undetected_chromedriver`
-- A free logged-in cookie of [Bard](https://bard.google.com).
-- A free logged-in cookie of [Claude](https://claude.ai).
-- A free logged-in cookie of [OpenAI](https://chat.openai.com).
-- A free logged-in cookie of [HuggingChat](https://huggingface.co/chat).
-- A paid ChatGPT API on [Billing](https://platform.openai.com/account/billing/overview). 
-
-## How to get Cookies
-- For Bard cookie, you can log in and then use [Cookie-Editor](https://cookie-editor.cgagnier.ca) -> click Cookie-Editor icon -> click "Export" -> click "Export as JSON" (This saves your cookies to the clipboard), then type `.key` to choose `Set Bard Cookie` in Aih, you will see a prompt that says **"Please type << then paste Bard cookie then type >> then press Enter"**, by doing so you can set Bard cookie via multiple lines input mode.
-- Else same.
+- [Chrome Browser](https://google.com/chrome)
+- Free account of [Bard](https://bard.google.com), [Claude](https://claude.ai), [OpenAI](https://chat.openai.com), [HuggingChat](https://huggingface.co/chat) logged-in manually on your Chrome browser.
+- Paid ChatGPT API on [Billing](https://platform.openai.com/account/billing/overview)(optional). 
 
 ## Tips
 - The returned text will be auotmatically saved in your system clipboard, so you can paste it anywhere directly.
@@ -65,5 +58,5 @@ $ cd aih && go mod tidy && go build
 This is an open plan based on the idea of "Co-relation's enhancement of AI and human beings". If you have any suggestions, please write them in the Issues section.
 
 ## Acknowledgements
+- github.com/go-rod/rod
 - github.com/sashabaranov/go-openai 
-- github.com/ultrafunkamsterdam/undetected-chromedriver

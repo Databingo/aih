@@ -31,10 +31,10 @@ func main() {
 
 	// Create a new release
 	release, _, err := client.Repositories.CreateRelease(ctx, owner, repo, &github.RepositoryRelease{
-		TagName:         github.String("v0.1.3.2"),
+		TagName:         github.String("v0.1.4"),
 		TargetCommitish: github.String("master"),
-		Name:            github.String("Release v0.1.3.2"),
-		Body:            github.String("Welcome to Aih! Integrate HuggingChat in undetected_chromedriver mode; Remove Bing due to the unstable and weak functionality."),
+		Name:            github.String("Release v0.1.4"),
+		Body:            github.String("Welcome to Aih! We changed undetected_chromedriver to go-rod for a convenience, such as get rid of python scripts."),
 		Draft:           github.Bool(false),
 		Prerelease:      github.Bool(false),
 	})
