@@ -155,14 +155,14 @@ func main() {
 	var browser *rod.Browser
 	if Proxy != "" {
 		browser = rod.New().
-			//Trace(true).
+			Trace(true).
 			ControlURL(proxy_url).
 			Timeout(60 * 24 * time.Minute).
 			MustConnect()
 		//.NoDefaultDevice()
 	} else {
 		browser = rod.New().
-			//Trace(true).
+			Trace(true).
 			Timeout(60 * 24 * time.Minute).
 			MustConnect()
 		//.NoDefaultDevice()
@@ -226,32 +226,6 @@ func main() {
 
 	//////////////////////1////////////////////////////
 	// Set up client of Bard (chromedriver version)
-	//var page_bard *rod.Page
-	//if bard_user != "" && bard_password != "" {
-	//	//cookie?
-	//	//page_bard = stealth.MustPage(browser)
-	//	page_bard = browser.MustPage("https://bard.google.com")
-	//	var relogin_bard bool
-	//	for {
-	//		if page_bard.Timeout(10 * time.Second).MustHasX("//textarea[@id='mat-input-0']") {
-	//			relogin_bard = false
-	//			break
-	//		}
-	//		if page_bard.Timeout(10 * time.Second).MustHasX("//span[contains(text(), 'Sign in')]") {
-	//			relogin_bard = true
-	//			break
-	//		}
-	//		time.Sleep(time.Second)
-	//	}
-
-	//	// Login
-	//	if relogin_bard == true {
-	//		page_bard = browser.MustPage("https://accounts.google.com")
-	//		//page_bard.MustNavigate("https://accounts.google.com")
-	//		page_bard.MustElementX("//input[@id='identifierId']").MustWaitVisible().MustInput(bard_user)
-	//		page_bard.MustElementX("//span[contains(text(), 'Next')]").MustWaitVisible().MustClick()
-	//	}
-	//}
 	var page_bard *rod.Page
 	var relogin_bard bool
 	channel_bard := make(chan string)
@@ -298,7 +272,45 @@ func main() {
 
 	}()
 	//////////////////////2////////////////////////////
-	// Set up client of Claude2 (chromedriver version)
+	// Set up client of Claude2 (Rod version)
+	var page_claude *rod.Page
+	var relogin_claude bool
+	channel_claude := make(chan string)
+	go func() {
+		page_claude = browser.MustPage("https://claude.ai")
+		for {
+			if page_claude.Timeout(10 * time.Second).MustHasX("//p[@data-placeholder='Message Claude or search past chats...']") {
+				page_claude.MustElementX("//div[contains(text(), 'Start a new chat')]").MustClick()
+				page_claude.MustElementX("//p[@data-placeholder='Message Claude...']").MustWaitVisible()
+				relogin_claude = false
+				break
+			}
+			if page_claude.Timeout(10 * time.Second).MustHasX("//h2[contains(text(), 'Talk to Claude')]") {
+				relogin_claude = true
+				break
+			}
+			time.Sleep(time.Second)
+		}
+		if relogin_claude == true {
+			fmt.Println("✘ Claude")
+		}
+		if relogin_claude == false {
+			fmt.Println("✔ Claude")
+			for {
+				select {
+				case question := <-channel_claude:
+					//fmt.Println("question:", question)
+					page_claude.MustElementX("//p[@data-placeholder='Message Claude...']").MustInput(question)
+					page_claude.MustElementX("//button[@aria-label='Send Message']").MustClick()
+					retry_icon := page_claude.MustElement("svg path[d='M224,128a96,96,0,0,1-94.71,96H128A95.38,95.38,0,0,1,62.1,197.8a8,8,0,0,1,11-11.63A80,80,0,1,0,71.43,71.39a3.07,3.07,0,0,1-.26.25L44.59,96H72a8,8,0,0,1,0,16H24a8,8,0,0,1-8-8V56a8,8,0,0,1,16,0V85.8L60.25,60A96,96,0,0,1,224,128Z']").MustWaitVisible()
+					content := retry_icon.MustElementX("preceding::div[2]")
+					answer := content.MustText()
+					channel_claude <- answer
+				}
+			}
+		}
+
+	}()
 
 	//////////////////////3////////////////////////////
 	// Set up client of huggingchat (chromedriver version)
@@ -660,6 +672,20 @@ func main() {
 	CLAUDE:
 		// Check role for correct actions
 		if role == ".claude" {
+			if relogin_claude == true {
+				fmt.Println("Login Claude please.")
+			} else {
+				page_claude.Activate()
+				channel_claude <- userInput
+				answer := <-channel_claude
+
+				// Print the response to the terminal
+				RESP = strings.TrimSpace(answer)
+				//used_tokens = resp.Usage.TotalTokens
+				//left_tokens = max_tokens - used_tokens
+				//printer_chat.Println(RESP)
+				printer(color_claude, RESP, false)
+			}
 
 		}
 	CHAT:
