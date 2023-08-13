@@ -1,6 +1,12 @@
 package main
 
 import (
+	"github.com/go-rod/rod"
+//	"github.com/go-rod/rod/lib/launcher"
+	"github.com/go-rod/rod/stealth"
+	"github.com/go-rod/rod/lib/utils"
+	"github.com/go-rod/rod/lib/launcher"
+
 	"bufio"
 	//"bytes"
 	"context"
@@ -127,6 +133,25 @@ func main() {
 	// Set proxy for system of current program
 	os.Setenv("http_proxy", Proxy)
 	os.Setenv("https_proxy", Proxy)
+	
+	// Set proxy for rod
+	//proxy_url := launcher.New().Proxy(Proxy).Delete("use-mock-keychain").MustLaunch()
+	proxy_url := launcher.New().Proxy(Proxy).MustLaunch()
+
+        // open rod browser
+        var browser *rod.Browser
+	if Proxy != "" {
+	browser = rod.New().
+	           Trace(true).
+		   ControlURL(proxy_url).
+	           Timeout(3 * time.Minute).
+		   MustConnect()
+		  } else {
+	browser = rod.New().
+	           Trace(true).
+	           Timeout(3 * time.Minute).
+		   MustConnect()
+		  }
 
 	// Test Proxy
 	//TEST_PROXY:
@@ -368,19 +393,38 @@ func main() {
 	}
 
 	//////////////////////4////////////////////////////
-	// Set up client of Google (rod version)
-	pf_chatgpt, _ := os.CreateTemp("", "pf_chatgpt.py")
-	_, _ = pf_chatgpt.WriteString(ps_chatgpt)
-	_ = pf_chatgpt.Close()
-	defer os.Remove(pf_chatgpt.Name())
+	// Set up client of Rod_chatgpt (rod version)
+
+	// Read user/password
+	u_json, _ := ioutil.ReadFile("user.json")
+	if err != nil {
+		err = ioutil.WriteFile("user.json", []byte(""), 0644)
+	}
+	var chatgpt_user string
+	var chatgpt_password string
+	chatgpt_user = gjson.Get(string(u_json), "chatgpt.user").String()
+	chatgpt_password = gjson.Get(string(u_json), "chatgpt.password").String()
+	if chatgpt_user == "Name" { chatgpt_user = "" }
+	if chatgpt_password == "Password" { chatgpt_password = "" }
+	fmt.Println(chatgpt_user)
+	fmt.Println(chatgpt_password)
 
 	// Read cookie
-	chatgpt_json, err := ioutil.ReadFile("./4.json")
+	chatgpt_json, err := ioutil.ReadFile("cookies/chatgpt.json")
 	if err != nil {
-		err = ioutil.WriteFile("./4.json", []byte(""), 0644)
+		err = ioutil.WriteFile("cookies/chatgpt.json", []byte(""), 0644)
 	}
 	var chatgptjs string
 	chatgptjs = gjson.Parse(string(chatgpt_json)).String()
+
+        // Open page with cookie 
+	if chatgptjs != "" {
+	    //cookie
+	    page := stealth.MustPage(browser)
+	    page.MustNavigate("https://chat.openai.com")
+
+
+	}
 	var cmd_chatgpt *exec.Cmd
 	var stdout_chatgpt io.ReadCloser
 	var stdin_chatgpt io.WriteCloser

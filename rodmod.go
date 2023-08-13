@@ -9,7 +9,7 @@ import (
 	"github.com/tidwall/gjson"
 
 	"github.com/go-rod/rod"
-//	"github.com/go-rod/rod/lib/launcher"
+	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/stealth"
 	"github.com/go-rod/rod/lib/utils"
 )
@@ -39,12 +39,29 @@ func main() {
         //time.Sleep(1000 * time.Second)
 
 
+	//proxy_url := launcher.New().Proxy("socks5://127.0.0.1:7890").Delete("use-mock-keychain").MustLaunch()
+	proxy_url := launcher.New().Proxy("socks5://127.0.0.1:7890").MustLaunch()
 
-	browser := rod.New().
+	//browser := rod.New().
+	//           Trace(true).
+	//	   ControlURL(proxy_url).
+	//           //Timeout(time.Minute).
+	//           Timeout(3 * time.Minute).
+	//	   MustConnect()
+        var browser *rod.Browser
+	if "1" != "" {
+	browser = rod.New().
 	           Trace(true).
-	           //Timeout(time.Minute).
+		   ControlURL(proxy_url).
 	           Timeout(3 * time.Minute).
 		   MustConnect()
+		  } else {
+	browser = rod.New().
+	           Trace(true).
+	           Timeout(3 * time.Minute).
+		   MustConnect()
+
+		  }
 	//defer browser.MustClose()
 
 	// You can also use stealth.JS directly without rod
