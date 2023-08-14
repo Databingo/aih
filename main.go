@@ -1,30 +1,29 @@
 package main
 
 import (
-	"github.com/go-rod/rod"
-	"github.com/go-rod/rod/lib/launcher"
-	//"github.com/go-rod/rod/lib/utils"
-	//"github.com/go-rod/stealth"
-
+	//"io"
 	//"bufio"
 	//"bytes"
-	"context"
+	//"net/http"
 	//"encoding/json"
-	"fmt"
+	//"github.com/google/uuid"
 	//"github.com/Databingo/EdgeGPT-Go"
+	//"github.com/go-rod/rod/lib/utils"
+	//"github.com/go-rod/stealth"
+	"os"
+	"fmt"
+	"context"
+	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/launcher"
 	"github.com/atotto/clipboard"
 	"github.com/gdamore/tcell/v2"
-	//"github.com/google/uuid"
 	"github.com/manifoldco/promptui"
 	"github.com/peterh/liner"
 	"github.com/rivo/tview"
 	openai "github.com/sashabaranov/go-openai"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
-	//"io"
 	"io/ioutil"
-	//"net/http"
-	"os"
 	"os/exec"
 	"runtime"
 	"strconv"
@@ -128,20 +127,10 @@ func main() {
 
 	// Read Proxy
 	Proxy := gjson.Get(string(aih_json), "proxy").String()
-	fmt.Println("Proxy:", Proxy)
-	//Proxy = "socks5://127.0.0.1:7890"
 
 	// Set proxy for system of current program
 	os.Setenv("http_proxy", Proxy)
 	os.Setenv("https_proxy", Proxy)
-
-	// Set proxy for rod
-	//proxy_url := launcher.New().Proxy(Proxy).Delete("use-mock-keychain").MustLaunch()
-	//proxy_url := launcher.New().
-	//	StartURL("about:blank").
-	//	Proxy(Proxy).
-	//	MustLaunch()
-	//	//UserDataDir("data").
 
 	proxy_url := launcher.NewUserMode().
 		Proxy(Proxy).
@@ -153,43 +142,11 @@ func main() {
 
 	// Open rod browser
 	var browser *rod.Browser
-	//if Proxy != "" {
 	browser = rod.New().
 		//Trace(true).
 		ControlURL(proxy_url).
 		Timeout(60 * 24 * time.Minute).
 		MustConnect()
-		//.NoDefaultDevice()
-	//} else {
-	//	browser = rod.New().
-	//		//Trace(true).
-	//		Timeout(60 * 24 * time.Minute).
-	//		MustConnect()
-	//	//.NoDefaultDevice()
-	//}
-
-	// Read user.json
-	user_json, _ := ioutil.ReadFile("user.json")
-	if err != nil {
-		err = ioutil.WriteFile("user.json", []byte(""), 0644)
-	}
-
-	// Read user/password
-	var chatgpt_user string
-	var chatgpt_password string
-	var bard_user string
-	var bard_password string
-	chatgpt_user = gjson.Get(string(user_json), "chatgpt.user").String()
-	chatgpt_password = gjson.Get(string(user_json), "chatgpt.password").String()
-	//chatgpt_user = ""
-	//chatgpt_password = ""
-	bard_user = gjson.Get(string(user_json), "bard.user").String()
-	bard_password = gjson.Get(string(user_json), "bard.password").String()
-
-	fmt.Println(chatgpt_user)
-	fmt.Println(chatgpt_password)
-	fmt.Println(bard_user)
-	fmt.Println(bard_password)
 
 	// Test Proxy
 	//TEST_PROXY:
@@ -214,15 +171,13 @@ func main() {
 	//
 	//	}
 
+	//////////////////////0////////////////////////////
 	// Set up client of OpenAI API
 	key := gjson.Get(string(aih_json), "key")
 	OpenAI_Key := key.String()
 	config := openai.DefaultConfig(OpenAI_Key)
 	client := openai.NewClientWithConfig(config)
 	messages := make([]openai.ChatCompletionMessage, 0)
-
-	//////////////////////0////////////////////////////
-	// Set up client of ChatGPT (chromedriver version)
 
 	//////////////////////1////////////////////////////
 	// Set up client of Bard (chromedriver version)
@@ -272,6 +227,7 @@ func main() {
 		}
 
 	}()
+
 	//////////////////////2////////////////////////////
 	// Set up client of Claude (Rod version)
 	var page_claude *rod.Page
@@ -280,13 +236,10 @@ func main() {
 	go func() {
 		page_claude = browser.MustPage("https://claude.ai")
 		for {
-			//if page_claude.Timeout(10 * time.Second).MustHasX("//p[@data-placeholder='Message Claude or search past chats...']") {
 			page_claude.Activate()
 			if page_claude.Timeout(10 * time.Second).MustHasX("//h2[contains(text(), 'Welcome back')]") {
 				page_claude.MustElementX("//div[contains(text(), 'Start a new chat')]").MustWaitVisible().MustClick()
-				//page_claude.MustElementX("//p[@data-placeholder='Message Claude...']").MustWaitVisible()
 				relogin_claude = false
-				//page_bard.MustWindowMinimize()
 				break
 			}
 			if page_claude.Timeout(10 * time.Second).MustHasX("//h2[contains(text(), 'Talk to Claude')]") {
@@ -307,7 +260,6 @@ func main() {
 					page_claude.Activate()
 					page_claude.MustElementX("//p[contains(@data-placeholder, 'Message Claude')]").MustInput(question)
 					page_claude.MustElementX("//button[@aria-label='Send Message']").MustClick()
-					//page_claude.MustElement("button div svg path[d='M232,127.89a16,16,0,0,1-8.18,14L55.91,237.9A16.14,16.14,0,0,1,48,240a16,16,0,0,1-15.05-21.34L60.3,138.71A4,4,0,0,1,64.09,136H136a8,8,0,0,0,8-8.53,8.19,8.19,0,0,0-8.26-7.47H64.16a4,4,0,0,1-3.79-2.7l-27.44-80A16,16,0,0,1,55.85,18.07l168,95.89A16,16,0,0,1,232,127.89Z']").MustWaitVisible().MustClick()
 					retry_icon := page_claude.MustElement("svg path[d='M224,128a96,96,0,0,1-94.71,96H128A95.38,95.38,0,0,1,62.1,197.8a8,8,0,0,1,11-11.63A80,80,0,1,0,71.43,71.39a3.07,3.07,0,0,1-.26.25L44.59,96H72a8,8,0,0,1,0,16H24a8,8,0,0,1-8-8V56a8,8,0,0,1,16,0V85.8L60.25,60A96,96,0,0,1,224,128Z']").MustWaitVisible()
 					content := retry_icon.MustElementX("preceding::div[2]")
 					answer := content.MustText()
@@ -327,8 +279,6 @@ func main() {
 		page_hc = browser.MustPage("https://huggingface.co/chat")
 		for {
 			if page_hc.Timeout(10 * time.Second).MustHasX("//button[contains(text(), 'Sign Out')]") {
-				//page_hc.MustElementX("//textarea[@enterkeyhint='send']").MustInput("Hello")
-				//page_hc.MustElement("button svg path[d='M27.71 4.29a1 1 0 0 0-1.05-.23l-22 8a1 1 0 0 0 0 1.87l8.59 3.43L19.59 11L21 12.41l-6.37 6.37l3.44 8.59A1 1 0 0 0 19 28a1 1 0 0 0 .92-.66l8-22a1 1 0 0 0-.21-1.05Z']").MustClick()
 				relogin_claude = false
 				break
 			}
@@ -487,8 +437,10 @@ func main() {
 			syscall.Exit(0)
 		case ".help":
 			fmt.Println("                           ")
+			fmt.Println("                 Welcome to Aih!                             ")
+			fmt.Println("------------------------------------------------------------ ")
 			fmt.Println(" .               Select AI mode of Bard/Bing/ChatGPT/Claude")
-			fmt.Println(" .key            Set cookie of Bard/Bing/ChatGPT/Claude")
+			//fmt.Println(" .key            Set cookie of Bard/Bing/ChatGPT/Claude")
 			fmt.Println(" .proxy          Set proxy")
 			fmt.Println(" <<              Start multiple lines input")
 			fmt.Println(" >>              End multiple lines input")
@@ -503,9 +455,10 @@ func main() {
 			fmt.Println(" q or Enter      Back to conversation")
 			fmt.Println(" .help           Help")
 			fmt.Println(" .exit           Exit")
-			fmt.Println(" .new            New conversation of ChatGPT")
 			fmt.Println(" .speak          Voice speak context (MasOS only)")
 			fmt.Println(" .quiet          Not speak")
+			//fmt.Println(" .new            New conversation of ChatGPT")
+			fmt.Println("------------------------------------------------------------ ")
 			fmt.Println("                           ")
 			fmt.Println("                           ")
 			continue
@@ -631,45 +584,45 @@ func main() {
 			case "Exit":
 				continue
 			}
-		case ".key":
-			prom := promptui.Select{
-				Label: "Select:",
-				Size:  6,
-				Items: []string{
-					"Set Bard Cookie",
-					"Set ChatGPT Cookie",
-					"Set Claude Cookie",
-					"Set HuggingChat Cookie",
-					"Set ChatGPT API Key",
-					"Exit",
-				},
-			}
+		//case ".key":
+		//	prom := promptui.Select{
+		//		Label: "Select:",
+		//		Size:  6,
+		//		Items: []string{
+		//			"Set Bard Cookie",
+		//			"Set ChatGPT Cookie",
+		//			"Set Claude Cookie",
+		//			"Set HuggingChat Cookie",
+		//			"Set ChatGPT API Key",
+		//			"Exit",
+		//		},
+		//	}
 
-			_, keyy, err := prom.Run()
-			if err != nil {
-				panic(err)
-			}
+		//	_, keyy, err := prom.Run()
+		//	if err != nil {
+		//		panic(err)
+		//	}
 
-			switch keyy {
-			case "Set Bard Cookie":
-				role = ".bard"
-				goto BARD
-			case "Set ChatGPT Cookie":
-				role = ".chat"
-				goto CHAT
-			case "Set ChatGPT API Key":
-				OpenAI_Key = ""
-				role = ".chatapi"
-				goto CHATAPI
-			case "Set Claude Cookie":
-				role = ".claude"
-				goto CLAUDE
-			case "Set HuggingChat Cookie":
-				role = ".huggingchat"
-				goto HUGGINGCHAT
-			case "Exit":
-				continue
-			}
+		//	switch keyy {
+		//	case "Set Bard Cookie":
+		//		role = ".bard"
+		//		goto BARD
+		//	case "Set ChatGPT Cookie":
+		//		role = ".chat"
+		//		goto CHAT
+		//	case "Set ChatGPT API Key":
+		//		OpenAI_Key = ""
+		//		role = ".chatapi"
+		//		goto CHATAPI
+		//	case "Set Claude Cookie":
+		//		role = ".claude"
+		//		goto CLAUDE
+		//	case "Set HuggingChat Cookie":
+		//		role = ".huggingchat"
+		//		goto HUGGINGCHAT
+		//	case "Exit":
+		//		continue
+		//	}
 
 		case ".speak":
 			speak = 1
@@ -695,14 +648,13 @@ func main() {
 
 		}
 
-	BARD:
+//	BARD:
 		// Check role for correct actions
 		if role == ".bard" {
 			//fmt.Println("type question:", userInput)
 			if relogin_bard == true {
 				fmt.Println("Login Bard please.")
 			} else {
-				//page_bard.Activate()
 				channel_bard <- userInput
 				answer := <-channel_bard
 
@@ -713,13 +665,12 @@ func main() {
 
 		}
 
-	CLAUDE:
+//	CLAUDE:
 		// Check role for correct actions
 		if role == ".claude" {
 			if relogin_claude == true {
 				fmt.Println("Login Claude please.")
 			} else {
-				//page_claude.Activate()
 				channel_claude <- userInput
 				answer := <-channel_claude
 
@@ -729,13 +680,12 @@ func main() {
 			}
 
 		}
-	CHAT:
+//	CHAT:
 		if role == ".chat" {
 			//fmt.Println("type question:", userInput)
 			if relogin_chatgpt == true {
 				fmt.Println("Login ChatGPT please.")
 			} else {
-				//page_chatgpt.Activate()
 				channel_chatgpt <- userInput
 				answer := <-channel_chatgpt
 
@@ -746,12 +696,11 @@ func main() {
 
 		}
 
-	HUGGINGCHAT:
+//	HUGGINGCHAT:
 		if role == ".huggingchat" {
 			if relogin_hc == true {
 				fmt.Println("Login HuggingChat please.")
 			} else {
-				//page_hc.Activate()
 				channel_hc <- userInput
 				answer := <-channel_hc
 
@@ -761,7 +710,7 @@ func main() {
 			}
 
 		}
-	CHATAPI:
+//	CHATAPI:
 		if role == ".chatapi" {
 			// Check ChatGPT API Key
 			if OpenAI_Key == "" {

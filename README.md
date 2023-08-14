@@ -11,7 +11,6 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 | Command    | Operation|
 |------------|----------|
 |.           | Select AI mode of Bard/ChatGPT/Claude/HuggingChat|
-|.key        | Set cookie of Bard/ChatGPT/Claude/HuggingChat|
 |.proxy      | Set proxy, for example: socks5://127.0.0.1:7890|
 |<<          | Start multiple lines input mode|
 |>>          | End multiple lines input mode|
@@ -26,7 +25,6 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 |q or Enter  | Back to conversation|
 |.speak      | Voice speak context(macOS only)|
 |.quiet      | Disable voice output |
-|.new        | Start a new conversation of ChatGPT|
 |.help       | Show help|
 |.exit       | Exit Aih|
 
