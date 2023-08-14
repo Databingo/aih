@@ -280,9 +280,9 @@ func main() {
 		page_hc = browser.MustPage("https://huggingface.co/chat")
 		for {
 			if page_hc.Timeout(10 * time.Second).MustHasX("//button[contains(text(), 'Sign Out')]") {
-			   //page_hc.MustActivate()
-			   //page_hc.MustElementX("//textarea[@enterkeyhint='send']").MustInput("hello")
-			   //page_hc.MustElement("button svg path[d='M27.71 4.29a1 1 0 0 0-1.05-.23l-22 8a1 1 0 0 0 0 1.87l8.59 3.43L19.59 11L21 12.41l-6.37 6.37l3.44 8.59A1 1 0 0 0 19 28a1 1 0 0 0 .92-.66l8-22a1 1 0 0 0-.21-1.05Z']").MustClick()
+				//page_hc.MustActivate()
+				//page_hc.MustElementX("//textarea[@enterkeyhint='send']").MustInput("hello")
+				//page_hc.MustElement("button svg path[d='M27.71 4.29a1 1 0 0 0-1.05-.23l-22 8a1 1 0 0 0 0 1.87l8.59 3.43L19.59 11L21 12.41l-6.37 6.37l3.44 8.59A1 1 0 0 0 19 28a1 1 0 0 0 .92-.66l8-22a1 1 0 0 0-.21-1.05Z']").MustClick()
 				relogin_hc = false
 				break
 			}
@@ -304,14 +304,14 @@ func main() {
 					page_hc.MustActivate()
 					page_hc.MustElementX("//textarea[@enterkeyhint='send']").MustInput(question)
 					page_hc.MustElement("button svg path[d='M27.71 4.29a1 1 0 0 0-1.05-.23l-22 8a1 1 0 0 0 0 1.87l8.59 3.43L19.59 11L21 12.41l-6.37 6.37l3.44 8.59A1 1 0 0 0 19 28a1 1 0 0 0 .92-.66l8-22a1 1 0 0 0-.21-1.05Z']").MustClick()
-					//page_hc.MustElement("svg path[d='M24 6H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z']").MustWaitVisible() // stop_icon
-					//page_hc.MustElementX("//a[contains(text(), 'Announcement')]").MustWaitInvisible() // Announcement
 					for {
-					 	info := page_hc.MustInfo()
-			                        fmt.Println(info.URL)
-						if strings.HasPrefix(info.URL, "https://huggingface.co/chat/conversation") { break}
+						info := page_hc.MustInfo()
+						//fmt.Println(info.URL)
+						if strings.HasPrefix(info.URL, "https://huggingface.co/chat/conversation") {
+							break
+						}
 						time.Sleep(1 * time.Second)
-					       }
+					}
 					page_hc.MustElement("svg path[d='M24 6H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z']").MustWaitInvisible() // stop_icon
 					page_hc.MustHasX("//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')]")
 					page_hc.MustElementX("//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')]").MustWaitVisible()
@@ -673,7 +673,7 @@ func main() {
 
 		}
 
-	//ALL-IN-ONE:
+		//ALL-IN-ONE:
 		if role == ".all" {
 			if relogin_bard == false {
 				channel_bard <- userInput
@@ -855,7 +855,7 @@ func main() {
 
 			}()
 		}
-		
+
 		RESP = ""
 
 	}
