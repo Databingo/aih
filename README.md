@@ -23,8 +23,6 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 |g           | Scroll top|
 |G           | Scroll bottom|
 |q or Enter  | Back to conversation|
-|.speak      | Voice speak context(macOS only)|
-|.quiet      | Disable voice output |
 |.help       | Show help|
 |.exit       | Exit Aih|
 
