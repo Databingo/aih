@@ -10,6 +10,7 @@ import (
 	//"github.com/Databingo/EdgeGPT-Go"
 	//"github.com/go-rod/rod/lib/utils"
 	//"github.com/go-rod/stealth"
+	//"github.com/go-rod/rod/lib/proto"
 	"context"
 	"fmt"
 	"github.com/atotto/clipboard"
@@ -304,9 +305,19 @@ func main() {
 					page_hc.MustElementX("//textarea[@enterkeyhint='send']").MustInput(question)
 					page_hc.MustElement("button svg path[d='M27.71 4.29a1 1 0 0 0-1.05-.23l-22 8a1 1 0 0 0 0 1.87l8.59 3.43L19.59 11L21 12.41l-6.37 6.37l3.44 8.59A1 1 0 0 0 19 28a1 1 0 0 0 .92-.66l8-22a1 1 0 0 0-.21-1.05Z']").MustClick()
 					//page_hc.MustElement("svg path[d='M24 6H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z']").MustWaitVisible() // stop_icon
+					//page_hc.MustElementX("//a[contains(text(), 'Announcement')]").MustWaitInvisible() // Announcement
+					for {
+					 	info := page_hc.MustInfo()
+			                        fmt.Println(info.URL)
+						if strings.HasPrefix(info.URL, "https://huggingface.co/chat/conversation") { break}
+						time.Sleep(1 * time.Second)
+					       }
 					page_hc.MustElement("svg path[d='M24 6H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z']").MustWaitInvisible() // stop_icon
+					page_hc.MustHasX("//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')]")
+					page_hc.MustElementX("//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')]").MustWaitVisible()
 					img := page_hc.MustElementX("(//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')])[last()]")
 					content := img.MustElementX("following-sibling::div[1]")
+					//content := img.MustElementX("following-sibling::div")
 					answer := content.MustText()
 					channel_hc <- answer
 				}
@@ -382,7 +393,7 @@ func main() {
 					page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']/..//button").MustWaitVisible().MustClick()
 					page_chatgpt.MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
 					//fmt.Println("Retry icon show")
-					answer := page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]//p").MustText()
+					answer := page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()[7:]
 					channel_chatgpt <- answer
 				}
 			}
