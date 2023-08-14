@@ -220,7 +220,7 @@ func main() {
 					answer = strings.Replace(answer, "volume_up", "", -1)
 					answer = strings.Replace(answer, "more_vert", "", -1)
 					answer = strings.Replace(answer, "Google it", "", -1)
-					answer = answer[6 : len(answer)-12]
+					answer = answer[: len(answer)-12]
 					channel_bard <- answer
 				}
 			}
