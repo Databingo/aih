@@ -543,12 +543,11 @@ func main() {
 				Label: "Select AI mode to chat",
 				Size:  10,
 				Items: []string{
+					"All-In-One",
 					"Bard",
-					//"Bing",
 					"ChatGPT",
 					"Claude",
 					"HuggingChat",
-					"All-In-One",
 					"ChatGPT API gpt-3.5-turbo, $0.002/1K tokens",
 					"ChatGPT API gpt-4 8K Prompt, $0.03/1K tokens",
 					"ChatGPT API gpt-4 8K Completion, $0.06/1K tokens",
