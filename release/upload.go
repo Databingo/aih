@@ -31,10 +31,10 @@ func main() {
 
 	// Create a new release
 	release, _, err := client.Repositories.CreateRelease(ctx, owner, repo, &github.RepositoryRelease{
-		TagName:         github.String("v0.1.4.3"),
+		TagName:         github.String("v0.1.4.4"),
 		TargetCommitish: github.String("master"),
-		Name:            github.String("Release v0.1.4.3"),
-		Body:            github.String("Welcome to Aih! Change All-In-One mode to concurrency."),
+		Name:            github.String("Release v0.1.4.4"),
+		Body:            github.String("Welcome to Aih! Add error handling when some page crashes."),
 		Draft:           github.Bool(false),
 		Prerelease:      github.Bool(false),
 	})

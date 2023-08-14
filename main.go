@@ -222,15 +222,9 @@ func main() {
 					if role == ".all" { channel_bard <- "click_bard" }
 					page_bard.MustElementX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_thinking_v2_e272afd4f8d4bbd25efe.gif')]").MustWaitVisible()
 					img := page_bard.MustElementX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')]").MustWaitVisible()
-					response := img.MustElementX("ancestor::model-response").MustWaitVisible()
+					//response := img.MustElementX("ancestor::model-response").MustWaitVisible()
+					response := img.MustElementX("parent::div/parent::div").MustWaitVisible()
 					answer := response.MustText()
-					answer = strings.Replace(answer, "View other drafts", "", -1)
-					answer = strings.Replace(answer, "Regenerate draft", "", -1)
-					answer = strings.Replace(answer, "thumb_up", "", -1)
-					answer = strings.Replace(answer, "thumb_down", "", -1)
-					answer = strings.Replace(answer, "volume_up", "", -1)
-					answer = strings.Replace(answer, "more_vert", "", -1)
-					answer = strings.Replace(answer, "Google it", "", -1)
 					channel_bard <- answer
 				}
 			}
