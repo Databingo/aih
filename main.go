@@ -10,13 +10,12 @@ import (
 	//"github.com/Databingo/EdgeGPT-Go"
 	//"github.com/go-rod/rod/lib/utils"
 	//"github.com/go-rod/stealth"
-	"os"
-	"fmt"
 	"context"
-	"github.com/go-rod/rod"
-	"github.com/go-rod/rod/lib/launcher"
+	"fmt"
 	"github.com/atotto/clipboard"
 	"github.com/gdamore/tcell/v2"
+	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/launcher"
 	"github.com/manifoldco/promptui"
 	"github.com/peterh/liner"
 	"github.com/rivo/tview"
@@ -24,6 +23,7 @@ import (
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 	"io/ioutil"
+	"os"
 	"os/exec"
 	"runtime"
 	"strconv"
@@ -182,7 +182,7 @@ func main() {
 	//////////////////////1////////////////////////////
 	// Set up client of Bard (chromedriver version)
 	var page_bard *rod.Page
-	var relogin_bard bool
+	var relogin_bard = true
 	channel_bard := make(chan string)
 	go func() {
 		page_bard = browser.MustPage("https://bard.google.com")
@@ -206,7 +206,7 @@ func main() {
 				select {
 				case question := <-channel_bard:
 					//fmt.Println("question:", question)
-					page_bard.Activate()
+					page_bard.MustActivate()
 					page_bard.MustElementX("//textarea[@id='mat-input-0']").MustWaitVisible().MustInput(question)
 					page_bard.MustElementX("//button[@mattooltip='Submit']").MustClick()
 					page_bard.MustElementX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_thinking_v2_e272afd4f8d4bbd25efe.gif')]").MustWaitVisible()
@@ -220,7 +220,7 @@ func main() {
 					answer = strings.Replace(answer, "volume_up", "", -1)
 					answer = strings.Replace(answer, "more_vert", "", -1)
 					answer = strings.Replace(answer, "Google it", "", -1)
-					answer = answer[: len(answer)-12]
+					answer = answer[:len(answer)-12]
 					channel_bard <- answer
 				}
 			}
@@ -231,12 +231,12 @@ func main() {
 	//////////////////////2////////////////////////////
 	// Set up client of Claude (Rod version)
 	var page_claude *rod.Page
-	var relogin_claude bool
+	var relogin_claude = true
 	channel_claude := make(chan string)
 	go func() {
 		page_claude = browser.MustPage("https://claude.ai")
 		for {
-			page_claude.Activate()
+			page_claude.MustActivate()
 			if page_claude.Timeout(10 * time.Second).MustHasX("//h2[contains(text(), 'Welcome back')]") {
 				page_claude.MustElementX("//div[contains(text(), 'Start a new chat')]").MustWaitVisible().MustClick()
 				relogin_claude = false
@@ -257,7 +257,7 @@ func main() {
 				select {
 				case question := <-channel_claude:
 					//fmt.Println("question:", question)
-					page_claude.Activate()
+					page_claude.MustActivate()
 					page_claude.MustElementX("//p[contains(@data-placeholder, 'Message Claude')]").MustInput(question)
 					page_claude.MustElementX("//button[@aria-label='Send Message']").MustClick()
 					retry_icon := page_claude.MustElement("svg path[d='M224,128a96,96,0,0,1-94.71,96H128A95.38,95.38,0,0,1,62.1,197.8a8,8,0,0,1,11-11.63A80,80,0,1,0,71.43,71.39a3.07,3.07,0,0,1-.26.25L44.59,96H72a8,8,0,0,1,0,16H24a8,8,0,0,1-8-8V56a8,8,0,0,1,16,0V85.8L60.25,60A96,96,0,0,1,224,128Z']").MustWaitVisible()
@@ -273,13 +273,13 @@ func main() {
 	//////////////////////3////////////////////////////
 	// Set up client of Huggingchat (Rod version)
 	var page_hc *rod.Page
-	var relogin_hc bool
+	var relogin_hc = true
 	channel_hc := make(chan string)
 	go func() {
 		page_hc = browser.MustPage("https://huggingface.co/chat")
 		for {
 			if page_hc.Timeout(10 * time.Second).MustHasX("//button[contains(text(), 'Sign Out')]") {
-				relogin_claude = false
+				relogin_hc = false
 				break
 			}
 			if page_hc.Timeout(10 * time.Second).MustHasX("//button[contains(text(), 'Login')]") {
@@ -297,7 +297,7 @@ func main() {
 				select {
 				case question := <-channel_hc:
 					//fmt.Println("question:", question)
-					page_hc.Activate()
+					page_hc.MustActivate()
 					page_hc.MustElementX("//textarea[@enterkeyhint='send']").MustInput(question)
 					page_hc.MustElement("button svg path[d='M27.71 4.29a1 1 0 0 0-1.05-.23l-22 8a1 1 0 0 0 0 1.87l8.59 3.43L19.59 11L21 12.41l-6.37 6.37l3.44 8.59A1 1 0 0 0 19 28a1 1 0 0 0 .92-.66l8-22a1 1 0 0 0-.21-1.05Z']").MustClick()
 					page_hc.MustElement("svg path[d='M24 6H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z']").MustWaitInvisible() // stop_icon
@@ -314,7 +314,7 @@ func main() {
 	//////////////////////4////////////////////////////
 	// Set up client of chatgpt (rod version)
 	var page_chatgpt *rod.Page
-	var relogin_chatgpt bool
+	var relogin_chatgpt = true
 	channel_chatgpt := make(chan string)
 	go func() {
 		//page_chatgpt = stealth.MustPage(browser)
@@ -371,7 +371,7 @@ func main() {
 				select {
 				case question := <-channel_chatgpt:
 					//fmt.Println("question:", question)
-					page_chatgpt.Activate()
+					page_chatgpt.MustActivate()
 					page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustWaitVisible().MustInput(question)
 					sends := page_chatgpt.MustElements("button:last-of-type svg path[d='M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z']")
 					sends[len(sends)-1].MustClick()
@@ -506,6 +506,7 @@ func main() {
 					"ChatGPT",
 					"Claude",
 					"HuggingChat",
+					"All-In-One",
 					"ChatGPT API gpt-3.5-turbo, $0.002/1K tokens",
 					"ChatGPT API gpt-4 8K Prompt, $0.03/1K tokens",
 					"ChatGPT API gpt-4 8K Completion, $0.06/1K tokens",
@@ -539,6 +540,10 @@ func main() {
 				continue
 			case "HuggingChat":
 				role = ".huggingchat"
+				left_tokens = 0
+				continue
+			case "All-In-One":
+				role = ".all"
 				left_tokens = 0
 				continue
 			case "ChatGPT API gpt-3.5-turbo, $0.002/1K tokens":
@@ -648,8 +653,75 @@ func main() {
 
 		}
 
-//	BARD:
+		//	BARD:
 		// Check role for correct actions
+		if role == ".all" {
+			//fmt.Println("type question:", userInput)
+			//if relogin_bard == true {
+			//	fmt.Println("Login Bard please.")
+			//} else {
+			//	channel_bard <- userInput
+			//	answer := <-channel_bard
+
+			//	// Print the response to the terminal
+			//	RESP = strings.TrimSpace(answer)
+			//	printer(color_bard, RESP, false)
+			//}
+			///
+			if relogin_bard == false {
+				channel_bard <- userInput
+				//	page_bard.MustActivate()
+				answer_bard := <-channel_bard
+				RESP += "\n---------------- bard answer ----------------\n"
+				RESP += strings.TrimSpace(answer_bard)
+			}
+			if relogin_chatgpt == false {
+				channel_chatgpt <- userInput
+				//	page_chatgpt.MustActivate()
+				answer_chatgpt := <-channel_chatgpt
+				RESP += "\n---------------- chatgpt answer ----------------\n"
+				RESP += strings.TrimSpace(answer_chatgpt)
+			}
+			if relogin_claude == false {
+				channel_claude <- userInput
+				//	page_claude.MustActivate()
+				answer_claude := <-channel_claude
+				RESP += "\n---------------- claude answer ----------------\n"
+				RESP += strings.TrimSpace(answer_claude)
+			}
+			if relogin_hc == false {
+				channel_hc <- userInput
+				//	page_hc.MustActivate()
+				answer_hc := <-channel_hc
+				RESP += "\n---------------- huggingchat answer ----------------\n"
+				RESP += strings.TrimSpace(answer_hc)
+			}
+
+			//		if relogin_bard == false {
+			//			answer_bard := <-channel_bard
+			//			RESP += "\n---------------- bard answer ----------------\n"
+			//			RESP += strings.TrimSpace(answer_bard)
+			//	       }
+			//		if relogin_chatgpt == false {
+			//			answer_chatgpt := <-channel_chatgpt
+			//			RESP += "\n---------------- chatgpt answer ----------------\n"
+			//			RESP += strings.TrimSpace(answer_chatgpt)
+			//	       }
+			//		if relogin_claude == false {
+			//			answer_claude := <-channel_claude
+			//			RESP += "\n---------------- claude answer ----------------\n"
+			//			RESP += strings.TrimSpace(answer_claude)
+			//	       }
+			//		if relogin_hc == false {
+			//			answer_hc := <-channel_hc
+			//			RESP += "\n---------------- huggingchat answer ----------------\n"
+			//			RESP += strings.TrimSpace(answer_hc)
+			//	       }
+
+			printer(color_chat, RESP, false)
+			//RESP = ""
+
+		}
 		if role == ".bard" {
 			//fmt.Println("type question:", userInput)
 			if relogin_bard == true {
@@ -665,7 +737,7 @@ func main() {
 
 		}
 
-//	CLAUDE:
+		//	CLAUDE:
 		// Check role for correct actions
 		if role == ".claude" {
 			if relogin_claude == true {
@@ -680,7 +752,7 @@ func main() {
 			}
 
 		}
-//	CHAT:
+		//	CHAT:
 		if role == ".chat" {
 			//fmt.Println("type question:", userInput)
 			if relogin_chatgpt == true {
@@ -696,7 +768,7 @@ func main() {
 
 		}
 
-//	HUGGINGCHAT:
+		//	HUGGINGCHAT:
 		if role == ".huggingchat" {
 			if relogin_hc == true {
 				fmt.Println("Login HuggingChat please.")
@@ -710,7 +782,7 @@ func main() {
 			}
 
 		}
-//	CHATAPI:
+		//	CHATAPI:
 		if role == ".chatapi" {
 			// Check ChatGPT API Key
 			if OpenAI_Key == "" {
