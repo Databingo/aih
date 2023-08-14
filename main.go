@@ -188,6 +188,13 @@ func main() {
 	var relogin_bard = true
 	channel_bard := make(chan string)
 	go func() {
+	        defer func() {
+		 if err := recover(); err != nil {
+	            relogin_bard = true
+		    channel_bard <- "✘ Bard, Please check the internet connection and verify login status."
+		    close(channel_bard)
+		 }
+		}()
 		page_bard = browser.MustPage("https://bard.google.com")
 		for {
 			if page_bard.Timeout(10 * time.Second).MustHasX("//textarea[@id='mat-input-0']") {
@@ -237,6 +244,13 @@ func main() {
 	var relogin_claude = true
 	channel_claude := make(chan string)
 	go func() {
+	        defer func() {
+		 if err := recover(); err != nil {
+	            relogin_claude = true
+		    channel_claude <- "✘ Claude, Please check the internet connection and verify login status."
+		    close(channel_claude)
+		 }
+		}()
 		page_claude = browser.MustPage("https://claude.ai")
 		for {
 			page_claude.MustActivate()
@@ -280,6 +294,13 @@ func main() {
 	var relogin_hc = true
 	channel_hc := make(chan string)
 	go func() {
+	        defer func() {
+		 if err := recover(); err != nil {
+	            relogin_hc = true
+		    channel_hc <- "✘ HuggingChat, Please check the internet connection and verify login status."
+		    close(channel_hc)
+		 }
+		}()
 		page_hc = browser.MustPage("https://huggingface.co/chat")
 		for {
 			if page_hc.Timeout(10 * time.Second).MustHasX("//button[contains(text(), 'Sign Out')]") {
@@ -333,7 +354,13 @@ func main() {
 	var relogin_chatgpt = true
 	channel_chatgpt := make(chan string)
 	go func() {
-		//page_chatgpt = stealth.MustPage(browser)
+	        defer func() {
+		 if err := recover(); err != nil {
+	            relogin_chatgpt = true
+		    channel_chatgpt <- "✘ ChatGPT, Please check the internet connection and verify login status."
+		    close(channel_chatgpt)
+		 }
+		}()
 		page_chatgpt = browser.MustPage("https://chat.openai.com")
 		for {
 			if page_chatgpt.Timeout(10 * time.Second).MustHasX("//textarea[@id='prompt-textarea']") {
@@ -487,24 +514,24 @@ func main() {
 			printer(color_chat, string(cnt), true)
 			continue
 		case ".exit":
-			switch runtime.GOOS {
-			case "linux", "darwin":
-				cmd := exec.Command("pkill", "-f", "undetected_chromedriver")
-				err = cmd.Run()
-				if err != nil {
-					fmt.Println(err)
-				}
-			case "windows":
-				cmd := exec.Command("taskkill", "/IM", "undetected_chromedriver", "/F")
-				err = cmd.Run()
-				if err != nil {
-					fmt.Println(err)
-				}
-			}
-			page_bard.MustClose()
-			page_chatgpt.MustClose()
-			page_claude.MustClose()
-			page_hc.MustClose()
+			//switch runtime.GOOS {
+			//case "linux", "darwin":
+			//	cmd := exec.Command("pkill", "-f", "undetected_chromedriver")
+			//	err = cmd.Run()
+			//	if err != nil {
+			//		fmt.Println(err)
+			//	}
+			//case "windows":
+			//	cmd := exec.Command("taskkill", "/IM", "undetected_chromedriver", "/F")
+			//	err = cmd.Run()
+			//	if err != nil {
+			//		fmt.Println(err)
+			//	}
+			//}
+			if relogin_bard == false { page_bard.MustClose() }
+			if relogin_chatgpt == false {page_chatgpt.MustClose() }
+			if relogin_claude == false {page_claude.MustClose() }
+			if relogin_hc == false {page_hc.MustClose() }
 
 			return
 		case ".new":
@@ -695,22 +722,22 @@ func main() {
 
 			if relogin_bard == false {
 				answer_bard := <-channel_bard
-				RESP += "\n---------------- bard answer ----------------\n"
+				RESP += "\n\n---------------- bard answer ----------------\n"
 				RESP += strings.TrimSpace(answer_bard)
 			}
 			if relogin_chatgpt == false {
 				answer_chatgpt := <-channel_chatgpt
-				RESP += "\n---------------- chatgpt answer ----------------\n"
+				RESP += "\n\n---------------- chatgpt answer ----------------\n"
 				RESP += strings.TrimSpace(answer_chatgpt)
 			}
 			if relogin_claude == false {
 				answer_claude := <-channel_claude
-				RESP += "\n---------------- claude answer ----------------\n"
+				RESP += "\n\n---------------- claude answer ----------------\n"
 				RESP += strings.TrimSpace(answer_claude)
 			}
 			if relogin_hc == false {
 				answer_hc := <-channel_hc
-				RESP += "\n---------------- huggingchat answer ----------------\n"
+				RESP += "\n\n---------------- huggingchat answer ----------------\n"
 				RESP += strings.TrimSpace(answer_hc)
 			}
 			printer(color_chat, RESP, false)
@@ -719,7 +746,7 @@ func main() {
 		if role == ".bard" {
 			//fmt.Println("type question:", userInput)
 			if relogin_bard == true {
-				fmt.Println("Login Bard please.")
+				fmt.Println("✘ Bard")
 			} else {
 				channel_bard <- userInput
 				answer := <-channel_bard
@@ -735,7 +762,7 @@ func main() {
 		// Check role for correct actions
 		if role == ".claude" {
 			if relogin_claude == true {
-				fmt.Println("Login Claude please.")
+				fmt.Println("✘ Claude")
 			} else {
 				channel_claude <- userInput
 				answer := <-channel_claude
@@ -750,7 +777,7 @@ func main() {
 		if role == ".chat" {
 			//fmt.Println("type question:", userInput)
 			if relogin_chatgpt == true {
-				fmt.Println("Login ChatGPT please.")
+				fmt.Println("✘ ChatGPT")
 			} else {
 				channel_chatgpt <- userInput
 				answer := <-channel_chatgpt
@@ -765,7 +792,7 @@ func main() {
 		//	HUGGINGCHAT:
 		if role == ".huggingchat" {
 			if relogin_hc == true {
-				fmt.Println("Login HuggingChat please.")
+				fmt.Println("✘ HuggingChat")
 			} else {
 				channel_hc <- userInput
 				answer := <-channel_hc
