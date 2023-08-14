@@ -1,4 +1,4 @@
-# Aih: Talk with Bard/ChatGPT/Claude/HuggingChat in the terminal.
+# Aih: Talk with Bard/ChatGPT/Claude2/Llama2(HuggingChat) in the terminal.
 
 ![screenshot2](aih.gif) 
 
