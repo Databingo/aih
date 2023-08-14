@@ -31,10 +31,10 @@ func main() {
 
 	// Create a new release
 	release, _, err := client.Repositories.CreateRelease(ctx, owner, repo, &github.RepositoryRelease{
-		TagName:         github.String("v0.1.4"),
+		TagName:         github.String("v0.1.4.1"),
 		TargetCommitish: github.String("master"),
-		Name:            github.String("Release v0.1.4"),
-		Body:            github.String("Welcome to Aih! We changed undetected_chromedriver to rod for a convenience, such as get rid of python scripts."),
+		Name:            github.String("Release v0.1.4.1"),
+		Body:            github.String("Welcome to Aih! Add all-in-one mode."),
 		Draft:           github.Bool(false),
 		Prerelease:      github.Bool(false),
 	})
