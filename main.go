@@ -279,6 +279,9 @@ func main() {
 		page_hc = browser.MustPage("https://huggingface.co/chat")
 		for {
 			if page_hc.Timeout(10 * time.Second).MustHasX("//button[contains(text(), 'Sign Out')]") {
+			   //page_hc.MustActivate()
+			   //page_hc.MustElementX("//textarea[@enterkeyhint='send']").MustInput("hello")
+			   //page_hc.MustElement("button svg path[d='M27.71 4.29a1 1 0 0 0-1.05-.23l-22 8a1 1 0 0 0 0 1.87l8.59 3.43L19.59 11L21 12.41l-6.37 6.37l3.44 8.59A1 1 0 0 0 19 28a1 1 0 0 0 .92-.66l8-22a1 1 0 0 0-.21-1.05Z']").MustClick()
 				relogin_hc = false
 				break
 			}
@@ -379,7 +382,7 @@ func main() {
 					page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']/..//button").MustWaitVisible().MustClick()
 					page_chatgpt.MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
 					//fmt.Println("Retry icon show")
-					answer := page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()
+					answer := page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]//p").MustText()
 					channel_chatgpt <- answer
 				}
 			}
