@@ -489,6 +489,10 @@ func main() {
 					fmt.Println(err)
 				}
 			}
+			page_bard.MustClose()
+			page_chatgpt.MustClose()
+			page_claude.MustClose()
+			page_hc.MustClose()
 
 			return
 		case ".new":
