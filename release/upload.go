@@ -34,7 +34,7 @@ func main() {
 		TagName:         github.String("v0.1.4"),
 		TargetCommitish: github.String("master"),
 		Name:            github.String("Release v0.1.4"),
-		Body:            github.String("Welcome to Aih! We changed undetected_chromedriver to go-rod for a convenience, such as get rid of python scripts."),
+		Body:            github.String("Welcome to Aih! We changed undetected_chromedriver to rod for a convenience, such as get rid of python scripts."),
 		Draft:           github.Bool(false),
 		Prerelease:      github.Bool(false),
 	})
