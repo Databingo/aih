@@ -1,4 +1,4 @@
-# Aih: Talk with Bard/ChatGPT/Claude2/Llama2(HuggingChat) in the terminal.
+# Aih: Talk with Bard/ChatGPT/Claude2/Llama2 in the terminal.
 
 ![screenshot1](aih.gif) 
 
@@ -29,7 +29,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 ## Prerequisites
 - [Chrome Browser](https://google.com/chrome)
 - Free account of [Bard](https://bard.google.com), [Claude](https://claude.ai), [OpenAI](https://chat.openai.com), [HuggingChat](https://huggingface.co/chat) logged-in manually on your Chrome browser.
-- Paid ChatGPT API on [Billing](https://platform.openai.com/account/billing/overview)(optional). 
+- (Optional) Paid ChatGPT API on [Billing](https://platform.openai.com/account/billing/overview). 
 
 ## Tips
 - The returned text will be auotmatically saved in your system clipboard for pasting.
