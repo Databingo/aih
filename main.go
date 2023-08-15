@@ -1,9 +1,8 @@
 package main
 
 import (
-	"os"
-	"fmt"
 	"context"
+	"fmt"
 	"github.com/atotto/clipboard"
 	"github.com/gdamore/tcell/v2"
 	"github.com/go-rod/rod"
@@ -15,6 +14,7 @@ import (
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 	"io/ioutil"
+	"os"
 	"os/exec"
 	"runtime"
 	"strconv"
@@ -235,7 +235,7 @@ func main() {
 				case question := <-channel_claude:
 					info := page_claude.MustInfo()
 					if strings.HasPrefix(info.URL, "https://claude.ai/chats") {
-					        page_claude.MustActivate()
+						page_claude.MustActivate()
 						page_claude.MustElementX("//div[contains(text(), 'Start a new chat')]").MustWaitVisible().MustClick()
 						time.Sleep(3 * time.Second)
 					}
@@ -451,6 +451,7 @@ func main() {
 			fmt.Println("------------------------------------------------------------ ")
 			fmt.Println(" .               Select AI mode of Bard/Bing/ChatGPT/Claude")
 			fmt.Println(" .proxy          Set proxy")
+			fmt.Println(" .key            Set key of ChatGPT API")
 			fmt.Println(" <<              Start multiple lines input")
 			fmt.Println(" >>              End multiple lines input")
 			fmt.Println(" ↑               Previous input")
@@ -467,7 +468,6 @@ func main() {
 			fmt.Println(" .speak          Voice speak context (MasOS only)")
 			fmt.Println(" .quiet          Not speak")
 			//fmt.Println(" .new            New conversation of ChatGPT")
-			//fmt.Println(" .key            Set cookie of Bard/Bing/ChatGPT/Claude")
 			fmt.Println("------------------------------------------------------------ ")
 			fmt.Println("                           ")
 			fmt.Println("                           ")
@@ -596,45 +596,45 @@ func main() {
 			case "Exit":
 				continue
 			}
-		//case ".key":
-		//	prom := promptui.Select{
-		//		Label: "Select:",
-		//		Size:  6,
-		//		Items: []string{
-		//			"Set Bard Cookie",
-		//			"Set ChatGPT Cookie",
-		//			"Set Claude Cookie",
-		//			"Set HuggingChat Cookie",
-		//			"Set ChatGPT API Key",
-		//			"Exit",
-		//		},
-		//	}
+		case ".key":
+			prom := promptui.Select{
+				Label: "Select:",
+				Size:  6,
+				Items: []string{
+					//"Set Bard Cookie",
+					//"Set ChatGPT Cookie",
+					//"Set Claude Cookie",
+					//"Set HuggingChat Cookie",
+					"Set ChatGPT API Key",
+					"Exit",
+				},
+			}
 
-		//	_, keyy, err := prom.Run()
-		//	if err != nil {
-		//		panic(err)
-		//	}
+			_, keyy, err := prom.Run()
+			if err != nil {
+				panic(err)
+			}
 
-		//	switch keyy {
-		//	case "Set Bard Cookie":
-		//		role = ".bard"
-		//		goto BARD
-		//	case "Set ChatGPT Cookie":
-		//		role = ".chat"
-		//		goto CHAT
-		//	case "Set ChatGPT API Key":
-		//		OpenAI_Key = ""
-		//		role = ".chatapi"
-		//		goto CHATAPI
-		//	case "Set Claude Cookie":
-		//		role = ".claude"
-		//		goto CLAUDE
-		//	case "Set HuggingChat Cookie":
-		//		role = ".huggingchat"
-		//		goto HUGGINGCHAT
-		//	case "Exit":
-		//		continue
-		//	}
+			switch keyy {
+			//case "Set Bard Cookie":
+			//	role = ".bard"
+			//	goto BARD
+			//case "Set ChatGPT Cookie":
+			//	role = ".chat"
+			//	goto CHAT
+			//case "Set Claude Cookie":
+			//	role = ".claude"
+			//	goto CLAUDE
+			//case "Set HuggingChat Cookie":
+			//	role = ".huggingchat"
+			//	goto HUGGINGCHAT
+			case "Set ChatGPT API Key":
+				OpenAI_Key = ""
+				role = ".chatapi"
+				goto CHATAPI
+			case "Exit":
+				continue
+			}
 
 		case ".speak":
 			speak = 1
@@ -759,7 +759,7 @@ func main() {
 			}
 
 		}
-		//	CHATAPI:
+	CHATAPI:
 		if role == ".chatapi" {
 			// Check ChatGPT API Key
 			if OpenAI_Key == "" {
