@@ -146,7 +146,7 @@ func main() {
 	// Open rod browser
 	var browser *rod.Browser
 	browser = rod.New().
-		Trace(true).
+		//Trace(true).
 		ControlURL(proxy_url).
 		Timeout(60 * 24 * time.Minute).
 		MustConnect()
