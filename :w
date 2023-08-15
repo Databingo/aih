@@ -480,6 +480,20 @@ func main() {
 			printer(color_chat, string(cnt), true)
 			continue
 		case ".exit":
+			//switch runtime.GOOS {
+			//case "linux", "darwin":
+			//	cmd := exec.Command("pkill", "-f", "undetected_chromedriver")
+			//	err = cmd.Run()
+			//	if err != nil {
+			//		fmt.Println(err)
+			//	}
+			//case "windows":
+			//	cmd := exec.Command("taskkill", "/IM", "undetected_chromedriver", "/F")
+			//	err = cmd.Run()
+			//	if err != nil {
+			//		fmt.Println(err)
+			//	}
+			//}
 			if relogin_bard == false {
 				page_bard.MustClose()
 			}
@@ -703,6 +717,7 @@ func main() {
 
 		}
 		if role == ".bard" {
+			//fmt.Println("type question:", userInput)
 			if relogin_bard == true {
 				fmt.Println("✘ Bard")
 			} else {
@@ -725,6 +740,7 @@ func main() {
 				channel_claude <- userInput
 				answer := <-channel_claude
 
+				// Print the response to the terminal
 				RESP = strings.TrimSpace(answer)
 				printer(color_claude, RESP, false)
 			}
@@ -732,6 +748,7 @@ func main() {
 		}
 		//	CHAT:
 		if role == ".chat" {
+			//fmt.Println("type question:", userInput)
 			if relogin_chatgpt == true {
 				fmt.Println("✘ ChatGPT")
 			} else {
@@ -812,6 +829,7 @@ func main() {
 			RESP = strings.TrimSpace(resp.Choices[0].Message.Content)
 			used_tokens = resp.Usage.TotalTokens
 			left_tokens = max_tokens - used_tokens
+			//printer_chat.Println(RESP)
 			printer(color_chatapi, RESP, false)
 
 		}
