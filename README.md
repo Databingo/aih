@@ -20,8 +20,8 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 |.h or .history | Show history of conversations|
 |j           | Scroll down|
 |k           | Scroll up|
-|g           | Scroll top|
-|G           | Scroll bottom|
+|g           | Scroll to top|
+|G           | Scroll to bottom|
 |q or Enter  | Back to conversation|
 |.help       | Show help|
 |.exit       | Exit Aih|
@@ -32,10 +32,10 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 - (Optional) Paid ChatGPT API on [Billing](https://platform.openai.com/account/billing/overview). 
 
 ## Tips
-- The returned text will be auotmatically saved in your system clipboard for pasting.
-- You can see more operations of command line [here](https://github.com/peterh/liner#Line-editing).
-- All conversation history was persisted in `history.txt` locally along with Aih binary.
-- All-In-One mode will display answers of all the AI modes.
+- The returned text will be auotmatically saved in system clipboard for pasting.
+- More operations of command line at [here](https://github.com/peterh/liner#Line-editing).
+- All conversations was persisted in `history.txt` beside Aih binary.
+- All-In-One mode will display answers from all the AI modes.
 <img src="allin1.png" alt="screenshot2" style="width:80%;">
 
 ## Supported Operating Systems:
