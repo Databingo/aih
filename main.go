@@ -136,7 +136,7 @@ func main() {
 	// Open rod browser
 	var browser *rod.Browser
 	browser = rod.New().
-		Trace(true).
+		//Trace(true).
 		ControlURL(proxy_url).
 		Timeout(60 * 24 * time.Minute).
 		MustConnect()
@@ -158,7 +158,7 @@ func main() {
 		defer func() {
 			if err := recover(); err != nil {
 				relogin_bard = true
-				channel_bard <- "✘ Bard, Please check the internet connection and verify login status."
+				//channel_bard <- "✘✘  Bard, Please check the internet connection and verify login status."
 				//close(channel_bard)
 			}
 		}()
@@ -209,7 +209,7 @@ func main() {
 		defer func() {
 			if err := recover(); err != nil {
 				relogin_claude = true
-				channel_claude <- "✘ Claude, Please check the internet connection and verify login status."
+				//channel_claude <- "✘✘  Claude, Please check the internet connection and verify login status."
 				//close(channel_claude)
 			}
 		}()
@@ -264,7 +264,7 @@ func main() {
 		defer func() {
 			if err := recover(); err != nil {
 				relogin_hc = true
-				channel_hc <- "✘ HuggingChat, Please check the internet connection and verify login status."
+				//channel_hc <- "✘✘  HuggingChat, Please check the internet connection and verify login status."
 				//close(channel_hc)
 			}
 		}()
@@ -324,7 +324,7 @@ func main() {
 		defer func() {
 			if err := recover(); err != nil {
 				relogin_chatgpt = true
-				channel_chatgpt <- "✘ ChatGPT, Please check the internet connection and verify login status."
+				//channel_chatgpt <- "✘✘  ChatGPT, Please check the internet connection and verify login status."
 				//close(channel_chatgpt)
 			}
 		}()
@@ -412,6 +412,7 @@ func main() {
 					//if role == ".all" {
 					//	channel_chatgpt <- "click_chatgpt"
 					//}
+					//retry_icon := page_claude.Timeout(20 * time.Second).MustElement("svg path[d='M224,128a96,96,0,0,1-94.71,96H128A95.38,95.38,0,0,1,62.1,197.8a8,8,0,0,1,11-11.63A80,80,0,1,0,71.43,71.39a3.07,3.07,0,0,1-.26.25L44.59,96H72a8,8,0,0,1,0,16H24a8,8,0,0,1-8-8V56a8,8,0,0,1,16,0V85.8L60.25,60A96,96,0,0,1,224,128Z']").MustWaitVisible()
 					page_chatgpt.MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
 
 					//page_chatgpt.Race().Element("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustHandle(func(e *rod.Element) {
@@ -530,26 +531,27 @@ func main() {
 			continue
 		case ".exit":
 			//	exit_safe()
-			//if relogin_bard == false {
-			//	//close(channel_bard)
-			//	page_bard.MustClose()
-			//}
-			//if relogin_chatgpt == false {
-			//	//close(channel_chatgpt)
-			//	page_chatgpt.MustClose()
-			//}
-			//if relogin_claude == false {
-			//	//close(channel_claude)
-			//	page_claude.MustClose()
-			//}
-			//if relogin_hc == false {
-			//	//close(channel_hc)
-			//	page_hc.MustClose()
-			//}
+			if relogin_bard == false {
+				//close(channel_bard)
 				page_bard.MustClose()
+			}
+			if relogin_chatgpt == false {
+				//close(channel_chatgpt)
 				page_chatgpt.MustClose()
+			}
+			if relogin_claude == false {
+				//close(channel_claude)
 				page_claude.MustClose()
+			}
+			if relogin_hc == false {
+				//close(channel_hc)
 				page_hc.MustClose()
+			}
+				//page_bard.MustClose()
+				//page_chatgpt.MustClose()
+				//page_claude.MustClose()
+				//page_hc.MustClose()
+			syscall.Exit(0)
 		case ".new":
 			// For role .chat
 			//conversation_id = ""
