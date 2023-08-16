@@ -36,7 +36,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 - Conversations were persisted in `history.txt` beside Aih binary.
 - All-In-One mode will display answers from all the AI modes.
 
-## Supported Operating Systems:
+## Supported OS:
 - Mac/Linux/Windows
 
 ## Installation
