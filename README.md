@@ -37,7 +37,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 - All-In-One mode will display answers from all the AI modes.
 
 ## Supported Operating Systems:
-- Mac|Linux|Windows
+- Mac/Linux/Windows
 
 ## Installation
 - Bash
