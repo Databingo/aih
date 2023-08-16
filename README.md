@@ -36,7 +36,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 - You can see more operations of command line [here](https://github.com/peterh/liner#Line-editing).
 - All conversation history was persisted in `history.txt` locally along with Aih binary.
 - All-In-One mode will display answers of all the AI modes.
-<img src="allinone.png" alt="screenshot2" style="width:80%;">
+<img src="allin1.png" alt="screenshot2" style="width:80%;">
 
 ## Supported Operating Systems:
 - Mac
