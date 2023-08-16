@@ -166,11 +166,11 @@ func main() {
 				relogin_bard = false
 				break
 			}
-			if page_bard.Timeout(1 * time.Second).MustHasX("//span[contains(text(), 'Sign in')]") {
+			if page_bard.Timeout(2 * time.Second).MustHasX("//span[contains(text(), 'Sign in')]") {
 				relogin_bard = true
 				break
 			}
-			if page_bard.Timeout(1 * time.Second).MustHasX("//strong[contains(text(), 'supported in your country')]") {
+			if page_bard.Timeout(2 * time.Second).MustHasX("//strong[contains(text(), 'supported in your country')]") {
 				relogin_bard = true
 				break
 			}
@@ -252,15 +252,19 @@ func main() {
 						channel_claude <- "click_claude"
 					}
 
+                                        channel_claude_unable := make(chan string)
 					go func() {
 						defer func() {
 							if err := recover(); err != nil {
 								relogin_claude = true
 								channel_claude <- "✘✘  Claude, Please check the internet connection and verify login status."
+                                                                channel_claude_unable <- ""
+								close(channel_claude_unable)
 							}
 						}()
 						//retry_icon
 						page_claude.Timeout(10 * time.Second).MustElement("svg path[d='M224,128a96,96,0,0,1-94.71,96H128A95.38,95.38,0,0,1,62.1,197.8a8,8,0,0,1,11-11.63A80,80,0,1,0,71.43,71.39a3.07,3.07,0,0,1-.26.25L44.59,96H72a8,8,0,0,1,0,16H24a8,8,0,0,1-8-8V56a8,8,0,0,1,16,0V85.8L60.25,60A96,96,0,0,1,224,128Z']").MustWaitVisible()
+						close(channel_claude_unable)
 					}()
 
 					retry_icon := page_claude.MustElement("svg path[d='M224,128a96,96,0,0,1-94.71,96H128A95.38,95.38,0,0,1,62.1,197.8a8,8,0,0,1,11-11.63A80,80,0,1,0,71.43,71.39a3.07,3.07,0,0,1-.26.25L44.59,96H72a8,8,0,0,1,0,16H24a8,8,0,0,1-8-8V56a8,8,0,0,1,16,0V85.8L60.25,60A96,96,0,0,1,224,128Z']").MustWaitVisible()
@@ -398,16 +402,19 @@ func main() {
 					if role == ".all" {
 						channel_chatgpt <- "click_chatgpt"
 					}
-
+                                        channel_chatgpt_verify := make(chan string)
 					go func() {
 						defer func() {
 							if err := recover(); err != nil {
 								relogin_chatgpt = true
 								channel_chatgpt <- "✘✘  ChatGPT, Please check the internet connection and verify login status."
+								channel_chatgpt_verify <- ""
+							        close(channel_chatgpt_verify)	
 							}
 						}()
 						//retry_icon
 						page_chatgpt.Timeout(10 * time.Second).MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
+					        close(channel_chatgpt_verify)	
 					}()
 
 					page_chatgpt.MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
