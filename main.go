@@ -149,7 +149,7 @@ func main() {
 	client := openai.NewClientWithConfig(config)
 	messages := make([]openai.ChatCompletionMessage, 0)
 
-	//////////////////////1////////////////////////////
+	//////////////////////c1////////////////////////////
 	// Set up client of Bard (Rod version)
 	var page_bard *rod.Page
 	var relogin_bard = true
@@ -174,10 +174,10 @@ func main() {
 				relogin_bard = true
 				break
 			}
-			if page_bard.Timeout(1 * time.Second).MustHasX("//div[contains(text(), 'detected unusual traffic')]") {
-				relogin_bard = true
-				break
-			}
+			//if page_bard.Timeout(1 * time.Second).MustHasX("//div[contains(text(), 'detected unusual traffic')]") {
+			//	relogin_bard = true
+			//	break
+			//}
 			time.Sleep(time.Second)
 		}
 		if relogin_bard == true {
@@ -205,7 +205,7 @@ func main() {
 
 	}()
 
-	//////////////////////2////////////////////////////
+	//////////////////////c2////////////////////////////
 	// Set up client of Claude (Rod version)
 	var page_claude *rod.Page
 	var relogin_claude = true
@@ -273,7 +273,7 @@ func main() {
 
 	}()
 
-	//////////////////////3////////////////////////////
+	//////////////////////c3////////////////////////////
 	// Set up client of Huggingchat (Rod version)
 	var page_hc *rod.Page
 	var relogin_hc = true
@@ -330,7 +330,7 @@ func main() {
 
 	}()
 
-	//////////////////////4////////////////////////////
+	//////////////////////c4////////////////////////////
 	// Set up client of chatgpt (rod version)
 	var page_chatgpt *rod.Page
 	var relogin_chatgpt = true
