@@ -1,11 +1,7 @@
 aih
 aih.json
 aih.mov
+.history
 release/*
 !release/upload.go
-cookies
-cookies/*
-.history
 history.txt
-test.go
-README.md-
