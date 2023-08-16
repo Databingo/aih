@@ -32,9 +32,9 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 - (Optional) Paid ChatGPT API on [Billing](https://platform.openai.com/account/billing/overview). 
 
 ## Tips
-- The returned text will be auotmatically saved in system clipboard for pasting.
-- More operations of command line at [here](https://github.com/peterh/liner#Line-editing).
+- Answer will be auotmatically saved in system clipboard for pasting.
 - All conversations was persisted in `history.txt` beside Aih binary.
+- More operations of command line at [here](https://github.com/peterh/liner#Line-editing).
 - All-In-One mode will display answers from all the AI modes.
 <img src="allin1.png" alt="screenshot2" style="width:80%;">
 
