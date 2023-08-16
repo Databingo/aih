@@ -444,6 +444,20 @@ func main() {
 			}
 			fmt.Println("Please restart Aih for using proxy")
 			Liner.Close()
+			/// exit_safe()
+			if relogin_bard == false {
+				page_bard.MustClose()
+			}
+			if relogin_chatgpt == false {
+				page_chatgpt.MustClose()
+			}
+			if relogin_claude == false {
+				page_claude.MustClose()
+			}
+			if relogin_hc == false {
+				page_hc.MustClose()
+			}
+
 			syscall.Exit(0)
 		case ".help":
 			fmt.Println("                           ")
@@ -480,6 +494,7 @@ func main() {
 			printer(color_chat, string(cnt), true)
 			continue
 		case ".exit":
+			//	exit_safe()
 			if relogin_bard == false {
 				page_bard.MustClose()
 			}
@@ -492,8 +507,6 @@ func main() {
 			if relogin_hc == false {
 				page_hc.MustClose()
 			}
-
-			return
 		case ".new":
 			// For role .chat
 			//conversation_id = ""
@@ -790,7 +803,7 @@ func main() {
 			resp, err := client.CreateChatCompletion(
 				context.Background(),
 				openai.ChatCompletionRequest{
-					Model:    chat_mode, //openai.GPT3Dot5Turbo,
+					Model:    chat_mode,
 					Messages: messages,
 				},
 			)
