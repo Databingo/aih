@@ -491,6 +491,7 @@ func main() {
 			close(channel_chatgpt)
 			close(channel_claude)
 			close(channel_hc)
+	                Liner.Close()
 			syscall.Exit(0)
 			//os.Exit(0)
 		case ".help":
@@ -530,25 +531,22 @@ func main() {
 		case ".exit":
 			//	exit_safe()
 			if relogin_bard == false {
-				//close(channel_bard)
 				page_bard.MustClose()
 			}
 			if relogin_chatgpt == false {
-				//close(channel_chatgpt)
 				page_chatgpt.MustClose()
 			}
 			if relogin_claude == false {
-				//close(channel_claude)
 				page_claude.MustClose()
 			}
 			if relogin_hc == false {
-				//close(channel_hc)
 				page_hc.MustClose()
 			}
 			close(channel_bard)
 			close(channel_chatgpt)
 			close(channel_claude)
 			close(channel_hc)
+	                Liner.Close()
 			syscall.Exit(0)
 			//os.Exit(0)
 		case ".new":
