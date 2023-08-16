@@ -34,7 +34,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 ## Tips
 - Answer will be auotmatically saved in system clipboard for pasting.
 - All conversations were persisted in `history.txt` beside Aih binary.
-- More operations of command line at [here](https://github.com/peterh/liner#Line-editing).
+- More operations of command line at [Liner](https://github.com/peterh/liner#Line-editing).
 - All-In-One mode will display answers from all the AI modes.
 <img src="allin1.png" alt="screenshot2" style="width:80%;">
 
