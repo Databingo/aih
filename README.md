@@ -40,7 +40,6 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 - Mac/Linux/Windows
 
 ## Installation
-- Bash
 ```
 $ git clone https://github.com/Databingo/aih
 $ go clean -cache && go clean -modcache 
