@@ -1,6 +1,6 @@
 # Aih: Talk with Bard/ChatGPT/Claude2/Llama2 in the terminal.
 
-![screenshot1](aih.gif) 
+<img src="allin1.png" alt="screenshot2" style="width:80%;">
 
 ## Usage
 Download [binary file](https://github.com/Databingo/aih/releases) then type:
@@ -36,7 +36,6 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 - All conversations were persisted in `history.txt` beside Aih binary.
 - More operations of command line at [Liner](https://github.com/peterh/liner#Line-editing).
 - All-In-One mode will display answers from all the AI modes.
-<img src="allin1.png" alt="screenshot2" style="width:80%;">
 
 ## Supported Operating Systems:
 - Mac
