@@ -1,6 +1,6 @@
-# Aih: Talk with Bard/ChatGPT/Claude2/Llama2 in the terminal.
+# Talk with Bard|ChatGPT|Claude2|Llama2 in terminal.
 
-<img src="allin1.png" alt="screenshot2" style="width:80%;">
+<img src="allin1.png" alt="screenshot" style="width:80%;">
 
 ## Usage
 Download [binary file](https://github.com/Databingo/aih/releases) then type:
@@ -37,9 +37,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 - All-In-One mode will display answers from all the AI modes.
 
 ## Supported Operating Systems:
-- Mac
-- Linux
-- Windows
+- Mac|Linux|Windows
 
 ## Installation
 - Bash
@@ -48,9 +46,6 @@ $ git clone https://github.com/Databingo/aih
 $ go clean -cache && go clean -modcache 
 $ cd aih && go mod tidy && go build 
 ```
-## About Suggestions
-This is an open plan based on the idea of "Co-relation's enhancement of AI and human beings". If you have any suggestions, please write them in the Issues section.
-
 ## Acknowledgements
 - github.com/go-rod/rod
 - github.com/sashabaranov/go-openai 
