@@ -136,7 +136,7 @@ func main() {
 	// Open rod browser
 	var browser *rod.Browser
 	browser = rod.New().
-		//Trace(true).
+		Trace(true).
 		ControlURL(proxy_url).
 		Timeout(60 * 24 * time.Minute).
 		MustConnect()
@@ -351,7 +351,7 @@ func main() {
 				relogin_chatgpt = false
 				break
 			}
-			if page_chatgpt.Timeout(10 * time.Second).MustHasX("//div[contains(text(), 'Log in with your OpenAI account to continue')]") {
+			if page_chatgpt.Timeout(10 * time.Second).MustHasX("//div[contains(text(), 'Log in with your OpenAI account to continue')] | //p[contains(text(), 'Unable to load site')]") {
 				relogin_chatgpt = true
 				break
 			}
