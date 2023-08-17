@@ -218,20 +218,24 @@ func main() {
 		}()
 		page_claude = browser.MustPage("https://claude.ai")
 		for {
-			if page_claude.Timeout(10 * time.Second).MustHasX("//h2[contains(text(), 'Welcome back')]") {
+			if page_claude.MustHasX("//h2[contains(text(), 'Welcome back')]") {
 				relogin_claude = false
+				//fmt.Println("1✘ Claude")
 				break
 			}
-			if page_claude.Timeout(2 * time.Second).MustHasX("//h2[contains(text(), 'Talk to Claude')]") {
+			if page_claude.MustHasX("//h2[contains(text(), 'Talk to Claude')]") {
 				relogin_claude = true
+				//fmt.Println("2✘ Claude")
 				break
 			}
-			if page_claude.Timeout(2 * time.Second).MustHasX("//span[contains(text(), 'App unavailable')]") {
+			if page_claude.MustHasX("//span[contains(text(), 'App unavailable')]") {
 				relogin_claude = true
+				//fmt.Println("3✘ Claude")
 				break
 			}
 			time.Sleep(time.Second)
 		}
+
 		if relogin_claude == true {
 			fmt.Println("✘ Claude")
 		}
@@ -252,25 +256,23 @@ func main() {
 						channel_claude <- "click_claude"
 					}
 
-                                        channel_claude_unable := make(chan string)
-					go func() {
-						defer func() {
-							if err := recover(); err != nil {
-								relogin_claude = true
-								channel_claude <- "✘✘  Claude, Please check the internet connection and verify login status."
-                                                                channel_claude_unable <- ""
-								close(channel_claude_unable)
-							}
-						}()
-						//retry_icon
-						page_claude.Timeout(10 * time.Second).MustElement("svg path[d='M224,128a96,96,0,0,1-94.71,96H128A95.38,95.38,0,0,1,62.1,197.8a8,8,0,0,1,11-11.63A80,80,0,1,0,71.43,71.39a3.07,3.07,0,0,1-.26.25L44.59,96H72a8,8,0,0,1,0,16H24a8,8,0,0,1-8-8V56a8,8,0,0,1,16,0V85.8L60.25,60A96,96,0,0,1,224,128Z']").MustWaitVisible()
-						close(channel_claude_unable)
-					}()
-
-					retry_icon := page_claude.Timeout(30 * time.Second).MustElement("svg path[d='M224,128a96,96,0,0,1-94.71,96H128A95.38,95.38,0,0,1,62.1,197.8a8,8,0,0,1,11-11.63A80,80,0,1,0,71.43,71.39a3.07,3.07,0,0,1-.26.25L44.59,96H72a8,8,0,0,1,0,16H24a8,8,0,0,1-8-8V56a8,8,0,0,1,16,0V85.8L60.25,60A96,96,0,0,1,224,128Z']").MustWaitVisible()
-					content := retry_icon.MustElementX("preceding::div[2]")
-					answer := content.MustText()
-					channel_claude <- answer
+					var claude_response bool
+					for i := 1; i <= 30; i++ {
+						if page_claude.MustHas("svg path[d='M224,128a96,96,0,0,1-94.71,96H128A95.38,95.38,0,0,1,62.1,197.8a8,8,0,0,1,11-11.63A80,80,0,1,0,71.43,71.39a3.07,3.07,0,0,1-.26.25L44.59,96H72a8,8,0,0,1,0,16H24a8,8,0,0,1-8-8V56a8,8,0,0,1,16,0V85.8L60.25,60A96,96,0,0,1,224,128Z']") {
+							claude_response = true
+							break
+						}
+						time.Sleep(time.Second)
+					}
+					if claude_response == true {
+						retry_icon := page_claude.MustElement("svg path[d='M224,128a96,96,0,0,1-94.71,96H128A95.38,95.38,0,0,1,62.1,197.8a8,8,0,0,1,11-11.63A80,80,0,1,0,71.43,71.39a3.07,3.07,0,0,1-.26.25L44.59,96H72a8,8,0,0,1,0,16H24a8,8,0,0,1-8-8V56a8,8,0,0,1,16,0V85.8L60.25,60A96,96,0,0,1,224,128Z']").MustWaitVisible()
+						content := retry_icon.MustElementX("preceding::div[2]")
+						answer := content.MustText()
+						channel_claude <- answer
+					} else {
+						channel_claude <- "✘✘  Claude, Please check the internet connection and verify login status."
+						relogin_claude = true
+					}
 				}
 			}
 		}
@@ -402,30 +404,22 @@ func main() {
 					if role == ".all" {
 						channel_chatgpt <- "click_chatgpt"
 					}
-                                        channel_chatgpt_verify := make(chan string)
+					channel_chatgpt_verify := make(chan string)
 					go func() {
 						defer func() {
 							if err := recover(); err != nil {
 								relogin_chatgpt = true
 								channel_chatgpt <- "✘✘  ChatGPT, Please check the internet connection and verify login status."
 								channel_chatgpt_verify <- ""
-							        close(channel_chatgpt_verify)	
+								close(channel_chatgpt_verify)
 							}
 						}()
 						//retry_icon
 						page_chatgpt.Timeout(10 * time.Second).MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
-					        close(channel_chatgpt_verify)	
+						close(channel_chatgpt_verify)
 					}()
-                                        //regenerate_icon
+					//regenerate_icon
 					page_chatgpt.Timeout(30 * time.Second).MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
-
-					//page_chatgpt.Race().Element("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustHandle(func(e *rod.Element) {
-					//a, _ := page_chatgpt.ElementX("(//div[contains(@class, 'group w-full')])[last()]")//.MustText()[7:]
-					//channel_chatgpt <- a.MustText()
-					//}).Element("h2:contains('Verify that you are human')").MustHandle(func(e *rod.Element) {
-					//channel_chatgpt <-  "✘✘ ChatGPT, Please check the internet connection and verify login status."
-					//}).MustDo()
-
 					answer := page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()[7:]
 					channel_chatgpt <- answer
 				}
@@ -498,7 +492,7 @@ func main() {
 			close(channel_chatgpt)
 			close(channel_claude)
 			close(channel_hc)
-	                Liner.Close()
+			Liner.Close()
 			syscall.Exit(0)
 			//os.Exit(0)
 		case ".help":
@@ -553,7 +547,7 @@ func main() {
 			close(channel_chatgpt)
 			close(channel_claude)
 			close(channel_hc)
-	                Liner.Close()
+			Liner.Close()
 			syscall.Exit(0)
 			//os.Exit(0)
 		case ".new":
