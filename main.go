@@ -195,7 +195,7 @@ func main() {
 						channel_bard <- "click_bard"
 					}
 					page_bard.MustElementX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_thinking_v2_e272afd4f8d4bbd25efe.gif')]").MustWaitVisible()
-					img := page_bard.Timeout(60 * time.Second).MustElementX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')]").MustWaitVisible()
+					img := page_bard.Timeout(30 * time.Second).MustElementX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')]").MustWaitVisible()
 					response := img.MustElementX("parent::div/parent::div").MustWaitVisible()
 					answer := response.MustText()
 					channel_bard <- answer
@@ -267,7 +267,7 @@ func main() {
 						close(channel_claude_unable)
 					}()
 
-					retry_icon := page_claude.Timeout(60 * time.Second).MustElement("svg path[d='M224,128a96,96,0,0,1-94.71,96H128A95.38,95.38,0,0,1,62.1,197.8a8,8,0,0,1,11-11.63A80,80,0,1,0,71.43,71.39a3.07,3.07,0,0,1-.26.25L44.59,96H72a8,8,0,0,1,0,16H24a8,8,0,0,1-8-8V56a8,8,0,0,1,16,0V85.8L60.25,60A96,96,0,0,1,224,128Z']").MustWaitVisible()
+					retry_icon := page_claude.Timeout(30 * time.Second).MustElement("svg path[d='M224,128a96,96,0,0,1-94.71,96H128A95.38,95.38,0,0,1,62.1,197.8a8,8,0,0,1,11-11.63A80,80,0,1,0,71.43,71.39a3.07,3.07,0,0,1-.26.25L44.59,96H72a8,8,0,0,1,0,16H24a8,8,0,0,1-8-8V56a8,8,0,0,1,16,0V85.8L60.25,60A96,96,0,0,1,224,128Z']").MustWaitVisible()
 					content := retry_icon.MustElementX("preceding::div[2]")
 					answer := content.MustText()
 					channel_claude <- answer
@@ -321,7 +321,7 @@ func main() {
 						}
 						time.Sleep(1 * time.Second)
 					}
-					page_hc.Timeout(60 * time.Second).MustElement("svg path[d='M24 6H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z']").MustWaitInvisible() // stop_icon
+					page_hc.Timeout(30 * time.Second).MustElement("svg path[d='M24 6H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z']").MustWaitInvisible() // stop_icon
 					page_hc.MustHasX("//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')]")
 					page_hc.MustElementX("//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')]").MustWaitVisible()
 					img := page_hc.MustElementX("(//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')])[last()]")
@@ -417,7 +417,7 @@ func main() {
 					        close(channel_chatgpt_verify)	
 					}()
                                         //regenerate_icon
-					page_chatgpt.Timeout(60 * time.Second).MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
+					page_chatgpt.Timeout(30 * time.Second).MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
 
 					//page_chatgpt.Race().Element("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustHandle(func(e *rod.Element) {
 					//a, _ := page_chatgpt.ElementX("(//div[contains(@class, 'group w-full')])[last()]")//.MustText()[7:]
