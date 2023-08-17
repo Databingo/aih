@@ -220,7 +220,7 @@ func main() {
 		for {
 			if page_claude.MustHasX("//h2[contains(text(), 'Welcome back')]") {
 				relogin_claude = false
-				//fmt.Println("1✘ Claude")
+				//fmt.Println("1✔ Claude")
 				break
 			}
 			if page_claude.MustHasX("//h2[contains(text(), 'Talk to Claude')]") {
@@ -323,7 +323,29 @@ func main() {
 						}
 						time.Sleep(1 * time.Second)
 					}
-					page_hc.Timeout(30 * time.Second).MustElement("svg path[d='M24 6H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z']").MustWaitInvisible() // stop_icon
+
+					//var hc_response bool
+					//for i := 1; i <= 30; i++ {  
+					//	if page_hc.MustHas("svg path[d='M24 6H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z']") {
+					//		hc_response = true
+					//		break
+					//	}
+					//	time.Sleep(time.Second)
+					//}
+					//if hc_response == true {
+					//	page_hc.MustHasX("//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')]")
+					//	page_hc.MustElementX("//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')]").MustWaitVisible()
+					//	img := page_hc.MustElementX("(//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')])[last()]")
+					//	content := img.MustElementX("following-sibling::div[1]")
+					//	answer := content.MustText()
+					//	channel_hc <- answer
+					//} else {
+					//	channel_hc <- "✘✘ HuggingChat, Please check the internet connection and verify login status."
+					//	relogin_hc = true
+					//}
+
+                                        // stop_icon
+					page_hc.Timeout(30 * time.Second).MustElement("svg path[d='M24 6H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z']").MustWaitInvisible() 
 					page_hc.MustHasX("//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')]")
 					page_hc.MustElementX("//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')]").MustWaitVisible()
 					img := page_hc.MustElementX("(//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')])[last()]")
