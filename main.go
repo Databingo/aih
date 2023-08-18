@@ -198,10 +198,8 @@ func main() {
 			}
 		}()
 		//page_bard := browser.MustPage("https://bard.google.com")
-		////
 		page_bard = stealth.MustPage(browser)
 		page_bard.MustNavigate("https://bard.google.com")
-		////
 
 		for i := 1; i <= 30; i++ {
 			if page_bard.MustHasX("//textarea[@id='mat-input-0']") {
@@ -387,6 +385,7 @@ func main() {
 		//page_chatgpt = browser.MustPage("https://chat.openai.com")
 		page_chatgpt = stealth.MustPage(browser)
 		page_chatgpt.MustNavigate("https://chat.openai.com")
+
 		channel_chatgpt_tips := make(chan string)
 		go func() {
 			for i := 1; i <= 30; i++ {
@@ -398,6 +397,7 @@ func main() {
 				time.Sleep(time.Second)
 			}
 		}()
+
 		for i := 1; i <= 30; i++ {
 			if page_chatgpt.MustHasX("//textarea[@id='prompt-textarea']") {
 				relogin_chatgpt = false
@@ -420,16 +420,7 @@ func main() {
 					if role == ".all" {
 						channel_chatgpt <- "click_chatgpt"
 					}
-					//channel_chatgpt_verify := make(chan string)
-					//go func() {
-					//defer func() {
-					//	if err := recover(); err != nil {
-					//		relogin_chatgpt = true
-					//		channel_chatgpt <- "✘✘  ChatGPT, Please check the internet connection and verify login status."
-					//		channel_chatgpt_verify <- ""
-					//		close(channel_chatgpt_verify)
-					//	}
-					//}()
+
 					var regenerate_icon = false
 					for i := 1; i <= 30; i++ {
 						if page_chatgpt.MustHas("svg path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']") {
