@@ -7,7 +7,8 @@ import (
 	"github.com/gdamore/tcell/v2"
 	"github.com/go-rod/rod"
 	//"github.com/go-rod/rod/lib/input"
-	"github.com/go-rod/rod/lib/launcher"
+	"github.com/go-rod/stealth"
+	//"github.com/go-rod/rod/lib/launcher"
 	"github.com/manifoldco/promptui"
 	"github.com/peterh/liner"
 	"github.com/rivo/tview"
@@ -124,13 +125,13 @@ func main() {
 	os.Setenv("http_proxy", Proxy)
 	os.Setenv("https_proxy", Proxy)
 
-	proxy_url := launcher.NewUserMode().
-		Proxy(Proxy).
-		//Leakless(true).// indepent tab | work with UserDataDir()
-		//UserDataDir("data").// indepent tab + data
-		//Set("disable-default-apps").
-		//Headless(true).
-		MustLaunch()
+	//proxy_url := launcher.NewUserMode().
+	//	Proxy(Proxy).
+	//	//Leakless(true).// indepent tab | work with UserDataDir()
+	//	//UserDataDir("data").// indepent tab + data
+	//	//Set("disable-default-apps").
+	//	//Headless(true).
+	//	MustLaunch()
 
 	role := ".bard"
 
@@ -138,8 +139,9 @@ func main() {
 	var browser *rod.Browser
 	browser = rod.New().
 		Trace(true).
-		ControlURL(proxy_url).
+		//ControlURL(proxy_url).
 		Timeout(60 * 24 * time.Minute).
+		//Headless(false).
 		MustConnect()
 
 	//////////////////////0////////////////////////////
@@ -161,7 +163,9 @@ func main() {
 				relogin_bard = true
 			}
 		}()
-		page_bard = browser.MustPage("https://google.com")
+		//page_bard = browser.MustPage("https://google.com")
+		page_bard = stealth.MustPage(browser)
+		page_bard.MustNavigate("https://google.com")
 		relogin_bard = false
 		//for {
 		//	if page_bard.MustHasX("//textarea[@id='APjFqb']") {
@@ -206,7 +210,9 @@ func main() {
 				relogin_claude = true
 			}
 		}()
-		page_claude = browser.MustPage("https://bing.com")
+		//page_claude = browser.MustPage("https://bing.com")
+		page_claude = stealth.MustPage(browser)
+		page_claude.MustNavigate("https://bing.com")
 		relogin_claude = false
 		//for {
 		//	if page_claude.MustHasX("//input[@id='sb_form_q']") {
@@ -251,7 +257,9 @@ func main() {
 				relogin_hc = true
 			}
 		}()
-		page_hc = browser.MustPage("https://baidu.com")
+		//page_hc = browser.MustPage("https://baidu.com")
+		page_hc = stealth.MustPage(browser)
+		page_hc.MustNavigate("https://baidu.com")
 		relogin_hc = false
 		//for {
 		//	if page_hc.MustHasX("//input[@id='kw']") {
@@ -295,7 +303,9 @@ func main() {
 				relogin_chatgpt = true
 			}
 		}()
-		page_chatgpt = browser.MustPage("https://zhihu.com/topic/19585187/top-answers")
+		//page_chatgpt = browser.MustPage("https://zhihu.com/topic/19585187/top-answers")
+		page_chatgpt = stealth.MustPage(browser)
+		page_chatgpt.MustNavigate("https://zhihu.com/topic/19585187/top-answers")
 		relogin_chatgpt = false
 		//channel_chatgpt_verify := make(chan string)
 		//go func() {
