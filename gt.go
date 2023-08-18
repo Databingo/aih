@@ -6,7 +6,7 @@ import (
 	"github.com/atotto/clipboard"
 	"github.com/gdamore/tcell/v2"
 	"github.com/go-rod/rod"
-	"github.com/go-rod/rod/lib/input"
+	//"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/manifoldco/promptui"
 	"github.com/peterh/liner"
@@ -162,13 +162,14 @@ func main() {
 			}
 		}()
 		page_bard = browser.MustPage("https://google.com")
-		for {
-			if page_bard.MustHasX("//textarea[@id='APjFqb']") {
-				relogin_bard = false
-				break
-			}
-			time.Sleep(time.Second)
-		}
+		relogin_bard = false
+		//for {
+		//	if page_bard.MustHasX("//textarea[@id='APjFqb']") {
+		//		relogin_bard = false
+		//		break
+		//	}
+		//	time.Sleep(time.Second)
+		//}
 		if relogin_bard == true {
 			fmt.Println("✘ Bard")
 		}
@@ -177,11 +178,12 @@ func main() {
 			for {
 				select {
 				case question := <-channel_bard:
-					page_bard.MustActivate()
-					page_bard.MustElementX("//textarea[@id='APjFqb']").MustWaitVisible().MustSelectAllText().MustInput(question).MustType(input.Enter)
+					//page_bard.MustActivate()
+					//page_bard.MustElementX("//textarea[@id='APjFqb']").MustWaitVisible().MustSelectAllText().MustInput(question).MustType(input.Enter)
+		                        page_bard.MustNavigate("https://google.com/search?q="+question)
 					if role == ".all" {
 						channel_bard <- "click_bard"
-					}
+					} else { page_bard.MustActivate() }
 					page_bard.MustElementX("//div[@id='hdtb-tls']").MustWaitVisible()
 					//response := img.MustElementX("parent::div/parent::div").MustWaitVisible()
 					//answer := response.MustText()
@@ -205,14 +207,15 @@ func main() {
 			}
 		}()
 		page_claude = browser.MustPage("https://bing.com")
-		for {
-			if page_claude.MustHasX("//input[@id='sb_form_q']") {
-				relogin_claude = false
-				//fmt.Println("1✔ Claude")
-				break
-			}
-			time.Sleep(time.Second)
-		}
+		relogin_claude = false
+		//for {
+		//	if page_claude.MustHasX("//input[@id='sb_form_q']") {
+		//		relogin_claude = false
+		//		//fmt.Println("1✔ Claude")
+		//		break
+		//	}
+		//	time.Sleep(time.Second)
+		//}
 
 		if relogin_claude == true {
 			fmt.Println("✘ Claude")
@@ -222,11 +225,13 @@ func main() {
 			for {
 				select {
 				case question := <-channel_claude:
-					page_bard.MustActivate()
-					page_claude.MustElementX("//input[@id='sb_form_q']").MustWaitVisible().MustSelectAllText().MustInput(question).MustType(input.Enter)
+					//page_claude.MustElementX("//input[@id='sb_form_q']").MustWaitVisible().MustSelectAllText().MustInput(question).MustType(input.Enter)
+		                        page_claude.MustNavigate("https://bing.com/search?q="+question)
 					if role == ".all" {
 						channel_claude <- "click_claude"
-					}
+					} else {
+					page_claude.MustActivate()
+				       }
 					page_claude.MustElement("svg path[d='M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z']").MustWaitVisible()
 					channel_claude <- "answer"
 				}
@@ -247,13 +252,14 @@ func main() {
 			}
 		}()
 		page_hc = browser.MustPage("https://baidu.com")
-		for {
-			if page_hc.MustHasX("//input[@id='kw']") {
-				relogin_hc = false
-				break
-			}
-			time.Sleep(time.Second)
-		}
+		relogin_hc = false
+		//for {
+		//	if page_hc.MustHasX("//input[@id='kw']") {
+		//		relogin_hc = false
+		//		break
+		//	}
+		//	time.Sleep(time.Second)
+		//}
 		if relogin_hc == true {
 			fmt.Println("✘ HuggingChat")
 		}
@@ -262,11 +268,13 @@ func main() {
 			for {
 				select {
 				case question := <-channel_hc:
-					page_hc.MustActivate()
-					page_hc.MustElementX("//input[@id='kw']").MustWaitVisible().MustSelectAllText().MustInput(question).MustType(input.Enter)
+					//page_hc.MustElementX("//input[@id='kw']").MustWaitVisible().MustSelectAllText().MustInput(question).MustType(input.Enter)
+		                        page_hc.MustNavigate("https://baidu.com/s?wd="+question)
 					if role == ".all" {
 						channel_hc <- "click_hc"
-					}
+					} else {
+					page_hc.MustActivate()
+				       }
 
 					page_hc.MustElementX("//a[contains(text(), '更多')]")
 					channel_hc <- "baidu"
@@ -287,18 +295,35 @@ func main() {
 				relogin_chatgpt = true
 			}
 		}()
-		page_chatgpt = browser.MustPage("https://chat.openai.com")
-		for {
-			if page_chatgpt.Timeout(10 * time.Second).MustHasX("//textarea[@id='prompt-textarea']") {
-				relogin_chatgpt = false
-				break
-			}
-			if page_chatgpt.Timeout(10 * time.Second).MustHasX("//div[contains(text(), 'Log in with your OpenAI account to continue')] | //p[contains(text(), 'Unable to load site')]") {
-				relogin_chatgpt = true
-				break
-			}
-			time.Sleep(time.Second)
-		}
+		page_chatgpt = browser.MustPage("https://zhihu.com/topic/19585187/top-answers")
+		relogin_chatgpt = false
+		//channel_chatgpt_verify := make(chan string)
+		//go func() {
+		//	for {
+		//		if page_chatgpt.MustHasX("//div[contains(text(), '其他方式登录')]") {
+		//	fmt.Println("Found Click ✘ ")
+		//			//page_chatgpt.MustElement("button svg path[d='M18.22 19.28a.75.75 0 1 0 1.06-1.06L13.06 12l6.22-6.22a.75.75 0 0 0-1.06-1.06L12 10.94 5.78 4.72a.75.75 0 0 0-1.06 1.06L10.94 12l-6.22 6.22a.75.75 0 1 0 1.06 1.06L12 13.06l6.22 6.22Z']").MustWaitVisible().MustClick()
+		//			page_chatgpt.MustElementX("button[@aria-label='关闭']").MustWaitVisible().MustClick()
+		//	fmt.Println("Click ✘ ")
+		//			break
+		//		}
+		//		time.Sleep(time.Second)
+		//	}
+		//	close(channel_chatgpt_verify)
+		//}()
+		//for {
+		//	//if page_chatgpt.MustHasX("//div[contains(text(), '其他方式登录')]") {
+		//	//   page_chatgpt.MustElement("svg path[d='M18.22 19.28a.75.75 0 1 0 1.06-1.06L13.06 12l6.22-6.22a.75.75 0 0 0-1.06-1.06L12 10.94 5.78 4.72a.75.75 0 0 0-1.06 1.06L10.94 12l-6.22 6.22a.75.75 0 1 0 1.06 1.06L12 13.06l6.22 6.22Z']").MustClick()
+		//	//	relogin_chatgpt = false
+
+		//	//	break
+		//	//}
+		//	if page_chatgpt.MustHasX("//input[@id='Popover1-toggle']") {
+		//		relogin_chatgpt = false
+		//		break
+		//	}
+		//	time.Sleep(time.Second)
+		//}
 
 		if relogin_chatgpt == true {
 			fmt.Println("✘ ChatGPT")
@@ -338,30 +363,14 @@ func main() {
 			for {
 				select {
 				case question := <-channel_chatgpt:
-					page_chatgpt.MustActivate()
-					page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustWaitVisible().MustInput(question)
-					page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']/..//button").MustClick()
+		                        page_chatgpt.MustNavigate("https://zhihu.com/search?type=content&q="+question)
 					if role == ".all" {
 						channel_chatgpt <- "click_chatgpt"
-					}
-					channel_chatgpt_verify := make(chan string)
-					go func() {
-						defer func() {
-							if err := recover(); err != nil {
-								relogin_chatgpt = true
-								channel_chatgpt <- "✘✘  ChatGPT, Please check the internet connection and verify login status."
-								channel_chatgpt_verify <- ""
-								close(channel_chatgpt_verify)
-							}
-						}()
-						//retry_icon
-						page_chatgpt.Timeout(10 * time.Second).MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
-						close(channel_chatgpt_verify)
-					}()
-					//regenerate_icon
-					page_chatgpt.Timeout(30 * time.Second).MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
-					answer := page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()[7:]
-					channel_chatgpt <- answer
+					} else {
+					page_chatgpt.MustActivate()
+				       }
+					page_chatgpt.MustElementX("//div[contains(text(), '筛选')]").MustWaitVisible()
+					channel_chatgpt <- "zhihu"
 				}
 			}
 		}
