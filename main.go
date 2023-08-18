@@ -161,23 +161,11 @@ func main() {
 			}
 		}()
 		page_bard = browser.MustPage("https://bard.google.com")
-		for {
-			if page_bard.Timeout(10 * time.Second).MustHasX("//textarea[@id='mat-input-0']") {
+		for  i := 1; i <= 30; i++ {
+			if page_bard.MustHasX("//textarea[@id='mat-input-0']") {
 				relogin_bard = false
 				break
 			}
-			if page_bard.Timeout(2 * time.Second).MustHasX("//span[contains(text(), 'Sign in')]") {
-				relogin_bard = true
-				break
-			}
-			if page_bard.Timeout(2 * time.Second).MustHasX("//strong[contains(text(), 'supported in your country')]") {
-				relogin_bard = true
-				break
-			}
-			//if page_bard.Timeout(1 * time.Second).MustHasX("//div[contains(text(), 'detected unusual traffic')]") {
-			//	relogin_bard = true
-			//	break
-			//}
 			time.Sleep(time.Second)
 		}
 		if relogin_bard == true {
@@ -217,20 +205,9 @@ func main() {
 			}
 		}()
 		page_claude = browser.MustPage("https://claude.ai")
-		for {
+		for i := 1; i <= 30; i++ {
 			if page_claude.MustHasX("//h2[contains(text(), 'Welcome back')]") {
 				relogin_claude = false
-				//fmt.Println("1✔ Claude")
-				break
-			}
-			if page_claude.MustHasX("//h2[contains(text(), 'Talk to Claude')]") {
-				relogin_claude = true
-				//fmt.Println("2✘ Claude")
-				break
-			}
-			if page_claude.MustHasX("//span[contains(text(), 'App unavailable')]") {
-				relogin_claude = true
-				//fmt.Println("3✘ Claude")
 				break
 			}
 			time.Sleep(time.Second)
@@ -291,13 +268,9 @@ func main() {
 			}
 		}()
 		page_hc = browser.MustPage("https://huggingface.co/chat")
-		for {
-			if page_hc.Timeout(10 * time.Second).MustHasX("//button[contains(text(), 'Sign Out')]") {
+		for i := 1; i <= 30; i++ {
+			if page_hc.MustHasX("//button[contains(text(), 'Sign Out')]") {
 				relogin_hc = false
-				break
-			}
-			if page_hc.Timeout(10 * time.Second).MustHasX("//button[contains(text(), 'Login')]") {
-				relogin_hc = true
 				break
 			}
 			time.Sleep(time.Second)
@@ -323,26 +296,6 @@ func main() {
 						}
 						time.Sleep(1 * time.Second)
 					}
-
-					//var hc_response bool
-					//for i := 1; i <= 30; i++ {  
-					//	if page_hc.MustHas("svg path[d='M24 6H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z']") {
-					//		hc_response = true
-					//		break
-					//	}
-					//	time.Sleep(time.Second)
-					//}
-					//if hc_response == true {
-					//	page_hc.MustHasX("//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')]")
-					//	page_hc.MustElementX("//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')]").MustWaitVisible()
-					//	img := page_hc.MustElementX("(//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')])[last()]")
-					//	content := img.MustElementX("following-sibling::div[1]")
-					//	answer := content.MustText()
-					//	channel_hc <- answer
-					//} else {
-					//	channel_hc <- "✘✘ HuggingChat, Please check the internet connection and verify login status."
-					//	relogin_hc = true
-					//}
 
                                         // stop_icon
 					page_hc.Timeout(30 * time.Second).MustElement("svg path[d='M24 6H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z']").MustWaitInvisible() 
@@ -370,13 +323,9 @@ func main() {
 			}
 		}()
 		page_chatgpt = browser.MustPage("https://chat.openai.com")
-		for {
-			if page_chatgpt.Timeout(10 * time.Second).MustHasX("//textarea[@id='prompt-textarea']") {
+		for i := 1; i <= 30; i++ {
+			if page_chatgpt.MustHasX("//textarea[@id='prompt-textarea']") {
 				relogin_chatgpt = false
-				break
-			}
-			if page_chatgpt.Timeout(10 * time.Second).MustHasX("//div[contains(text(), 'Log in with your OpenAI account to continue')] | //p[contains(text(), 'Unable to load site')]") {
-				relogin_chatgpt = true
 				break
 			}
 			time.Sleep(time.Second)
