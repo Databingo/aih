@@ -6,8 +6,8 @@ import (
 	"github.com/atotto/clipboard"
 	"github.com/gdamore/tcell/v2"
 	"github.com/go-rod/rod"
-	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/input"
+	"github.com/go-rod/rod/lib/launcher"
 	"github.com/manifoldco/promptui"
 	"github.com/peterh/liner"
 	"github.com/rivo/tview"
@@ -204,21 +204,11 @@ func main() {
 				relogin_claude = true
 			}
 		}()
-		page_claude = browser.MustPage("https://claude.ai")
+		page_claude = browser.MustPage("https://bing.com")
 		for {
-			if page_claude.MustHasX("//h2[contains(text(), 'Welcome back')]") {
+			if page_claude.MustHasX("//input[@id='sb_form_q']") {
 				relogin_claude = false
 				//fmt.Println("1✔ Claude")
-				break
-			}
-			if page_claude.MustHasX("//h2[contains(text(), 'Talk to Claude')]") {
-				relogin_claude = true
-				//fmt.Println("2✘ Claude")
-				break
-			}
-			if page_claude.MustHasX("//span[contains(text(), 'App unavailable')]") {
-				relogin_claude = true
-				//fmt.Println("3✘ Claude")
 				break
 			}
 			time.Sleep(time.Second)
@@ -232,35 +222,13 @@ func main() {
 			for {
 				select {
 				case question := <-channel_claude:
-					info := page_claude.MustInfo()
-					if strings.HasPrefix(info.URL, "https://claude.ai/chats") {
-						page_claude.MustActivate()
-						page_claude.MustElementX("//div[contains(text(), 'Start a new chat')]").MustWaitVisible().MustClick()
-						time.Sleep(3 * time.Second)
-					}
-					page_claude.MustElementX("//p[contains(@data-placeholder, 'Message Claude')]").MustWaitVisible().MustInput(question)
-					page_claude.MustElementX("//button[@aria-label='Send Message']").MustClick()
+					page_bard.MustActivate()
+					page_claude.MustElementX("//input[@id='sb_form_q']").MustWaitVisible().MustSelectAllText().MustInput(question).MustType(input.Enter)
 					if role == ".all" {
 						channel_claude <- "click_claude"
 					}
-
-					var claude_response bool
-					for i := 1; i <= 30; i++ {
-						if page_claude.MustHas("svg path[d='M224,128a96,96,0,0,1-94.71,96H128A95.38,95.38,0,0,1,62.1,197.8a8,8,0,0,1,11-11.63A80,80,0,1,0,71.43,71.39a3.07,3.07,0,0,1-.26.25L44.59,96H72a8,8,0,0,1,0,16H24a8,8,0,0,1-8-8V56a8,8,0,0,1,16,0V85.8L60.25,60A96,96,0,0,1,224,128Z']") {
-							claude_response = true
-							break
-						}
-						time.Sleep(time.Second)
-					}
-					if claude_response == true {
-						retry_icon := page_claude.MustElement("svg path[d='M224,128a96,96,0,0,1-94.71,96H128A95.38,95.38,0,0,1,62.1,197.8a8,8,0,0,1,11-11.63A80,80,0,1,0,71.43,71.39a3.07,3.07,0,0,1-.26.25L44.59,96H72a8,8,0,0,1,0,16H24a8,8,0,0,1-8-8V56a8,8,0,0,1,16,0V85.8L60.25,60A96,96,0,0,1,224,128Z']").MustWaitVisible()
-						content := retry_icon.MustElementX("preceding::div[2]")
-						answer := content.MustText()
-						channel_claude <- answer
-					} else {
-						channel_claude <- "✘✘  Claude, Please check the internet connection and verify login status."
-						relogin_claude = true
-					}
+					page_claude.MustElement("svg path[d='M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z']").MustWaitVisible()
+					channel_claude <- "answer"
 				}
 			}
 		}
@@ -278,14 +246,10 @@ func main() {
 				relogin_hc = true
 			}
 		}()
-		page_hc = browser.MustPage("https://huggingface.co/chat")
+		page_hc = browser.MustPage("https://baidu.com")
 		for {
-			if page_hc.Timeout(10 * time.Second).MustHasX("//button[contains(text(), 'Sign Out')]") {
+			if page_hc.MustHasX("//input[@id='kw']") {
 				relogin_hc = false
-				break
-			}
-			if page_hc.Timeout(10 * time.Second).MustHasX("//button[contains(text(), 'Login')]") {
-				relogin_hc = true
 				break
 			}
 			time.Sleep(time.Second)
@@ -299,47 +263,13 @@ func main() {
 				select {
 				case question := <-channel_hc:
 					page_hc.MustActivate()
-					page_hc.MustElementX("//textarea[@enterkeyhint='send']").MustInput(question)
-					page_hc.MustElement("button svg path[d='M27.71 4.29a1 1 0 0 0-1.05-.23l-22 8a1 1 0 0 0 0 1.87l8.59 3.43L19.59 11L21 12.41l-6.37 6.37l3.44 8.59A1 1 0 0 0 19 28a1 1 0 0 0 .92-.66l8-22a1 1 0 0 0-.21-1.05Z']").MustClick()
+					page_hc.MustElementX("//input[@id='kw']").MustWaitVisible().MustSelectAllText().MustInput(question).MustType(input.Enter)
 					if role == ".all" {
 						channel_hc <- "click_hc"
 					}
-					for {
-						info := page_hc.MustInfo()
-						if strings.HasPrefix(info.URL, "https://huggingface.co/chat/conversation") {
-							break
-						}
-						time.Sleep(1 * time.Second)
-					}
 
-					//var hc_response bool
-					//for i := 1; i <= 30; i++ {  
-					//	if page_hc.MustHas("svg path[d='M24 6H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z']") {
-					//		hc_response = true
-					//		break
-					//	}
-					//	time.Sleep(time.Second)
-					//}
-					//if hc_response == true {
-					//	page_hc.MustHasX("//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')]")
-					//	page_hc.MustElementX("//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')]").MustWaitVisible()
-					//	img := page_hc.MustElementX("(//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')])[last()]")
-					//	content := img.MustElementX("following-sibling::div[1]")
-					//	answer := content.MustText()
-					//	channel_hc <- answer
-					//} else {
-					//	channel_hc <- "✘✘ HuggingChat, Please check the internet connection and verify login status."
-					//	relogin_hc = true
-					//}
-
-                                        // stop_icon
-					page_hc.Timeout(30 * time.Second).MustElement("svg path[d='M24 6H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z']").MustWaitInvisible() 
-					page_hc.MustHasX("//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')]")
-					page_hc.MustElementX("//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')]").MustWaitVisible()
-					img := page_hc.MustElementX("(//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')])[last()]")
-					content := img.MustElementX("following-sibling::div[1]")
-					answer := content.MustText()
-					channel_hc <- answer
+					page_hc.MustElementX("//a[contains(text(), '更多')]")
+					channel_hc <- "baidu"
 				}
 			}
 		}
