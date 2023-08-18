@@ -1,6 +1,6 @@
 # Talk with Bard|ChatGPT|Claude2|Llama2 in terminal.
 
-<img src="allin1.png" alt="screenshot" style="width:80%;">
+<img src="aih.gif" alt="screenshot" style="width:80%;">
 
 ## Usage
 Download [binary file](https://github.com/Databingo/aih/releases) then type:
@@ -35,6 +35,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 - Answer will be auotmatically saved in system clipboard for pasting.
 - Conversations were persisted in `history.txt` beside Aih binary.
 - All-In-One mode will display answers from all the AI modes.
+<img src="allin1.png" alt="screenshot" style="width:80%;">
 
 ## Supported OS
 - Mac/Linux/Windows
