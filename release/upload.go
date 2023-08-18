@@ -31,10 +31,10 @@ func main() {
 
 	// Create a new release
 	release, _, err := client.Repositories.CreateRelease(ctx, owner, repo, &github.RepositoryRelease{
-		TagName:         github.String("v0.1.4.92"),
+		TagName:         github.String("v0.1.5"),
 		TargetCommitish: github.String("master"),
-		Name:            github.String("Release v0.1.4.92"),
-		Body:            github.String("Welcome to Aih! Change most(except bard) wait response logic from timeout to for loop for easy logic choosen."),
+		Name:            github.String("Release v0.1.5"),
+		Body:            github.String("Welcome to Aih! Change to daemon style without show Chrome pages."),
 		Draft:           github.Bool(false),
 		Prerelease:      github.Bool(false),
 	})

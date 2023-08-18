@@ -7,7 +7,6 @@ import (
 	"github.com/gdamore/tcell/v2"
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
-	"github.com/go-rod/stealth"
 	"github.com/manifoldco/promptui"
 	"github.com/peterh/liner"
 	"github.com/rivo/tview"
@@ -23,9 +22,6 @@ import (
 	"syscall"
 	"time"
 )
-
-//var trace = true
-var trace = false
 
 var color_bard = tcell.ColorDarkCyan
 var color_bing = tcell.ColorDarkMagenta
@@ -124,13 +120,10 @@ func main() {
 	Proxy := gjson.Get(string(aih_json), "proxy").String()
 
 	// Set proxy for system of current program
-	//os.Setenv("http_proxy", Proxy)
-	//os.Setenv("https_proxy", Proxy)
+	os.Setenv("http_proxy", Proxy)
+	os.Setenv("https_proxy", Proxy)
 
-	role := ".bard"
-
-	// Set proxy
-	proxy_u := launcher.NewUserMode().
+	proxy_url := launcher.NewUserMode().
 		Proxy(Proxy).
 		//Leakless(true).// indepent tab | work with UserDataDir()
 		//UserDataDir("data").// indepent tab + data
@@ -138,45 +131,15 @@ func main() {
 		//Headless(true).
 		MustLaunch()
 
+	role := ".bard"
+
 	// Open rod browser
 	var browser *rod.Browser
 	browser = rod.New().
-		Trace(trace).
-		ControlURL(proxy_u).
+		//Trace(true).
+		ControlURL(proxy_url).
 		Timeout(60 * 24 * time.Minute).
 		MustConnect()
-
-	// Set proxy for daemon browser_
-	proxy_url := launcher.New().
-		Proxy(Proxy).
-		MustLaunch()
-
-	// Open rod daemon browser
-	var browser_ *rod.Browser
-	if Proxy != "" {
-		browser_ = rod.New().
-			Trace(trace).
-			ControlURL(proxy_url).
-			Timeout(60 * 24 * time.Minute).
-			MustConnect()
-	} else {
-		browser_ = rod.New().
-			Trace(trace).
-			Timeout(60 * 24 * time.Minute).
-			MustConnect()
-
-	}
-
-	// Get cookies
-	cookies := browser.MustGetCookies()
-
-	// Share cookies
-	for _, i := range cookies {
-		browser_.MustSetCookies(i)
-	}
-
-	// Renew browser to daemon
-	browser = browser_
 
 	//////////////////////0////////////////////////////
 	// Set up client of OpenAI API
@@ -197,12 +160,7 @@ func main() {
 				relogin_bard = true
 			}
 		}()
-		//page_bard := browser.MustPage("https://bard.google.com")
-		////
-		page_bard = stealth.MustPage(browser)
-		page_bard.MustNavigate("https://bard.google.com")
-		////
-
+		page_bard = browser.MustPage("https://bard.google.com")
 		for i := 1; i <= 30; i++ {
 			if page_bard.MustHasX("//textarea[@id='mat-input-0']") {
 				relogin_bard = false
@@ -246,9 +204,7 @@ func main() {
 				relogin_claude = true
 			}
 		}()
-		//page_claude = browser.MustPage("https://claude.ai")
-		page_claude = stealth.MustPage(browser)
-		page_claude.MustNavigate("https://claude.ai")
+		page_claude = browser.MustPage("https://claude.ai")
 		for i := 1; i <= 30; i++ {
 			if page_claude.MustHasX("//h2[contains(text(), 'Welcome back')]") {
 				relogin_claude = false
@@ -311,9 +267,7 @@ func main() {
 				relogin_hc = true
 			}
 		}()
-		//page_hc = browser.MustPage("https://huggingface.co/chat")
-		page_hc = stealth.MustPage(browser)
-		page_hc.MustNavigate("https://huggingface.co/chat")
+		page_hc = browser.MustPage("https://huggingface.co/chat")
 		for i := 1; i <= 30; i++ {
 			if page_hc.MustHasX("//button[contains(text(), 'Sign Out')]") {
 				relogin_hc = false
@@ -384,20 +338,7 @@ func main() {
 				relogin_chatgpt = true
 			}
 		}()
-		//page_chatgpt = browser.MustPage("https://chat.openai.com")
-		page_chatgpt = stealth.MustPage(browser)
-		page_chatgpt.MustNavigate("https://chat.openai.com")
-		channel_chatgpt_tips := make(chan string)
-		go func() {
-			for i := 1; i <= 30; i++ {
-				if page_chatgpt.MustHasX("//div[contains(text(), 'Okay, let')]") {
-					page_chatgpt.MustElementX("//div[contains(text(), 'Okay, let')]").MustWaitVisible().MustClick()
-					close(channel_chatgpt_tips)
-					break
-				}
-				time.Sleep(time.Second)
-			}
-		}()
+		page_chatgpt = browser.MustPage("https://chat.openai.com")
 		for i := 1; i <= 30; i++ {
 			if page_chatgpt.MustHasX("//textarea[@id='prompt-textarea']") {
 				relogin_chatgpt = false
