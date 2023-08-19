@@ -223,7 +223,7 @@ func main() {
 						channel_bard <- "click_bard"
 					}
 					page_bard.MustElementX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_thinking_v2_e272afd4f8d4bbd25efe.gif')]").MustWaitVisible()
-					img := page_bard.Timeout(30 * time.Second).MustElementX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')]").MustWaitVisible()
+					img := page_bard.Timeout(30 * time.Second).MustElementX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')][last()]").MustWaitVisible()
 					response := img.MustElementX("parent::div/parent::div").MustWaitVisible()
 					answer := response.MustText()
 					channel_bard <- answer
