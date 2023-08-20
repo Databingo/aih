@@ -1,7 +1,7 @@
 package main
 
 import (
-	"context"
+//	"context"
 	"fmt"
 	"github.com/atotto/clipboard"
 	"github.com/gdamore/tcell/v2"
@@ -12,7 +12,8 @@ import (
 	"github.com/manifoldco/promptui"
 	"github.com/peterh/liner"
 	"github.com/rivo/tview"
-	openai "github.com/sashabaranov/go-openai"
+"jaytaylor.com/html2text"
+	//openai "github.com/sashabaranov/go-openai"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 	"io/ioutil"
@@ -144,13 +145,13 @@ func main() {
 		//Headless(false).
 		MustConnect()
 
-	//////////////////////0////////////////////////////
-	// Set up client of OpenAI API
-	key := gjson.Get(string(aih_json), "key")
-	OpenAI_Key := key.String()
-	config := openai.DefaultConfig(OpenAI_Key)
-	client := openai.NewClientWithConfig(config)
-	messages := make([]openai.ChatCompletionMessage, 0)
+//	//////////////////////0////////////////////////////
+//	// Set up client of OpenAI API
+//	key := gjson.Get(string(aih_json), "key")
+//	OpenAI_Key := key.String()
+//	config := openai.DefaultConfig(OpenAI_Key)
+//	client := openai.NewClientWithConfig(config)
+//	messages := make([]openai.ChatCompletionMessage, 0)
 
 	//////////////////////c1////////////////////////////
 	// Set up client of Bard (Rod version)
@@ -189,202 +190,219 @@ func main() {
 						channel_bard <- "click_bard"
 					} else { page_bard.MustActivate() }
 					page_bard.MustElementX("//div[@id='hdtb-tls']").MustWaitVisible()
+					search_dive := page_bard.MustElementX("//div[@id='search']").MustWaitVisible()
+					//response := search_dive.MustElementsX("//div[@class='kvH3mc BToiNc UK95Uc']")
+					//response := search_dive.MustElementsX("//div[@jscontroller='SC71Yd']")
 					//response := img.MustElementX("parent::div/parent::div").MustWaitVisible()
-					//answer := response.MustText()
-					//channel_bard <- answer
-					channel_bard <- "answer"
+					answerH, _ := search_dive.HTML()
+					answer, _ :=  html2text.FromString(answerH, html2text.Options{PrettyTables: true})
+
+					//answer := search_dive.MustText()
+				//	var answer = ""
+				//	for _, i := range response {
+                                //         //link := i.MustElementX("//div[@class='Z26q7c UK95Uc jGGQ5e']//a/@href")
+                                //         link := i.MustElementX("//a/@href")
+				//	 //describe := i.MustElementX("//div[@class='Z26q7c UK95Uc' and @data-sncf='1']").MustWaitVisible()
+				//	 //describe := i.MustElementX("//div[@data-sncf='1']").MustWaitVisible()
+				//	 describe := i.MustElementX("//div[@class='VwiC3b yXK7lf MUxGbd yDYNvb lyLwlc']").MustWaitVisible()
+				//	answer += link.MustText()
+				//	answer += describe.MustText()
+				//	answer += "\n\n"
+				//       }
+					channel_bard <- answer
+					//channel_bard <- "answer"
 				}
 			}
 		}
 
 	}()
 
-	//////////////////////c2////////////////////////////
-	// Set up client of Claude (Rod version)
-	var page_claude *rod.Page
-	var relogin_claude = true
-	channel_claude := make(chan string)
-	go func() {
-		defer func() {
-			if err := recover(); err != nil {
-				relogin_claude = true
-			}
-		}()
-		//page_claude = browser.MustPage("https://bing.com")
-		page_claude = stealth.MustPage(browser)
-		page_claude.MustNavigate("https://bing.com")
-		relogin_claude = false
-		//for {
-		//	if page_claude.MustHasX("//input[@id='sb_form_q']") {
-		//		relogin_claude = false
-		//		//fmt.Println("1✔ Claude")
-		//		break
-		//	}
-		//	time.Sleep(time.Second)
-		//}
-
-		if relogin_claude == true {
-			fmt.Println("✘ Claude")
-		}
-		if relogin_claude == false {
-			fmt.Println("✔ Claude")
-			for {
-				select {
-				case question := <-channel_claude:
-					//page_claude.MustElementX("//input[@id='sb_form_q']").MustWaitVisible().MustSelectAllText().MustInput(question).MustType(input.Enter)
-		                        page_claude.MustNavigate("https://bing.com/search?q="+question)
-					if role == ".all" {
-						channel_claude <- "click_claude"
-					} else {
-					page_claude.MustActivate()
-				       }
-					page_claude.MustElement("svg path[d='M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z']").MustWaitVisible()
-					channel_claude <- "answer"
-				}
-			}
-		}
-
-	}()
-
-	//////////////////////c3////////////////////////////
-	// Set up client of Huggingchat (Rod version)
-	var page_hc *rod.Page
-	var relogin_hc = true
-	channel_hc := make(chan string)
-	go func() {
-		defer func() {
-			if err := recover(); err != nil {
-				relogin_hc = true
-			}
-		}()
-		//page_hc = browser.MustPage("https://baidu.com")
-		page_hc = stealth.MustPage(browser)
-		page_hc.MustNavigate("https://baidu.com")
-		relogin_hc = false
-		//for {
-		//	if page_hc.MustHasX("//input[@id='kw']") {
-		//		relogin_hc = false
-		//		break
-		//	}
-		//	time.Sleep(time.Second)
-		//}
-		if relogin_hc == true {
-			fmt.Println("✘ HuggingChat")
-		}
-		if relogin_hc == false {
-			fmt.Println("✔ HuggingChat")
-			for {
-				select {
-				case question := <-channel_hc:
-					//page_hc.MustElementX("//input[@id='kw']").MustWaitVisible().MustSelectAllText().MustInput(question).MustType(input.Enter)
-		                        page_hc.MustNavigate("https://baidu.com/s?wd="+question)
-					if role == ".all" {
-						channel_hc <- "click_hc"
-					} else {
-					page_hc.MustActivate()
-				       }
-
-					page_hc.MustElementX("//a[contains(text(), '更多')]")
-					channel_hc <- "baidu"
-				}
-			}
-		}
-
-	}()
-
-	//////////////////////c4////////////////////////////
-	// Set up client of chatgpt (rod version)
-	var page_chatgpt *rod.Page
-	var relogin_chatgpt = true
-	channel_chatgpt := make(chan string)
-	go func() {
-		defer func() {
-			if err := recover(); err != nil {
-				relogin_chatgpt = true
-			}
-		}()
-		//page_chatgpt = browser.MustPage("https://zhihu.com/topic/19585187/top-answers")
-		page_chatgpt = stealth.MustPage(browser)
-		page_chatgpt.MustNavigate("https://zhihu.com/topic/19585187/top-answers")
-		relogin_chatgpt = false
-		//channel_chatgpt_verify := make(chan string)
-		//go func() {
-		//	for {
-		//		if page_chatgpt.MustHasX("//div[contains(text(), '其他方式登录')]") {
-		//	fmt.Println("Found Click ✘ ")
-		//			//page_chatgpt.MustElement("button svg path[d='M18.22 19.28a.75.75 0 1 0 1.06-1.06L13.06 12l6.22-6.22a.75.75 0 0 0-1.06-1.06L12 10.94 5.78 4.72a.75.75 0 0 0-1.06 1.06L10.94 12l-6.22 6.22a.75.75 0 1 0 1.06 1.06L12 13.06l6.22 6.22Z']").MustWaitVisible().MustClick()
-		//			page_chatgpt.MustElementX("button[@aria-label='关闭']").MustWaitVisible().MustClick()
-		//	fmt.Println("Click ✘ ")
-		//			break
-		//		}
-		//		time.Sleep(time.Second)
-		//	}
-		//	close(channel_chatgpt_verify)
-		//}()
-		//for {
-		//	//if page_chatgpt.MustHasX("//div[contains(text(), '其他方式登录')]") {
-		//	//   page_chatgpt.MustElement("svg path[d='M18.22 19.28a.75.75 0 1 0 1.06-1.06L13.06 12l6.22-6.22a.75.75 0 0 0-1.06-1.06L12 10.94 5.78 4.72a.75.75 0 0 0-1.06 1.06L10.94 12l-6.22 6.22a.75.75 0 1 0 1.06 1.06L12 13.06l6.22 6.22Z']").MustClick()
-		//	//	relogin_chatgpt = false
-
-		//	//	break
-		//	//}
-		//	if page_chatgpt.MustHasX("//input[@id='Popover1-toggle']") {
-		//		relogin_chatgpt = false
-		//		break
-		//	}
-		//	time.Sleep(time.Second)
-		//}
-
-		if relogin_chatgpt == true {
-			fmt.Println("✘ ChatGPT")
-			// Automatic login
-			//page_chatgpt.MustElementX("//div[contains(text(), 'Welcome to ChatGPT')] | //h2[contains(text(), 'Get started')]").MustWaitVisible()
-			//page_chatgpt.MustElementX("//div[not(contains(@class, 'mb-4')) and contains(text(), 'Log in')]").MustClick()
-			//utils.Sleep(1.5)
-			//page_chatgpt.MustElementX("//input[@id='username']").MustWaitVisible().MustInput(chatgpt_user)
-			//utils.Sleep(1.5)
-			//page_chatgpt.MustElementX("//button[contains(text(), 'Continue')]").MustClick()
-			//utils.Sleep(1.5)
-			//page_chatgpt.MustElementX("//input[@id='password']").MustWaitVisible().MustInput(chatgpt_password)
-			//utils.Sleep(1.5)
-			//page_chatgpt.MustElementX("//button[not(contains(@aria-hidden, 'true')) and contains(text(), 'Continue')]").MustClick()
-			////page_chatgpt.MustElementX("//h4[contains(text(), 'This is a free research preview.')]").MustWaitVisible()
-			////utils.Sleep(1.5)
-			////page_chatgpt.MustElementX("//button/div[contains(text(), 'Next')]").MustClick()
-			////page_chatgpt.MustElementX("//h4[contains(text(), 'How we collect data')]").MustWaitVisible()
-			////utils.Sleep(1.5)
-			////page_chatgpt.MustElementX("//button/div[contains(text(), 'Next')]").MustClick()
-			////page_chatgpt.MustElementX("//h4[contains(text(), 'love your feedback!')]").MustWaitVisible()
-			////utils.Sleep(1.5)
-			////page_chatgpt.MustElementX("//button/div[contains(text(), 'Done')]").MustClick()
-			////utils.Sleep(1.5)
-			//page_chatgpt.MustElementX("//a[contains(text(), 'New chat')]").MustWaitVisible().MustClick()
-			//page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustWaitVisible()
-			//utils.Sleep(1.5)
-			//page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustInput("hello")
-			//utils.Sleep(1.5)
-			//page_chatgpt.MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
-			//fmt.Println("Retry icon show")
-			//page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()
-			//fmt.Println("✔ ChatGPT Ready")
-		}
-		if relogin_chatgpt == false {
-			fmt.Println("✔ ChatGPT")
-			for {
-				select {
-				case question := <-channel_chatgpt:
-		                        page_chatgpt.MustNavigate("https://zhihu.com/search?type=content&q="+question)
-					if role == ".all" {
-						channel_chatgpt <- "click_chatgpt"
-					} else {
-					page_chatgpt.MustActivate()
-				       }
-					page_chatgpt.MustElementX("//div[contains(text(), '筛选')]").MustWaitVisible()
-					channel_chatgpt <- "zhihu"
-				}
-			}
-		}
-	}()
+//	//////////////////////c2////////////////////////////
+//	// Set up client of Claude (Rod version)
+//	var page_claude *rod.Page
+//	var relogin_claude = true
+//	channel_claude := make(chan string)
+//	go func() {
+//		defer func() {
+//			if err := recover(); err != nil {
+//				relogin_claude = true
+//			}
+//		}()
+//		//page_claude = browser.MustPage("https://bing.com")
+//		page_claude = stealth.MustPage(browser)
+//		page_claude.MustNavigate("https://bing.com")
+//		relogin_claude = false
+//		//for {
+//		//	if page_claude.MustHasX("//input[@id='sb_form_q']") {
+//		//		relogin_claude = false
+//		//		//fmt.Println("1✔ Claude")
+//		//		break
+//		//	}
+//		//	time.Sleep(time.Second)
+//		//}
+//
+//		if relogin_claude == true {
+//			fmt.Println("✘ Claude")
+//		}
+//		if relogin_claude == false {
+//			fmt.Println("✔ Claude")
+//			for {
+//				select {
+//				case question := <-channel_claude:
+//					//page_claude.MustElementX("//input[@id='sb_form_q']").MustWaitVisible().MustSelectAllText().MustInput(question).MustType(input.Enter)
+//		                        page_claude.MustNavigate("https://bing.com/search?q="+question)
+//					if role == ".all" {
+//						channel_claude <- "click_claude"
+//					} else {
+//					page_claude.MustActivate()
+//				       }
+//					page_claude.MustElement("svg path[d='M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z']").MustWaitVisible()
+//					channel_claude <- "answer"
+//				}
+//			}
+//		}
+//
+//	}()
+//
+//	//////////////////////c3////////////////////////////
+//	// Set up client of Huggingchat (Rod version)
+//	var page_hc *rod.Page
+//	var relogin_hc = true
+//	channel_hc := make(chan string)
+//	go func() {
+//		defer func() {
+//			if err := recover(); err != nil {
+//				relogin_hc = true
+//			}
+//		}()
+//		//page_hc = browser.MustPage("https://baidu.com")
+//		page_hc = stealth.MustPage(browser)
+//		page_hc.MustNavigate("https://baidu.com")
+//		relogin_hc = false
+//		//for {
+//		//	if page_hc.MustHasX("//input[@id='kw']") {
+//		//		relogin_hc = false
+//		//		break
+//		//	}
+//		//	time.Sleep(time.Second)
+//		//}
+//		if relogin_hc == true {
+//			fmt.Println("✘ HuggingChat")
+//		}
+//		if relogin_hc == false {
+//			fmt.Println("✔ HuggingChat")
+//			for {
+//				select {
+//				case question := <-channel_hc:
+//					//page_hc.MustElementX("//input[@id='kw']").MustWaitVisible().MustSelectAllText().MustInput(question).MustType(input.Enter)
+//		                        page_hc.MustNavigate("https://baidu.com/s?wd="+question)
+//					if role == ".all" {
+//						channel_hc <- "click_hc"
+//					} else {
+//					page_hc.MustActivate()
+//				       }
+//
+//					page_hc.MustElementX("//a[contains(text(), '更多')]")
+//					channel_hc <- "baidu"
+//				}
+//			}
+//		}
+//
+//	}()
+//
+//	//////////////////////c4////////////////////////////
+//	// Set up client of chatgpt (rod version)
+//	var page_chatgpt *rod.Page
+//	var relogin_chatgpt = true
+//	channel_chatgpt := make(chan string)
+//	go func() {
+//		defer func() {
+//			if err := recover(); err != nil {
+//				relogin_chatgpt = true
+//			}
+//		}()
+//		//page_chatgpt = browser.MustPage("https://zhihu.com/topic/19585187/top-answers")
+//		page_chatgpt = stealth.MustPage(browser)
+//		page_chatgpt.MustNavigate("https://zhihu.com/topic/19585187/top-answers")
+//		relogin_chatgpt = false
+//		//channel_chatgpt_verify := make(chan string)
+//		//go func() {
+//		//	for {
+//		//		if page_chatgpt.MustHasX("//div[contains(text(), '其他方式登录')]") {
+//		//	fmt.Println("Found Click ✘ ")
+//		//			//page_chatgpt.MustElement("button svg path[d='M18.22 19.28a.75.75 0 1 0 1.06-1.06L13.06 12l6.22-6.22a.75.75 0 0 0-1.06-1.06L12 10.94 5.78 4.72a.75.75 0 0 0-1.06 1.06L10.94 12l-6.22 6.22a.75.75 0 1 0 1.06 1.06L12 13.06l6.22 6.22Z']").MustWaitVisible().MustClick()
+//		//			page_chatgpt.MustElementX("button[@aria-label='关闭']").MustWaitVisible().MustClick()
+//		//	fmt.Println("Click ✘ ")
+//		//			break
+//		//		}
+//		//		time.Sleep(time.Second)
+//		//	}
+//		//	close(channel_chatgpt_verify)
+//		//}()
+//		//for {
+//		//	//if page_chatgpt.MustHasX("//div[contains(text(), '其他方式登录')]") {
+//		//	//   page_chatgpt.MustElement("svg path[d='M18.22 19.28a.75.75 0 1 0 1.06-1.06L13.06 12l6.22-6.22a.75.75 0 0 0-1.06-1.06L12 10.94 5.78 4.72a.75.75 0 0 0-1.06 1.06L10.94 12l-6.22 6.22a.75.75 0 1 0 1.06 1.06L12 13.06l6.22 6.22Z']").MustClick()
+//		//	//	relogin_chatgpt = false
+//
+//		//	//	break
+//		//	//}
+//		//	if page_chatgpt.MustHasX("//input[@id='Popover1-toggle']") {
+//		//		relogin_chatgpt = false
+//		//		break
+//		//	}
+//		//	time.Sleep(time.Second)
+//		//}
+//
+//		if relogin_chatgpt == true {
+//			fmt.Println("✘ ChatGPT")
+//			// Automatic login
+//			//page_chatgpt.MustElementX("//div[contains(text(), 'Welcome to ChatGPT')] | //h2[contains(text(), 'Get started')]").MustWaitVisible()
+//			//page_chatgpt.MustElementX("//div[not(contains(@class, 'mb-4')) and contains(text(), 'Log in')]").MustClick()
+//			//utils.Sleep(1.5)
+//			//page_chatgpt.MustElementX("//input[@id='username']").MustWaitVisible().MustInput(chatgpt_user)
+//			//utils.Sleep(1.5)
+//			//page_chatgpt.MustElementX("//button[contains(text(), 'Continue')]").MustClick()
+//			//utils.Sleep(1.5)
+//			//page_chatgpt.MustElementX("//input[@id='password']").MustWaitVisible().MustInput(chatgpt_password)
+//			//utils.Sleep(1.5)
+//			//page_chatgpt.MustElementX("//button[not(contains(@aria-hidden, 'true')) and contains(text(), 'Continue')]").MustClick()
+//			////page_chatgpt.MustElementX("//h4[contains(text(), 'This is a free research preview.')]").MustWaitVisible()
+//			////utils.Sleep(1.5)
+//			////page_chatgpt.MustElementX("//button/div[contains(text(), 'Next')]").MustClick()
+//			////page_chatgpt.MustElementX("//h4[contains(text(), 'How we collect data')]").MustWaitVisible()
+//			////utils.Sleep(1.5)
+//			////page_chatgpt.MustElementX("//button/div[contains(text(), 'Next')]").MustClick()
+//			////page_chatgpt.MustElementX("//h4[contains(text(), 'love your feedback!')]").MustWaitVisible()
+//			////utils.Sleep(1.5)
+//			////page_chatgpt.MustElementX("//button/div[contains(text(), 'Done')]").MustClick()
+//			////utils.Sleep(1.5)
+//			//page_chatgpt.MustElementX("//a[contains(text(), 'New chat')]").MustWaitVisible().MustClick()
+//			//page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustWaitVisible()
+//			//utils.Sleep(1.5)
+//			//page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustInput("hello")
+//			//utils.Sleep(1.5)
+//			//page_chatgpt.MustElement("svg:last-of-type path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']").MustWaitVisible()
+//			//fmt.Println("Retry icon show")
+//			//page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()
+//			//fmt.Println("✔ ChatGPT Ready")
+//		}
+//		if relogin_chatgpt == false {
+//			fmt.Println("✔ ChatGPT")
+//			for {
+//				select {
+//				case question := <-channel_chatgpt:
+//		                        page_chatgpt.MustNavigate("https://zhihu.com/search?type=content&q="+question)
+//					if role == ".all" {
+//						channel_chatgpt <- "click_chatgpt"
+//					} else {
+//					page_chatgpt.MustActivate()
+//				       }
+//					page_chatgpt.MustElementX("//div[contains(text(), '筛选')]").MustWaitVisible()
+//					channel_chatgpt <- "zhihu"
+//				}
+//			}
+//		}
+//	}()
 
 	// Clean screen
 	clear()
@@ -402,8 +420,8 @@ func main() {
 	left_tokens := 0
 	speak := 0
 	uInput := ""
-	chat_mode := openai.GPT3Dot5Turbo
-	chat_completion := true
+	//chat_mode := openai.GPT3Dot5Turbo
+	//chat_completion := true
 
 	// Start loop to read user input
 	for {
@@ -438,19 +456,19 @@ func main() {
 			if relogin_bard == false {
 				page_bard.MustClose()
 			}
-			if relogin_chatgpt == false {
-				page_chatgpt.MustClose()
-			}
-			if relogin_claude == false {
-				page_claude.MustClose()
-			}
-			if relogin_hc == false {
-				page_hc.MustClose()
-			}
+			//if relogin_chatgpt == false {
+			//	page_chatgpt.MustClose()
+			//}
+			//if relogin_claude == false {
+			//	page_claude.MustClose()
+			//}
+			//if relogin_hc == false {
+			//	page_hc.MustClose()
+			//}
 			close(channel_bard)
-			close(channel_chatgpt)
-			close(channel_claude)
-			close(channel_hc)
+			//close(channel_chatgpt)
+			//close(channel_claude)
+			//close(channel_hc)
 			Liner.Close()
 			syscall.Exit(0)
 			//os.Exit(0)
@@ -493,19 +511,19 @@ func main() {
 			if relogin_bard == false {
 				page_bard.MustClose()
 			}
-			if relogin_chatgpt == false {
-				page_chatgpt.MustClose()
-			}
-			if relogin_claude == false {
-				page_claude.MustClose()
-			}
-			if relogin_hc == false {
-				page_hc.MustClose()
-			}
+			//if relogin_chatgpt == false {
+			//	page_chatgpt.MustClose()
+			//}
+			//if relogin_claude == false {
+			//	page_claude.MustClose()
+			//}
+			//if relogin_hc == false {
+			//	page_hc.MustClose()
+			//}
 			close(channel_bard)
-			close(channel_chatgpt)
-			close(channel_claude)
-			close(channel_hc)
+			//close(channel_chatgpt)
+			//close(channel_claude)
+			//close(channel_hc)
 			Liner.Close()
 			syscall.Exit(0)
 			//os.Exit(0)
@@ -514,7 +532,7 @@ func main() {
 			//conversation_id = ""
 			//parent_id = ""
 			// For role .chatapi
-			messages = make([]openai.ChatCompletionMessage, 0)
+			//messages = make([]openai.ChatCompletionMessage, 0)
 			//max_tokens = 4097
 			used_tokens = 0
 			left_tokens = max_tokens - used_tokens
@@ -570,43 +588,43 @@ func main() {
 				continue
 			case "ChatGPT API gpt-3.5-turbo, $0.002/1K tokens":
 				role = ".chatapi"
-				chat_mode = openai.GPT3Dot5Turbo
+				//chat_mode = openai.GPT3Dot5Turbo
 				max_tokens = 4097
 				used_tokens = 0
 				left_tokens = max_tokens - used_tokens
-				chat_completion = true
+				//chat_completion = true
 				continue
 			case "ChatGPT API gpt-4 8K Prompt, $0.03/1K tokens":
 				role = ".chatapi"
-				chat_mode = openai.GPT4
+				//chat_mode = openai.GPT4
 				max_tokens = 8192
 				used_tokens = 0
 				left_tokens = max_tokens - used_tokens
-				chat_completion = false
+				//chat_completion = false
 				continue
 			case "ChatGPT API gpt-4 8K Completion, $0.06/1K tokens":
 				role = ".chatapi"
-				chat_mode = openai.GPT4
+				//chat_mode = openai.GPT4
 				max_tokens = 8192
 				used_tokens = 0
 				left_tokens = max_tokens - used_tokens
-				chat_completion = true
+				//chat_completion = true
 				continue
 			case "ChatGPT API gpt-4 32K Prompt, $0.06/1K tokens":
 				role = ".chatapi"
-				chat_mode = openai.GPT432K
+				//chat_mode = openai.GPT432K
 				max_tokens = 32768
 				used_tokens = 0
 				left_tokens = max_tokens - used_tokens
-				chat_completion = false
+				//chat_completion = false
 				continue
 			case "ChatGPT API gpt-4 32K Completion, $0.12/1K tokens":
 				role = ".chatapi"
-				chat_mode = openai.GPT432K
+				//chat_mode = openai.GPT432K
 				max_tokens = 32768
 				used_tokens = 0
 				left_tokens = max_tokens - used_tokens
-				chat_completion = true
+				//chat_completion = true
 				continue
 			case "Exit":
 				continue
@@ -644,9 +662,9 @@ func main() {
 			//	role = ".huggingchat"
 			//	goto HUGGINGCHAT
 			case "Set ChatGPT API Key":
-				OpenAI_Key = ""
+				//OpenAI_Key = ""
 				role = ".chatapi"
-				goto CHATAPI
+				//goto CHATAPI
 			case "Exit":
 				continue
 			}
@@ -681,39 +699,39 @@ func main() {
 				channel_bard <- userInput
 				<-channel_bard
 			}
-			if relogin_chatgpt == false {
-				channel_chatgpt <- userInput
-				<-channel_chatgpt
-			}
-			if relogin_claude == false {
-				channel_claude <- userInput
-				<-channel_claude
-			}
-			if relogin_hc == false {
-				channel_hc <- userInput
-				<-channel_hc
-			}
+			//if relogin_chatgpt == false {
+			//	channel_chatgpt <- userInput
+			//	<-channel_chatgpt
+			//}
+			//if relogin_claude == false {
+			//	channel_claude <- userInput
+			//	<-channel_claude
+			//}
+			//if relogin_hc == false {
+			//	channel_hc <- userInput
+			//	<-channel_hc
+			//}
 
 			if relogin_bard == false {
 				answer_bard := <-channel_bard
 				RESP += "\n\n---------------- bard answer ----------------\n"
 				RESP += strings.TrimSpace(answer_bard)
 			}
-			if relogin_chatgpt == false {
-				answer_chatgpt := <-channel_chatgpt
-				RESP += "\n\n---------------- chatgpt answer ----------------\n"
-				RESP += strings.TrimSpace(answer_chatgpt)
-			}
-			if relogin_claude == false {
-				answer_claude := <-channel_claude
-				RESP += "\n\n---------------- claude answer ----------------\n"
-				RESP += strings.TrimSpace(answer_claude)
-			}
-			if relogin_hc == false {
-				answer_hc := <-channel_hc
-				RESP += "\n\n---------------- huggingchat answer ----------------\n"
-				RESP += strings.TrimSpace(answer_hc)
-			}
+			//if relogin_chatgpt == false {
+			//	answer_chatgpt := <-channel_chatgpt
+			//	RESP += "\n\n---------------- chatgpt answer ----------------\n"
+			//	RESP += strings.TrimSpace(answer_chatgpt)
+			//}
+			//if relogin_claude == false {
+			//	answer_claude := <-channel_claude
+			//	RESP += "\n\n---------------- claude answer ----------------\n"
+			//	RESP += strings.TrimSpace(answer_claude)
+			//}
+			//if relogin_hc == false {
+			//	answer_hc := <-channel_hc
+			//	RESP += "\n\n---------------- huggingchat answer ----------------\n"
+			//	RESP += strings.TrimSpace(answer_hc)
+			//}
 			printer(color_chat, RESP, false)
 
 		}
@@ -732,104 +750,104 @@ func main() {
 		}
 
 		//	CLAUDE:
-		// Check role for correct actions
-		if role == ".claude" {
-			if relogin_claude == true {
-				fmt.Println("✘ Claude")
-			} else {
-				channel_claude <- userInput
-				answer := <-channel_claude
-
-				RESP = strings.TrimSpace(answer)
-				printer(color_claude, RESP, false)
-			}
-
-		}
-		//	CHAT:
-		if role == ".chat" {
-			if relogin_chatgpt == true {
-				fmt.Println("✘ ChatGPT")
-			} else {
-				channel_chatgpt <- userInput
-				answer := <-channel_chatgpt
-
-				// Print the response to the terminal
-				RESP = strings.TrimSpace(answer)
-				printer(color_chatapi, RESP, false)
-			}
-
-		}
-
-		//	HUGGINGCHAT:
-		if role == ".huggingchat" {
-			if relogin_hc == true {
-				fmt.Println("✘ HuggingChat")
-			} else {
-				channel_hc <- userInput
-				answer := <-channel_hc
-
-				// Print the response to the terminal
-				RESP = strings.TrimSpace(answer)
-				printer(color_huggingchat, RESP, false)
-			}
-
-		}
-	CHATAPI:
-		if role == ".chatapi" {
-			// Check ChatGPT API Key
-			if OpenAI_Key == "" {
-				OpenAI_Key, _ = Liner.Prompt("Please input your OpenAI Key: ")
-				if OpenAI_Key == "" {
-					continue
-				}
-				aihj, err := ioutil.ReadFile("aih.json")
-				new_aihj, _ := sjson.Set(string(aihj), "key", OpenAI_Key)
-				err = ioutil.WriteFile("aih.json", []byte(new_aihj), 0644)
-				if err != nil {
-					fmt.Println("Save failed.")
-				}
-				// Renew ChatGPT client with key
-				config = openai.DefaultConfig(OpenAI_Key)
-				client = openai.NewClientWithConfig(config)
-				messages = make([]openai.ChatCompletionMessage, 0)
-				left_tokens = 0
-				continue
-			}
-			// Porcess input
-			messages = append(messages, openai.ChatCompletionMessage{
-				Role:    openai.ChatMessageRoleUser,
-				Content: userInput,
-			})
-
-			// Generate a response from ChatGPT
-			resp, err := client.CreateChatCompletion(
-				context.Background(),
-				openai.ChatCompletionRequest{
-					Model:    chat_mode,
-					Messages: messages,
-				},
-			)
-
-			if err != nil {
-				fmt.Println(">>>", err)
-				continue
-			}
-
-			// Record in coversation context
-			if chat_completion {
-				messages = append(messages, openai.ChatCompletionMessage{
-					Role:    openai.ChatMessageRoleUser,
-					Content: RESP,
-				})
-			}
-
-			// Print the response to the terminal
-			RESP = strings.TrimSpace(resp.Choices[0].Message.Content)
-			used_tokens = resp.Usage.TotalTokens
-			left_tokens = max_tokens - used_tokens
-			printer(color_chatapi, RESP, false)
-
-		}
+//		// Check role for correct actions
+//		if role == ".claude" {
+//			if relogin_claude == true {
+//				fmt.Println("✘ Claude")
+//			} else {
+//				channel_claude <- userInput
+//				answer := <-channel_claude
+//
+//				RESP = strings.TrimSpace(answer)
+//				printer(color_claude, RESP, false)
+//			}
+//
+//		}
+//		//	CHAT:
+//		if role == ".chat" {
+//			if relogin_chatgpt == true {
+//				fmt.Println("✘ ChatGPT")
+//			} else {
+//				channel_chatgpt <- userInput
+//				answer := <-channel_chatgpt
+//
+//				// Print the response to the terminal
+//				RESP = strings.TrimSpace(answer)
+//				printer(color_chatapi, RESP, false)
+//			}
+//
+//		}
+//
+//		//	HUGGINGCHAT:
+//		if role == ".huggingchat" {
+//			if relogin_hc == true {
+//				fmt.Println("✘ HuggingChat")
+//			} else {
+//				channel_hc <- userInput
+//				answer := <-channel_hc
+//
+//				// Print the response to the terminal
+//				RESP = strings.TrimSpace(answer)
+//				printer(color_huggingchat, RESP, false)
+//			}
+//
+//		}
+//	CHATAPI:
+//		if role == ".chatapi" {
+//			// Check ChatGPT API Key
+//			if OpenAI_Key == "" {
+//				OpenAI_Key, _ = Liner.Prompt("Please input your OpenAI Key: ")
+//				if OpenAI_Key == "" {
+//					continue
+//				}
+//				aihj, err := ioutil.ReadFile("aih.json")
+//				new_aihj, _ := sjson.Set(string(aihj), "key", OpenAI_Key)
+//				err = ioutil.WriteFile("aih.json", []byte(new_aihj), 0644)
+//				if err != nil {
+//					fmt.Println("Save failed.")
+//				}
+//				// Renew ChatGPT client with key
+//				config = openai.DefaultConfig(OpenAI_Key)
+//				client = openai.NewClientWithConfig(config)
+//				messages = make([]openai.ChatCompletionMessage, 0)
+//				left_tokens = 0
+//				continue
+//			}
+//			// Porcess input
+//			messages = append(messages, openai.ChatCompletionMessage{
+//				Role:    openai.ChatMessageRoleUser,
+//				Content: userInput,
+//			})
+//
+//			// Generate a response from ChatGPT
+//			resp, err := client.CreateChatCompletion(
+//				context.Background(),
+//				openai.ChatCompletionRequest{
+//					Model:    chat_mode,
+//					Messages: messages,
+//				},
+//			)
+//
+//			if err != nil {
+//				fmt.Println(">>>", err)
+//				continue
+//			}
+//
+//			// Record in coversation context
+//			if chat_completion {
+//				messages = append(messages, openai.ChatCompletionMessage{
+//					Role:    openai.ChatMessageRoleUser,
+//					Content: RESP,
+//				})
+//			}
+//
+//			// Print the response to the terminal
+//			RESP = strings.TrimSpace(resp.Choices[0].Message.Content)
+//			used_tokens = resp.Usage.TotalTokens
+//			left_tokens = max_tokens - used_tokens
+//			printer(color_chatapi, RESP, false)
+//
+//		}
 
 		// -------------for all AI's RESP---------------
 

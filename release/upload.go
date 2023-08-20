@@ -31,10 +31,10 @@ func main() {
 
 	// Create a new release
 	release, _, err := client.Repositories.CreateRelease(ctx, owner, repo, &github.RepositoryRelease{
-		TagName:         github.String("v0.1.5"),
+		TagName:         github.String("v0.1.5.1"),
 		TargetCommitish: github.String("master"),
-		Name:            github.String("Release v0.1.5"),
-		Body:            github.String("Welcome to Aih! Change to daemon style without show Chrome pages."),
+		Name:            github.String("Release v0.1.51"),
+		Body:            github.String("Welcome to Aih! Fix bard parse logic of miss catching reverse second response div's content."),
 		Draft:           github.Bool(false),
 		Prerelease:      github.Bool(false),
 	})
