@@ -50,3 +50,6 @@ $ cd aih && go mod tidy && go build
 ## Acknowledgements
 - github.com/go-rod/rod
 - github.com/sashabaranov/go-openai 
+
+## License
+MIT and "You can choose not to include this MIT license into your copies".
