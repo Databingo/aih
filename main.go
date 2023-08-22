@@ -7,6 +7,7 @@ import (
 	"github.com/gdamore/tcell/v2"
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/go-rod/stealth"
 	"github.com/manifoldco/promptui"
 	"github.com/peterh/liner"
@@ -24,7 +25,7 @@ import (
 	"time"
 )
 
-//var trace = true
+// var trace = true
 var trace = false
 
 var color_bard = tcell.ColorDarkCyan
@@ -146,6 +147,9 @@ func main() {
 		Timeout(60 * 24 * time.Minute).
 		MustConnect()
 
+	// Get cookies
+	cookies := browser.MustGetCookies()
+
 	// Set proxy for daemon browser_
 	proxy_url := launcher.New().
 		Proxy(Proxy).
@@ -166,9 +170,6 @@ func main() {
 			MustConnect()
 
 	}
-
-	// Get cookies
-	cookies := browser.MustGetCookies()
 
 	// Share cookies
 	for _, i := range cookies {
@@ -442,6 +443,76 @@ func main() {
 		}
 	}()
 
+	// reconnecte browser
+	go func(browser *rod.Browser, g, c, cl, hc *rod.Page, Proxy, proxy_url string) {
+	//go func() {
+		//defer func() {
+		//	if err := recover(); err != nil {
+		//		fmt.Println("wake up")
+		//		if Proxy != "" {
+		//			browser = rod.New().
+		//				Trace(trace).
+		//				ControlURL(proxy_url).
+		//				Timeout(60 * 24 * time.Minute).
+		//				MustConnect()
+		//		} else {
+		//			browser = rod.New().
+		//				Trace(trace).
+		//				Timeout(60 * 24 * time.Minute).
+		//				MustConnect()
+
+		//		}
+		//		pages := browser.MustPages()
+		//		for _, p := range pages {
+		//			url := p.MustInfo().URL
+		//			fmt.Println(url)
+
+		//		}
+		//	}
+		//}()
+		fmt.Println("wake monitor...")
+		for {
+			utils.Sleep(3)
+		        fmt.Println("monitor...")
+			if _, err := browser.Version(); err != nil {
+				fmt.Println("wake up")
+				if Proxy != "" {
+					browser = rod.New().
+						Trace(trace).
+						ControlURL(proxy_url).
+						Timeout(60 * 24 * time.Minute).
+						MustConnect()
+				} else {
+					browser = rod.New().
+						Trace(trace).
+						Timeout(60 * 24 * time.Minute).
+						MustConnect()
+
+				}
+				pages := browser.MustPages()
+				for _, p := range pages {
+					url := p.MustInfo().URL
+					if strings.HasPrefix(url, "https://google") {
+					fmt.Println(url)
+					g = p}
+					if strings.HasPrefix(url, "https://chat.openai") {
+					fmt.Println(url)
+					c = p}
+					if strings.HasPrefix(url, "https://claude") {
+					fmt.Println(url)
+					cl = p}
+					if strings.HasPrefix(url, "https://huggingface") {
+					fmt.Println(url)
+					hc = p}
+
+				}
+
+
+			}
+
+		}
+	}(browser, page_bard, page_chatgpt, page_claude, page_hc, Proxy, proxy_url)
+	//}()
 	// Clean screen
 	clear()
 
