@@ -132,7 +132,7 @@ func main() {
 
 	// Set proxy
 	proxy_u := launcher.NewUserMode().
-		Proxy(Proxy).
+		//Proxy(Proxy).
 		//Leakless(true).// indepent tab | work with UserDataDir()
 		//UserDataDir("data").// indepent tab + data
 		//Set("disable-default-apps").
@@ -147,7 +147,7 @@ func main() {
 		Timeout(60 * 24 * time.Minute).
 		MustConnect()
 
-	// Get cookies
+	// Get cookies (for login AI accounts)
 	cookies := browser.MustGetCookies()
 
 	// Set proxy for daemon browser_
@@ -217,6 +217,7 @@ func main() {
 			for {
 				select {
 				case question := <-channel_bard:
+					//fmt.Println("channel_bard received as question:", question)
 					page_bard.MustActivate()
 					page_bard.MustElementX("//textarea[@id='mat-input-0']").MustWaitVisible().MustInput(question)
 					page_bard.MustElementX("//button[@mattooltip='Submit']").MustClick()
@@ -443,77 +444,27 @@ func main() {
 		}
 	}()
 
-	// reconnecte browser
-	go func(browser *rod.Browser, g, c, cl, hc *rod.Page, Proxy, proxy_url string) {
-	//go func() {
-		//defer func() {
-		//	if err := recover(); err != nil {
-		//		fmt.Println("wake up")
-		//		if Proxy != "" {
-		//			browser = rod.New().
-		//				Trace(trace).
-		//				ControlURL(proxy_url).
-		//				Timeout(60 * 24 * time.Minute).
-		//				MustConnect()
-		//		} else {
-		//			browser = rod.New().
-		//				Trace(trace).
-		//				Timeout(60 * 24 * time.Minute).
-		//				MustConnect()
-
-		//		}
-		//		pages := browser.MustPages()
-		//		for _, p := range pages {
-		//			url := p.MustInfo().URL
-		//			fmt.Println(url)
-
-		//		}
-		//	}
-		//}()
-		fmt.Println("wake monitor...")
+	// Exit when wake up for the disconnecting with daemon browser
+	go func() {
+		//fmt.Println("wake monitor...")
 		for {
 			utils.Sleep(3)
-		        fmt.Println("monitor...")
 			if _, err := browser.Version(); err != nil {
-				fmt.Println("wake up")
-				if Proxy != "" {
-					browser = rod.New().
-						Trace(trace).
-						ControlURL(proxy_url).
-						Timeout(60 * 24 * time.Minute).
-						MustConnect()
-				} else {
-					browser = rod.New().
-						Trace(trace).
-						Timeout(60 * 24 * time.Minute).
-						MustConnect()
-
-				}
-				pages := browser.MustPages()
-				for _, p := range pages {
-					url := p.MustInfo().URL
-					if strings.HasPrefix(url, "https://google") {
-					fmt.Println(url)
-					g = p}
-					if strings.HasPrefix(url, "https://chat.openai") {
-					fmt.Println(url)
-					c = p}
-					if strings.HasPrefix(url, "https://claude") {
-					fmt.Println(url)
-					cl = p}
-					if strings.HasPrefix(url, "https://huggingface") {
-					fmt.Println(url)
-					hc = p}
-
-				}
-
-
+				browser = rod.New().MustConnect()
+				browser.MustClose()
+				fmt.Println("Please restart Aih because the daemon process has been disconnected.")
+				close(channel_bard)
+				close(channel_chatgpt)
+				close(channel_claude)
+				close(channel_hc)
+				Liner.Close()
+				syscall.Exit(0)
 			}
 
 		}
-	}(browser, page_bard, page_chatgpt, page_claude, page_hc, Proxy, proxy_url)
-	//}()
-	// Clean screen
+
+	}()
+
 	clear()
 
 	// Welcome to Aih
@@ -560,20 +511,8 @@ func main() {
 				fmt.Println("Save failed.")
 			}
 			fmt.Println("Please restart Aih for using proxy")
-			Liner.Close()
-			/// exit_safe()
-			if relogin_bard == false {
-				page_bard.MustClose()
-			}
-			if relogin_chatgpt == false {
-				page_chatgpt.MustClose()
-			}
-			if relogin_claude == false {
-				page_claude.MustClose()
-			}
-			if relogin_hc == false {
-				page_hc.MustClose()
-			}
+			/// exit
+			browser.MustClose()
 			close(channel_bard)
 			close(channel_chatgpt)
 			close(channel_claude)
@@ -616,26 +555,14 @@ func main() {
 			printer(color_chat, string(cnt), true)
 			continue
 		case ".exit":
-			//	exit_safe()
-			if relogin_bard == false {
-				page_bard.MustClose()
-			}
-			if relogin_chatgpt == false {
-				page_chatgpt.MustClose()
-			}
-			if relogin_claude == false {
-				page_claude.MustClose()
-			}
-			if relogin_hc == false {
-				page_hc.MustClose()
-			}
+			//exit
+			browser.MustClose()
 			close(channel_bard)
 			close(channel_chatgpt)
 			close(channel_claude)
 			close(channel_hc)
 			Liner.Close()
 			syscall.Exit(0)
-			//os.Exit(0)
 		case ".new":
 			// For role .chat
 			//conversation_id = ""
@@ -743,10 +670,6 @@ func main() {
 				Label: "Select:",
 				Size:  6,
 				Items: []string{
-					//"Set Bard Cookie",
-					//"Set ChatGPT Cookie",
-					//"Set Claude Cookie",
-					//"Set HuggingChat Cookie",
 					"Set ChatGPT API Key",
 					"Exit",
 				},
@@ -758,18 +681,6 @@ func main() {
 			}
 
 			switch keyy {
-			//case "Set Bard Cookie":
-			//	role = ".bard"
-			//	goto BARD
-			//case "Set ChatGPT Cookie":
-			//	role = ".chat"
-			//	goto CHAT
-			//case "Set Claude Cookie":
-			//	role = ".claude"
-			//	goto CLAUDE
-			//case "Set HuggingChat Cookie":
-			//	role = ".huggingchat"
-			//	goto HUGGINGCHAT
 			case "Set ChatGPT API Key":
 				OpenAI_Key = ""
 				role = ".chatapi"
@@ -802,7 +713,7 @@ func main() {
 
 		}
 
-		//ALL-IN-ONE:
+		// ALL-IN-ONE:
 		if role == ".all" {
 			if relogin_bard == false {
 				channel_bard <- userInput
@@ -848,7 +759,9 @@ func main() {
 			if relogin_bard == true {
 				fmt.Println("✘ Bard")
 			} else {
+				//fmt.Println("main thread get", userInput)
 				channel_bard <- userInput
+				//fmt.Println("put", userInput, "into channel_bard")
 				answer := <-channel_bard
 
 				// Print the response to the terminal
@@ -858,8 +771,7 @@ func main() {
 
 		}
 
-		//	CLAUDE:
-		// Check role for correct actions
+		// CLAUDE:
 		if role == ".claude" {
 			if relogin_claude == true {
 				fmt.Println("✘ Claude")
@@ -872,7 +784,7 @@ func main() {
 			}
 
 		}
-		//	CHAT:
+		// CHATGPT:
 		if role == ".chat" {
 			if relogin_chatgpt == true {
 				fmt.Println("✘ ChatGPT")
@@ -887,7 +799,7 @@ func main() {
 
 		}
 
-		//	HUGGINGCHAT:
+		// HUGGINGCHAT:
 		if role == ".huggingchat" {
 			if relogin_hc == true {
 				fmt.Println("✘ HuggingChat")

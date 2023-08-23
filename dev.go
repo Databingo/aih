@@ -132,7 +132,7 @@ func main() {
 
 	// Set proxy
 	proxy_u := launcher.NewUserMode().
-		Proxy(Proxy).
+		//Proxy(Proxy).
 		//Leakless(true).// indepent tab | work with UserDataDir()
 		//UserDataDir("data").// indepent tab + data
 		//Set("disable-default-apps").
@@ -147,7 +147,7 @@ func main() {
 		Timeout(60 * 24 * time.Minute).
 		MustConnect()
 
-	// Get cookies
+	// Get cookies (for login AI accounts)
 	cookies := browser.MustGetCookies()
 
 	// Set proxy for daemon browser_
@@ -450,14 +450,15 @@ func main() {
 		for {
 			utils.Sleep(3)
 			if _, err := browser.Version(); err != nil {
-				fmt.Println("The daemon process has been disconnected. Please restart Aih.")
+				browser = rod.New().MustConnect()
+				browser.MustClose()
+				fmt.Println("Please restart Aih because the daemon process has been disconnected.")
 				close(channel_bard)
 				close(channel_chatgpt)
 				close(channel_claude)
 				close(channel_hc)
 				Liner.Close()
 				syscall.Exit(0)
-
 			}
 
 		}
@@ -510,20 +511,8 @@ func main() {
 				fmt.Println("Save failed.")
 			}
 			fmt.Println("Please restart Aih for using proxy")
-			//Liner.Close()
-			/// exit_safe()
-			if relogin_bard == false {
-				page_bard.MustClose()
-			}
-			if relogin_chatgpt == false {
-				page_chatgpt.MustClose()
-			}
-			if relogin_claude == false {
-				page_claude.MustClose()
-			}
-			if relogin_hc == false {
-				page_hc.MustClose()
-			}
+			/// exit
+			browser.MustClose()
 			close(channel_bard)
 			close(channel_chatgpt)
 			close(channel_claude)
@@ -566,26 +555,14 @@ func main() {
 			printer(color_chat, string(cnt), true)
 			continue
 		case ".exit":
-			//	exit_safe()
-			if relogin_bard == false {
-				page_bard.MustClose()
-			}
-			if relogin_chatgpt == false {
-				page_chatgpt.MustClose()
-			}
-			if relogin_claude == false {
-				page_claude.MustClose()
-			}
-			if relogin_hc == false {
-				page_hc.MustClose()
-			}
+			//exit
+			browser.MustClose()
 			close(channel_bard)
 			close(channel_chatgpt)
 			close(channel_claude)
 			close(channel_hc)
 			Liner.Close()
 			syscall.Exit(0)
-			//os.Exit(0)
 		case ".new":
 			// For role .chat
 			//conversation_id = ""
@@ -693,10 +670,6 @@ func main() {
 				Label: "Select:",
 				Size:  6,
 				Items: []string{
-					//"Set Bard Cookie",
-					//"Set ChatGPT Cookie",
-					//"Set Claude Cookie",
-					//"Set HuggingChat Cookie",
 					"Set ChatGPT API Key",
 					"Exit",
 				},
@@ -708,18 +681,6 @@ func main() {
 			}
 
 			switch keyy {
-			//case "Set Bard Cookie":
-			//	role = ".bard"
-			//	goto BARD
-			//case "Set ChatGPT Cookie":
-			//	role = ".chat"
-			//	goto CHAT
-			//case "Set Claude Cookie":
-			//	role = ".claude"
-			//	goto CLAUDE
-			//case "Set HuggingChat Cookie":
-			//	role = ".huggingchat"
-			//	goto HUGGINGCHAT
 			case "Set ChatGPT API Key":
 				OpenAI_Key = ""
 				role = ".chatapi"
@@ -752,7 +713,7 @@ func main() {
 
 		}
 
-		//ALL-IN-ONE:
+		// ALL-IN-ONE:
 		if role == ".all" {
 			if relogin_bard == false {
 				channel_bard <- userInput
@@ -810,8 +771,7 @@ func main() {
 
 		}
 
-		//	CLAUDE:
-		// Check role for correct actions
+		// CLAUDE:
 		if role == ".claude" {
 			if relogin_claude == true {
 				fmt.Println("✘ Claude")
@@ -824,7 +784,7 @@ func main() {
 			}
 
 		}
-		//	CHAT:
+		// CHATGPT:
 		if role == ".chat" {
 			if relogin_chatgpt == true {
 				fmt.Println("✘ ChatGPT")
@@ -839,7 +799,7 @@ func main() {
 
 		}
 
-		//	HUGGINGCHAT:
+		// HUGGINGCHAT:
 		if role == ".huggingchat" {
 			if relogin_hc == true {
 				fmt.Println("✘ HuggingChat")

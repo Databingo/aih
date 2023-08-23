@@ -32,6 +32,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 - (Optional) Paid ChatGPT API on [Billing](https://platform.openai.com/account/billing/overview). 
 
 ## Tips
+- Close Chrome browser before run Aih at the first time.
 - Answer will be auotmatically saved in system clipboard for pasting.
 - Conversations were persisted in `history.txt` beside Aih binary.
 - `./aih -rod=show` to display pages in real browser.
