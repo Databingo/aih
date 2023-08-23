@@ -51,7 +51,15 @@ $ go clean -cache && go clean -modcache
 $ cd aih && go mod tidy && go build 
 ```
 ## Acknowledgements
+- github.com/rivo/tview
+- github.com/peterh/liner
+- github.com/gdamore/tcell/v2
+- github.com/atotto/clipboard
 - github.com/go-rod/rod
+- github.com/go-rod/stealth
+- github.com/tidwall/gjson
+- github.com/tidwall/sjson
+- github.com/manifoldco/promptui
 - github.com/sashabaranov/go-openai 
 
 ## License
