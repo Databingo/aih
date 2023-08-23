@@ -1,4 +1,4 @@
-# Talk with Bard|ChatGPT|Claude2|Llama2 in terminal.
+# Talk with AI modles in terminal.
 
 <img src="aih.gif" alt="screenshot" style="width:80%;">
 
@@ -10,7 +10,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 ## Command list
 | Command    | Operation|
 |------------|----------|
-|.           | Select AI mode of Bard/ChatGPT/Claude/HuggingChat|
+|.           | Select AI mode of Bard/ChatGPT/Claude(Claude2)/HuggingChat(Llama2)|
 |.proxy      | Set proxy, for example: socks5://127.0.0.1:7890|
 |<<          | Start multiple lines input mode|
 |>>          | End multiple lines input mode|
