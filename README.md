@@ -1,4 +1,4 @@
-# Talk with AI modles in terminal.
+# Talk with AI models in terminal.
 
 <img src="aih.gif" alt="screenshot" style="width:80%;">
 
