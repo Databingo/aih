@@ -217,7 +217,7 @@ func main() {
 			for {
 				select {
 				case question := <-channel_bard:
-				 fmt.Println("channel_bard received as question:", question)
+					//fmt.Println("channel_bard received as question:", question)
 					page_bard.MustActivate()
 					page_bard.MustElementX("//textarea[@id='mat-input-0']").MustWaitVisible().MustInput(question)
 					page_bard.MustElementX("//button[@mattooltip='Submit']").MustClick()
@@ -444,83 +444,26 @@ func main() {
 		}
 	}()
 
-	// reconnecte browser
-	go func(Proxy, proxy_url string) {
-	//go func() {
-		//defer func() {
-		//	if err := recover(); err != nil {
-		//		fmt.Println("wake up")
-		//		if Proxy != "" {
-		//			browser = rod.New().
-		//				Trace(trace).
-		//				ControlURL(proxy_url).
-		//				Timeout(60 * 24 * time.Minute).
-		//				MustConnect()
-		//		} else {
-		//			browser = rod.New().
-		//				Trace(trace).
-		//				Timeout(60 * 24 * time.Minute).
-		//				MustConnect()
-
-		//		}
-		//		pages := browser.MustPages()
-		//		for _, p := range pages {
-		//			url := p.MustInfo().URL
-		//			fmt.Println(url)
-
-		//		}
-		//	}
-		//}()
-		fmt.Println("wake monitor...")
+	// Exit when wake up for the disconnecting with daemon browser
+	go func() {
+		//fmt.Println("wake monitor...")
 		for {
 			utils.Sleep(3)
-		        fmt.Println("monitor...")
 			if _, err := browser.Version(); err != nil {
-				fmt.Println("wake up")
-				if Proxy != "" {
-					browser = rod.New().
-						Trace(trace).
-						ControlURL(proxy_url).
-						Timeout(60 * 24 * time.Minute).
-						MustConnect()
-				} else {
-					browser = rod.New().
-						Trace(trace).
-						Timeout(60 * 24 * time.Minute).
-						MustConnect()
-
-				}
-				pages := browser.MustPages()
-				for _, p := range pages {
-					url := p.MustInfo().URL
-					if strings.HasPrefix(url, "https://google") {
-					fmt.Println(url)
-					page_bard = p
-		page_bard = stealth.MustPage(browser)
-		page_bard.MustNavigate("https://baidu.com")}
-		//page_bard.MustNavigate("https://bard.google.com")
-		//page_bard.MustReload()
-		//page_bard.MustNavigate("https://baidu.com")}
-					if strings.HasPrefix(url, "https://chat.openai") {
-					fmt.Println(url)
-					page_chatgpt = p}
-					if strings.HasPrefix(url, "https://claude") {
-					fmt.Println(url)
-					page_claude = p}
-					if strings.HasPrefix(url, "https://huggingface") {
-					fmt.Println(url)
-					page_hc = p}
-
-				}
-
+				fmt.Println("The daemon process has been disconnected. Please restart Aih.")
+				close(channel_bard)
+				close(channel_chatgpt)
+				close(channel_claude)
+				close(channel_hc)
+				Liner.Close()
+				syscall.Exit(0)
 
 			}
 
 		}
-	//}(browser, page_bard, page_chatgpt, page_claude, page_hc, Proxy, proxy_url)
-	}(Proxy, proxy_url)
-	//}()
-	// Clean screen
+
+	}()
+
 	clear()
 
 	// Welcome to Aih
@@ -567,7 +510,7 @@ func main() {
 				fmt.Println("Save failed.")
 			}
 			fmt.Println("Please restart Aih for using proxy")
-			Liner.Close()
+			//Liner.Close()
 			/// exit_safe()
 			if relogin_bard == false {
 				page_bard.MustClose()
@@ -855,9 +798,9 @@ func main() {
 			if relogin_bard == true {
 				fmt.Println("✘ Bard")
 			} else {
-				fmt.Println("main thread get", userInput)
+				//fmt.Println("main thread get", userInput)
 				channel_bard <- userInput
-				fmt.Println("put", userInput, "into channel_bard")
+				//fmt.Println("put", userInput, "into channel_bard")
 				answer := <-channel_bard
 
 				// Print the response to the terminal
