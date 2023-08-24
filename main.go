@@ -248,7 +248,8 @@ func main() {
 		}()
 		//page_claude = browser.MustPage("https://claude.ai")
 		page_claude = stealth.MustPage(browser)
-		page_claude.MustNavigate("https://claude.ai")
+		page_claude.MustNavigate("https://claude.ai/chats")
+
 		for i := 1; i <= 30; i++ {
 			if page_claude.MustHasX("//h2[contains(text(), 'Welcome back')]") {
 				relogin_claude = false
