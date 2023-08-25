@@ -31,10 +31,10 @@ func main() {
 
 	// Create a new release
 	release, _, err := client.Repositories.CreateRelease(ctx, owner, repo, &github.RepositoryRelease{
-		TagName:         github.String("v0.1.52"),
+		TagName:         github.String("v0.1.6"),
 		TargetCommitish: github.String("master"),
-		Name:            github.String("Release v0.1.52"),
-		Body:            github.String("Welcome to Aih! We've resolved the hanging problem. Previously, when waking up from laptop sleeping, Aih would hang indefinitely due to a loss of connection with daomen Chromuim instance. Now it will automatically exit."),
+		Name:            github.String("Release v0.1.6"),
+		Body:            github.String("Welcome to Aih! We've solved Claude2."),
 		Draft:           github.Bool(false),
 		Prerelease:      github.Bool(false),
 	})
