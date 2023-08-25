@@ -251,17 +251,14 @@ func main() {
 		page_claude = stealth.MustPage(browser)
 		page_claude.MustNavigate("https://claude.ai/api/organizations").MustWaitLoad()
 		org_json := page_claude.MustElementX("//pre").MustText()
-		//fmt.Println(org_json)
 		org_uuid := gjson.Get(string(org_json), "0.uuid").String()
-		//fmt.Println(org_uuid)
 		time.Sleep( 15 * time.Second)
 
 		new_uuid := uuid.New().String()
-		//fmt.Println(">>>>> new covnersation uuid:", new_uuid)
 		new_uuid_url := "https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations"
 		create_new_converastion_json := `{"uuid":"` + new_uuid + `","name":""}`
 		create_new_converastion_js := `
-		(new_uuid_url, sdata) => {
+		 (new_uuid_url, sdata) => {
 		 var xhr = new XMLHttpRequest();
 		 xhr.open("POST", new_uuid_url);
 		 xhr.setRequestHeader('Content-Type', 'application/json');
@@ -272,11 +269,12 @@ func main() {
 		 xhr.setRequestHeader('Connection', 'keep-alive');
 		 xhr.setRequestHeader('Accept', 'text/event-stream, text/event-stream');
 		 xhr.onreadystatechange = function() {
-		  if (xhr.readyState == XMLHttpRequest.DONE) { 
-		   var res_text = xhr.responseText;
-		   console.log(res_text);
-		   } }
-		  console.log(sdata);
+		     if (xhr.readyState == XMLHttpRequest.DONE) { 
+		         var res_text = xhr.responseText;
+		         console.log(res_text);
+		        } 
+		     }
+	         console.log(sdata);
 		 xhr.send(sdata);
 		}
 		`
@@ -310,7 +308,7 @@ func main() {
 				case question := <-channel_claude:
 					d := `{"completion":{"prompt":"` + question + `","timezone":"Asia/Shanghai","model":"claude-2"},"organization_uuid":"` + org_uuid + `","conversation_uuid":"` + new_uuid + `","text":"` + question + `","attachments":[]}`
 					js := `
-		                              (sdata) => {
+		                               (sdata) => {
 		                               var xhr = new XMLHttpRequest();
 		                               xhr.open("POST", "https://claude.ai/api/append_message");
 		                               xhr.setRequestHeader('Content-Type', 'application/json');
@@ -320,19 +318,23 @@ func main() {
 		                               xhr.setRequestHeader('Connection', 'keep-alive');
 		                               xhr.setRequestHeader('Accept', 'text/event-stream, text/event-stream');
 		                               xhr.onreadystatechange = function() {
-		                                if (xhr.readyState == XMLHttpRequest.DONE) { 
-		                                 var res_text = xhr.responseText;
-		                                 console.log(res_text);
+		                                   if (xhr.readyState == XMLHttpRequest.DONE) { 
+		                                       var res_text = xhr.responseText;
+		                                       console.log(res_text);
+		                                   }
 		                               }
-		                               }
-		                               //data = JSON.stringify(sdata)
-		                                 console.log(sdata);
+		                               console.log(sdata);
 		                               xhr.send(sdata);
-		                              }
+		                               }
 		                              `
 					page_claude.MustEval(js, d).Str()
 		                        time.Sleep( 3 * time.Second) // delay to simulate human being
 
+					if role == ".all" {
+						channel_claude <- "click_claude"
+					}
+
+					// wait answer
 					var claude_response = false
                                         var response_json string
 					for i := 3; i <= 20; i++ {
@@ -340,7 +342,7 @@ func main() {
 				                response_chat_messages = gjson.Get(string(response_json), "chat_messages").String()
 						if response_chat_messages != record_chat_messages {
 							claude_response = true
-						        fmt.Println(response_chat_messages)
+						        //fmt.Println(response_chat_messages)
 							record_chat_messages = response_chat_messages
 							break
 						}
