@@ -282,7 +282,7 @@ func main() {
 		`
 		page_claude.MustEval(create_new_converastion_js, new_uuid_url, create_new_converastion_json).Str()
 		//fmt.Println(">>>>> posted new conversation uuid")
-		time.Sleep( 3 * time.Second)
+		time.Sleep( 3 * time.Second) // delay to simulate human being
 
 		var record_chat_messages string
 		var response_chat_messages string
@@ -310,28 +310,28 @@ func main() {
 				case question := <-channel_claude:
 					d := `{"completion":{"prompt":"` + question + `","timezone":"Asia/Shanghai","model":"claude-2"},"organization_uuid":"` + org_uuid + `","conversation_uuid":"` + new_uuid + `","text":"` + question + `","attachments":[]}`
 					js := `
-		(sdata) => {
-		 var xhr = new XMLHttpRequest();
-		 xhr.open("POST", "https://claude.ai/api/append_message");
-		 xhr.setRequestHeader('Content-Type', 'application/json');
-		 xhr.setRequestHeader('Referer', 'https://claude.ai/chats');
-		 xhr.setRequestHeader('Origin', 'https://claude.ai');
-		 xhr.setRequestHeader('TE', 'trailers');
-		 xhr.setRequestHeader('Connection', 'keep-alive');
-		 xhr.setRequestHeader('Accept', 'text/event-stream, text/event-stream');
-		 xhr.onreadystatechange = function() {
-		  if (xhr.readyState == XMLHttpRequest.DONE) { 
-		   var res_text = xhr.responseText;
-		   console.log(res_text);
-		 }
-		 }
-		 //data = JSON.stringify(sdata)
-		   console.log(sdata);
-		 xhr.send(sdata);
-		}
-		`
+		                              (sdata) => {
+		                               var xhr = new XMLHttpRequest();
+		                               xhr.open("POST", "https://claude.ai/api/append_message");
+		                               xhr.setRequestHeader('Content-Type', 'application/json');
+		                               xhr.setRequestHeader('Referer', 'https://claude.ai/chats');
+		                               xhr.setRequestHeader('Origin', 'https://claude.ai');
+		                               xhr.setRequestHeader('TE', 'trailers');
+		                               xhr.setRequestHeader('Connection', 'keep-alive');
+		                               xhr.setRequestHeader('Accept', 'text/event-stream, text/event-stream');
+		                               xhr.onreadystatechange = function() {
+		                                if (xhr.readyState == XMLHttpRequest.DONE) { 
+		                                 var res_text = xhr.responseText;
+		                                 console.log(res_text);
+		                               }
+		                               }
+		                               //data = JSON.stringify(sdata)
+		                                 console.log(sdata);
+		                               xhr.send(sdata);
+		                              }
+		                              `
 					page_claude.MustEval(js, d).Str()
-		                        time.Sleep( 3 * time.Second) // simulate human being
+		                        time.Sleep( 3 * time.Second) // delay to simulate human being
 
 					var claude_response = false
                                         var response_json string
@@ -348,9 +348,6 @@ func main() {
 					}
 					if claude_response == true {
 						count := gjson.Get(string(response_chat_messages), "#").Int()
-						//fmt.Println(count)
-						//fmt.Println(strconv.FormatInt(count-1, 10)+".text")
-						//fmt.Println("chat_messages.#(index==" + strconv.FormatInt(count-1, 10) + ").text")
 						answer :=  gjson.Get(string(response_json), "chat_messages.#(index==" + strconv.FormatInt(count-1, 10) + ").text").String()
 						channel_claude <- answer
 					} else {
