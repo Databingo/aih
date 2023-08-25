@@ -249,25 +249,15 @@ func main() {
 		}()
 		//page_claude = browser.MustPage("https://claude.ai")
 		page_claude = stealth.MustPage(browser)
-		//page_claude = browser.MustPage("https://claude.ai/api/organizations")
-		//page_claude.MustNavigate("https://claude.ai/chats").MustWaitLoad()
 		page_claude.MustNavigate("https://claude.ai/api/organizations").MustWaitLoad()
-		//b, _ := page_claude.GetResource("https://claude.ai/api/organizations")
-		//fmt.Println(page_claude.MustHTML())
 		org_json := page_claude.MustElementX("//pre").MustText()
-		//fmt.Println(page_claude.Must())
-		fmt.Println(org_json)
+		//fmt.Println(org_json)
 		org_uuid := gjson.Get(string(org_json), "0.uuid").String()
-		fmt.Println(org_uuid)
+		//fmt.Println(org_uuid)
 		time.Sleep( 15 * time.Second)
 
-		//https://claude.ai/api/append_message
-
-		//xhr.open("POST", "https://claude.ai/api/organizations/org_uuid/chat_conversations");
-
-		/////////
 		new_uuid := uuid.New().String()
-		fmt.Println(">>>>> new covnersation uuid:", new_uuid)
+		//fmt.Println(">>>>> new covnersation uuid:", new_uuid)
 		new_uuid_url := "https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations"
 		create_new_converastion_json := `{"uuid":"` + new_uuid + `","name":""}`
 		create_new_converastion_js := `
@@ -291,74 +281,23 @@ func main() {
 		}
 		`
 		page_claude.MustEval(create_new_converastion_js, new_uuid_url, create_new_converastion_json).Str()
-		//	fmt.Println(val)
-		fmt.Println(">>>>> posted new conversation uuid")
+		//fmt.Println(">>>>> posted new conversation uuid")
 		time.Sleep( 3 * time.Second)
-		/////////
 
-		//key := "a"
-		//question := "what's weather now in Beijing?"
-		//d := `{"completion":{"prompt":"` + question + `","timezone":"Asia/Shanghai","model":"claude-2"},"organization_uuid":"` + org_uuid + `","conversation_uuid":"` + new_uuid + `","text":"` + question + `","attachments":[]}`
-		//js := `
-		//(k, sdata) => {
-		// var xhr = new XMLHttpRequest();
-		// xhr.open("POST", "https://claude.ai/api/append_message");
-		// xhr.setRequestHeader('Content-Type', 'application/json');
-		// xhr.onreadystatechange = function() {
-		//  if (xhr.readyState == XMLHttpRequest.DONE) {
-		//   var res_text = xhr.responseText;
-		//   console.log(res_text);
-		// }
-		// }
-		// //data = JSON.stringify(sdata)
-		//   console.log(sdata);
-		// xhr.send(sdata);
-		//}
-		//`
-		//val := page_claude.MustEval(js, key, d).Str()
-		////val := page_claude.MustEval(`() => a`).Str()
-		//fmt.Println(val)
-
-		//{"error":{"type":"not_found_error","message":"Unknown chat conversation 17caf5fe-8e66-4eec-a537-8be78d0c2912"}}
-		//{"uuid":"f46d7330-7fa1-4be4-8cf1-ecd576d4cfbe","name":"","summary":"","created_at":"2023-08-25T03:22:30.653519+00:00","updated_at":"2023-08-25T03:22:30.653519+00:00","chat_messages":[]}
-
-		//fmt.Println(d)
 		var record_chat_messages string
 		var response_chat_messages string
 		for i := 1; i <= 30; i++ {
 			create_json := page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid).MustElementX("//pre").MustText()
 
-			fmt.Println("create_json:", create_json)
-			//message := gjson.Get(string(create_json), "error.message").String()
+			//fmt.Println("create_json:", create_json)
 			message_uuid := gjson.Get(string(create_json), "uuid").String()
 			if message_uuid == new_uuid {
-				fmt.Println("create_conversation success...")
+				//fmt.Println("create_conversation success...")
 				relogin_claude = false
 				record_chat_messages = gjson.Get(string(create_json), "chat_messages").String()
-				fmt.Println("record_chat_messages:", record_chat_messages)
+				//fmt.Println("record_chat_messages:", record_chat_messages)
 				break
 			}
-			//fmt.Println(page_claude.Must())
-			//if page_claude.MustHasX("//h2[contains(text(), 'Welcome back')]") {
-			//	relogin_claude = false
-			//	break
-			//}
-			//fmt.Println(i)
-			//if i == 15 {
-			//	val := page_claude.MustEval(create_new_converastion_js, new_uuid_url, create_new_converastion_json).Str()
-			//	fmt.Println(val)
-			//        fmt.Println(">>>>>posted new conversation uuid")
-			//}
-			//if i == 20 {
-			//	//val := page_claude.MustEval(js, key, d).Str()
-			//	//val := page_claude.MustEval(`() => a`).Str()
-			//	//fmt.Println(val)
-			//	//////
-			//	page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid)
-			//	//b, _ := page_claude.GetResource("https://claude.ai/api/organizations")
-
-			//}
-			//time.Sleep(time.Second)
 		}
 
 		if relogin_claude == true {
@@ -369,18 +308,6 @@ func main() {
 			for {
 				select {
 				case question := <-channel_claude:
-					//info := page_claude.MustInfo()
-					//if strings.HasPrefix(info.URL, "https://claude.ai/chats") {
-					//	page_claude.MustActivate()
-					//	page_claude.MustElementX("//div[contains(text(), 'Start a new chat')]").MustWaitVisible().MustClick()
-					//	time.Sleep(3 * time.Second)
-					//}
-					//page_claude.MustElementX("//p[contains(@data-placeholder, 'Message Claude')]").MustWaitVisible().MustInput(question)
-					//page_claude.MustElementX("//button[@aria-label='Send Message']").MustClick()
-					//if role == ".all" {
-					//	channel_claude <- "click_claude"
-					//}
-					//question := "what's weather now in Beijing?"
 					d := `{"completion":{"prompt":"` + question + `","timezone":"Asia/Shanghai","model":"claude-2"},"organization_uuid":"` + org_uuid + `","conversation_uuid":"` + new_uuid + `","text":"` + question + `","attachments":[]}`
 					js := `
 		(sdata) => {
@@ -403,13 +330,9 @@ func main() {
 		 xhr.send(sdata);
 		}
 		`
-					//val := page_claude.MustEval(js, key, d).Str()
-					////val := page_claude.MustEval(`() => a`).Str()
-					//fmt.Println(val)
-					fmt.Println("question:", d)
 					page_claude.MustEval(js, d).Str()
+		                        time.Sleep( 3 * time.Second) // simulate human being
 
-		                        time.Sleep( 3 * time.Second)
 					var claude_response = false
                                         var response_json string
 					for i := 3; i <= 20; i++ {
@@ -424,21 +347,15 @@ func main() {
 						time.Sleep(time.Second)
 					}
 					if claude_response == true {
-						//retry_icon := page_claude.MustElement("svg path[d='M224,128a96,96,0,0,1-94.71,96H128A95.38,95.38,0,0,1,62.1,197.8a8,8,0,0,1,11-11.63A80,80,0,1,0,71.43,71.39a3.07,3.07,0,0,1-.26.25L44.59,96H72a8,8,0,0,1,0,16H24a8,8,0,0,1-8-8V56a8,8,0,0,1,16,0V85.8L60.25,60A96,96,0,0,1,224,128Z']").MustWaitVisible()
-						//content := retry_icon.MustElementX("preceding::div[2]")
-						//answer := content.MustText()
-						//channel_claude <- answer
 						count := gjson.Get(string(response_chat_messages), "#").Int()
-						fmt.Println(count)
-						fmt.Println(strconv.FormatInt(count-1, 10)+".text")
-						fmt.Println("chat_messages.#(index==" + strconv.FormatInt(count-1, 10) + ").text")
-						//answer :=  gjson.Get(string(response_chat_messages), strconv.FormatInt(count-1, 10)+".text").String()
+						//fmt.Println(count)
+						//fmt.Println(strconv.FormatInt(count-1, 10)+".text")
+						//fmt.Println("chat_messages.#(index==" + strconv.FormatInt(count-1, 10) + ").text")
 						answer :=  gjson.Get(string(response_json), "chat_messages.#(index==" + strconv.FormatInt(count-1, 10) + ").text").String()
 						channel_claude <- answer
 					} else {
 						channel_claude <- "✘✘  Claude, Please check the internet connection and verify login status."
 						relogin_claude = true
-						//relogin_claude = false
 					}
 				}
 			}
