@@ -248,7 +248,16 @@ func main() {
 		}()
 		//page_claude = browser.MustPage("https://claude.ai")
 		page_claude = stealth.MustPage(browser)
-		page_claude.MustNavigate("https://claude.ai")
+		//page_claude.MustNavigate("https://claude.ai/chats")
+		page_claude.MustNavigate("https://claude.ai/api/organizations")
+		//b, _ := page_claude.GetResource("https://claude.ai/api/organizations")
+		//fmt.Println(page_claude.MustHTML())
+		org_json := page_claude.MustElementX("//pre").MustText()
+		//fmt.Println(page_claude.Must())
+		fmt.Println(org_json)
+	        org_uuid := gjson.Get(string(org_json), "0.uuid").String()
+		fmt.Println(org_uuid)
+
 		for i := 1; i <= 30; i++ {
 			if page_claude.MustHasX("//h2[contains(text(), 'Welcome back')]") {
 				relogin_claude = false
