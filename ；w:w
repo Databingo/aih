@@ -15,7 +15,6 @@ import (
 	openai "github.com/sashabaranov/go-openai"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
-//	"github.com/google/uuid"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -267,49 +266,29 @@ func main() {
 
 //xhr.open("POST", "https://claude.ai/api/organizations/org_uuid/chat_conversations");
 key := "a"
-///new_uuid := uuid.New().String()
-question := "what's weather now in Beijing?"
-//d := `{"completion":{"prompt":"` + question + `", "timezone":"Asia/Shanghai", "model:"claude-2", "organization_uuid":"` + org_uuid + `", "conversation_uuid":"` + new_uuid +  `", "text":"` + question + `", "attachments":[]}}`
-d := `{"completion":{"prompt":"` + question + `","timezone":"Asia/Shanghai","model":"claude-2"},"organization_uuid":"` + org_uuid + `","conversation_uuid":"` + "7f6d403f-264f-40cb-9c70-467ac6442eb1"+  `","text":"` + question + `","attachments":[]}`
-
-//d = `{"completion":{"prompt":"thank you","timezone":"Asia/Shanghai","model":"claude-2"},"organization_uuid":"848825e5-433a-4d9e-943d-2c82f6960e3d","conversation_uuid":"7f6d403f-264f-40cb-9c70-467ac6442eb1","text":"thank you","attachments":[]}`
-//{"completion":{"prompt":"","timezone":"Asia/Shanghai","model":"claude-2"},"organization_uuid":"848825e5-433a-4d9e-943d-2c82f6960e3d","conversation_uuid":"7f6d403f-264f-40cb-9c70-467ac6442eb1","text":"","attachments":[]}
-//{"completion":{"prompt":"","timezone":"Asia/Shanghai","model":"claude-2"},"organization_uuid":"848825e5-433a-4d9e-943d-2c82f6960e3d","conversation_uuid":"7f6d403f-264f-40cb-9c70-467ac6442eb1","text":"","attachments":[]}
+d := `{"completion":{"prompt":"Hi what's time now?", "timezone":"Aisa/Shanghai", "moded:"claude-2", "organization_uuid":"` + org_uuid + `", "conversation_uuid":"` +"7f6d403f-264f-40cb-9c70-467ac6442eb1" +  `", "text":"Hi what's time now?", "attachments":[]}}`
 		fmt.Println(d)
 		fmt.Println(">>>>>")
 		
 		js := `
 		(k, sdata) => {
-		 var xhr = new XMLHttpRequest();
+		 var xhr = new XMLHttpResquest();
 		 xhr.open("POST", "https://claude.ai/api/append_message");
 		 xhr.setRequestHeader('Content-Type', 'application/json');
-		 xhr.onreadystatechange = function() {
-		  if (xhr.readyState == XMLHttpRequest.DONE) { 
-		   var res_text = xhr.responseText;
-		   console.log(res_text);
-		 }
-		 }
-		 //data = JSON.stringify(sdata)
-		   console.log(sdata);
-		 xhr.send(sdata);
+		 xhr.send(JSON.stringify(sdata));
+		 return xhr.response
+		 window[k]= xhr.response
 		}
 		`
-		//val := page_claude.MustEval(js, key, d).Str()
-		////val := page_claude.MustEval(`() => a`).Str()
-		//fmt.Println(val)
+		val := page_claude.MustEval(js, key, d).Str()
+		//val := page_claude.MustEval(`() => a`).Str()
+		fmt.Println(val)
 
 
 		for i := 1; i <= 30; i++ {
 			if page_claude.MustHasX("//h2[contains(text(), 'Welcome back')]") {
 				relogin_claude = false
 				break
-			}
-			fmt.Println(i)
-			if i == 10 {
-		val := page_claude.MustEval(js, key, d).Str()
-		//val := page_claude.MustEval(`() => a`).Str()
-		fmt.Println(val)
-
 			}
 			time.Sleep(time.Second)
 		}

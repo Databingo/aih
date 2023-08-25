@@ -8,6 +8,7 @@ require (
 	github.com/go-rod/rod v0.114.2
 	github.com/go-rod/stealth v0.4.9
 	github.com/google/go-github v17.0.0+incompatible
+	github.com/google/uuid v1.3.1
 	github.com/manifoldco/promptui v0.9.0
 	github.com/peterh/liner v1.2.2
 	github.com/rivo/tview v0.0.0-20230511053024-822bd067b165
