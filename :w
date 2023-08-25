@@ -411,13 +411,12 @@ func main() {
 
 		                        time.Sleep( 3 * time.Second)
 					var claude_response = false
-                                        var response_json string
 					for i := 3; i <= 20; i++ {
-						response_json = page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid).MustElementX("//pre").MustText()
+						response_json := page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid).MustElementX("//pre").MustText()
 				                response_chat_messages = gjson.Get(string(response_json), "chat_messages").String()
+						fmt.Println(response_chat_messages)
 						if response_chat_messages != record_chat_messages {
 							claude_response = true
-						        fmt.Println(response_chat_messages)
 							record_chat_messages = response_chat_messages
 							break
 						}
@@ -428,12 +427,11 @@ func main() {
 						//content := retry_icon.MustElementX("preceding::div[2]")
 						//answer := content.MustText()
 						//channel_claude <- answer
-						count := gjson.Get(string(response_chat_messages), "#").Int()
+						count := gjson.Get(string(response_chat_messages), "[].#").Int()
 						fmt.Println(count)
-						fmt.Println(strconv.FormatInt(count-1, 10)+".text")
-						fmt.Println("chat_messages.#(index==" + strconv.FormatInt(count-1, 10) + ").text")
-						//answer :=  gjson.Get(string(response_chat_messages), strconv.FormatInt(count-1, 10)+".text").String()
-						answer :=  gjson.Get(string(response_json), "chat_messages.#(index==" + strconv.FormatInt(count-1, 10) + ").text").String()
+						max_index := gjson.Get(string(response_chat_messages), "[].index").Int()
+						fmt.Println(max_index)
+						answer :=  gjson.Get(string(response_chat_messages), "[].*[?(@.index == s.max_index)]").String()
 						channel_claude <- answer
 					} else {
 						channel_claude <- "✘✘  Claude, Please check the internet connection and verify login status."
