@@ -252,7 +252,7 @@ func main() {
 		page_claude.MustNavigate("https://claude.ai/api/organizations").MustWaitLoad()
 		org_json := page_claude.MustElementX("//pre").MustText()
 		org_uuid := gjson.Get(string(org_json), "0.uuid").String()
-		time.Sleep(15 * time.Second)
+		time.Sleep(6 * time.Second)
 
 		new_uuid := uuid.New().String()
 		new_uuid_url := "https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations"
@@ -284,7 +284,7 @@ func main() {
 
 		var record_chat_messages string
 		var response_chat_messages string
-		for i := 1; i <= 30; i++ {
+		for i := 1; i <= 20; i++ {
 			create_json := page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid).MustElementX("//pre").MustText()
 
 			message_uuid := gjson.Get(string(create_json), "uuid").String()
@@ -294,6 +294,7 @@ func main() {
 				record_chat_messages = gjson.Get(string(create_json), "chat_messages").String()
 				break
 			}
+		        time.Sleep(2 * time.Second)
 		}
 
 		if relogin_claude == true {
@@ -309,6 +310,7 @@ func main() {
 					page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid).MustWaitLoad()
 					page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid).MustWaitLoad()
 					time.Sleep(1 * time.Second) // delay to simulate human being
+					question = strings.Replace(question, `"`, `\"`, -1) // escape " in input text when code into json
 
 					d := `{"completion":{"prompt":"` + question + `","timezone":"Asia/Shanghai","model":"claude-2"},"organization_uuid":"` + org_uuid + `","conversation_uuid":"` + new_uuid + `","text":"` + question + `","attachments":[]}`
 					js := `
@@ -332,16 +334,16 @@ func main() {
 		                               }
 		                              `
 					page_claude.MustEval(js, d).Str()
-					time.Sleep(3 * time.Second) // delay to simulate human being
-
+					//fmt.Println("send question:", d)
 					if role == ".all" {
 						channel_claude <- "click_claude"
 					}
+					time.Sleep(3 * time.Second) // delay to simulate human being
 
 					// wait answer
 					var claude_response = false
 					var response_json string
-					for i := 3; i <= 20; i++ {
+					for i := 1; i <= 20; i++ {
 						response_json = page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid).MustElementX("//pre").MustText()
 						response_chat_messages = gjson.Get(string(response_json), "chat_messages").String()
 						if response_chat_messages != record_chat_messages {
@@ -350,7 +352,7 @@ func main() {
 							record_chat_messages = response_chat_messages
 							break
 						}
-						time.Sleep(time.Second)
+						time.Sleep( 3 * time.Second)
 					}
 					if claude_response == true {
 						count := gjson.Get(string(response_chat_messages), "#").Int()
