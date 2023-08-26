@@ -252,7 +252,7 @@ func main() {
 		page_claude.MustNavigate("https://claude.ai/api/organizations").MustWaitLoad()
 		org_json := page_claude.MustElementX("//pre").MustText()
 		org_uuid := gjson.Get(string(org_json), "0.uuid").String()
-		time.Sleep( 15 * time.Second)
+		time.Sleep(15 * time.Second)
 
 		new_uuid := uuid.New().String()
 		new_uuid_url := "https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations"
@@ -279,21 +279,19 @@ func main() {
 		}
 		`
 		page_claude.MustEval(create_new_converastion_js, new_uuid_url, create_new_converastion_json).Str()
-		//fmt.Println(">>>>> posted new conversation uuid")
-		time.Sleep( 3 * time.Second) // delay to simulate human being
+		// posted new conversation uuid
+		time.Sleep(3 * time.Second) // delay to simulate human being
 
 		var record_chat_messages string
 		var response_chat_messages string
 		for i := 1; i <= 30; i++ {
 			create_json := page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid).MustElementX("//pre").MustText()
 
-			//fmt.Println("create_json:", create_json)
 			message_uuid := gjson.Get(string(create_json), "uuid").String()
 			if message_uuid == new_uuid {
 				//fmt.Println("create_conversation success...")
 				relogin_claude = false
 				record_chat_messages = gjson.Get(string(create_json), "chat_messages").String()
-				//fmt.Println("record_chat_messages:", record_chat_messages)
 				break
 			}
 		}
@@ -306,6 +304,12 @@ func main() {
 			for {
 				select {
 				case question := <-channel_claude:
+					// re-activate
+					page_claude.MustNavigate("https://claude.ai/api/account/statsig/" + org_uuid).MustWaitLoad()
+					page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid).MustWaitLoad()
+					page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid).MustWaitLoad()
+					time.Sleep(1 * time.Second) // delay to simulate human being
+
 					d := `{"completion":{"prompt":"` + question + `","timezone":"Asia/Shanghai","model":"claude-2"},"organization_uuid":"` + org_uuid + `","conversation_uuid":"` + new_uuid + `","text":"` + question + `","attachments":[]}`
 					js := `
 		                               (sdata) => {
@@ -328,7 +332,7 @@ func main() {
 		                               }
 		                              `
 					page_claude.MustEval(js, d).Str()
-		                        time.Sleep( 3 * time.Second) // delay to simulate human being
+					time.Sleep(3 * time.Second) // delay to simulate human being
 
 					if role == ".all" {
 						channel_claude <- "click_claude"
@@ -336,13 +340,13 @@ func main() {
 
 					// wait answer
 					var claude_response = false
-                                        var response_json string
+					var response_json string
 					for i := 3; i <= 20; i++ {
 						response_json = page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid).MustElementX("//pre").MustText()
-				                response_chat_messages = gjson.Get(string(response_json), "chat_messages").String()
+						response_chat_messages = gjson.Get(string(response_json), "chat_messages").String()
 						if response_chat_messages != record_chat_messages {
 							claude_response = true
-						        //fmt.Println(response_chat_messages)
+							//fmt.Println(response_chat_messages)
 							record_chat_messages = response_chat_messages
 							break
 						}
@@ -350,7 +354,7 @@ func main() {
 					}
 					if claude_response == true {
 						count := gjson.Get(string(response_chat_messages), "#").Int()
-						answer :=  gjson.Get(string(response_json), "chat_messages.#(index==" + strconv.FormatInt(count-1, 10) + ").text").String()
+						answer := gjson.Get(string(response_json), "chat_messages.#(index=="+strconv.FormatInt(count-1, 10)+").text").String()
 						channel_claude <- answer
 					} else {
 						channel_claude <- "✘✘  Claude, Please check the internet connection and verify login status."
