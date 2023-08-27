@@ -218,7 +218,6 @@ func main() {
 			for {
 				select {
 				case question := <-channel_bard:
-					//fmt.Println("channel_bard received as question:", question)
 					page_bard.MustActivate()
 					page_bard.MustElementX("//textarea[@id='mat-input-0']").MustWaitVisible().MustInput(question)
 					page_bard.MustElementX("//button[@mattooltip='Submit']").MustClick()
