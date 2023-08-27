@@ -222,6 +222,7 @@ func main() {
 					page_bard.MustActivate()
 					page_bard.MustElementX("//textarea[@id='mat-input-0']").MustWaitVisible().MustInput(question)
 					page_bard.MustElementX("//button[@mattooltip='Submit']").MustClick()
+					fmt.Println("Generating...")
 					if role == ".all" {
 						channel_bard <- "click_bard"
 					}
@@ -334,7 +335,7 @@ func main() {
 		                               }
 		                              `
 					page_claude.MustEval(js, d).Str()
-					//fmt.Println("send question:", d)
+					fmt.Println("Generating...")
 					if role == ".all" {
 						channel_claude <- "click_claude"
 					}
@@ -400,6 +401,7 @@ func main() {
 					page_hc.MustActivate()
 					page_hc.MustElementX("//textarea[@enterkeyhint='send']").MustInput(question)
 					page_hc.MustElement("button svg path[d='M27.71 4.29a1 1 0 0 0-1.05-.23l-22 8a1 1 0 0 0 0 1.87l8.59 3.43L19.59 11L21 12.41l-6.37 6.37l3.44 8.59A1 1 0 0 0 19 28a1 1 0 0 0 .92-.66l8-22a1 1 0 0 0-.21-1.05Z']").MustClick()
+					fmt.Println("Generating...")
 					if role == ".all" {
 						channel_hc <- "click_hc"
 					}
@@ -487,6 +489,7 @@ func main() {
 					page_chatgpt.MustActivate()
 					page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustWaitVisible().MustInput(question)
 					page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']/..//button").MustClick()
+					fmt.Println("Generating...")
 					if role == ".all" {
 						channel_chatgpt <- "click_chatgpt"
 					}
