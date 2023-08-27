@@ -1,3 +1,5 @@
+# Talk to AI modes in terminal. (Bard|ChatGPT|Claude2|Llama2)
+
 <img src="aih.gif" alt="screenshot" style="width:80%;">
 
 ## Usage
