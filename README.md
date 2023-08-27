@@ -11,18 +11,18 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 | Command    | Operation|
 |------------|----------|
 |.           | Select AI mode of Bard/ChatGPT/Claude(Claude2)/HuggingChat(Llama2)|
-|.proxy      | Set proxy, for example: socks5://127.0.0.1:7890|
-|<<          | Start multiple lines input mode|
-|>>          | End multiple lines input mode|
 |↑           | Previous input|
 |↓           | Next input|
-|.c or .clear| Clear the screen|
-|.h or .history | Show history of conversations|
+|<<          | Start multiple lines input mode|
+|>>          | End multiple lines input mode|
 |j           | Scroll down|
 |k           | Scroll up|
 |g           | Scroll to top|
 |G           | Scroll to bottom|
 |q or Enter  | Back to conversation|
+|.c or .clear| Clear the screen|
+|.h or .history | Show history of conversations|
+|.proxy      | Set proxy, for example: socks5://127.0.0.1:7890|
 |.help       | Show help|
 |.exit       | Exit Aih|
 
