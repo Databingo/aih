@@ -226,11 +226,25 @@ func main() {
 					if role == ".all" {
 						channel_bard <- "click_bard"
 					}
-					page_bard.MustElementX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_thinking_v2_e272afd4f8d4bbd25efe.gif')]").MustWaitVisible()
-					img := page_bard.Timeout(30 * time.Second).MustElementX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')][last()]").MustWaitVisible()
-					response := img.MustElementX("parent::div/parent::div").MustWaitVisible()
-					answer := response.MustText()
-					channel_bard <- answer
+					// wait generated icon
+					var generated_icon_appear = false
+					for i := 1; i <= 60; i++ {
+						if page_bard.MustHasX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')][last()]") {
+							generated_icon_appear = true
+							break
+						}
+						time.Sleep(1 * time.Second)
+					}
+					if generated_icon_appear == true {
+					        img := page_bard.MustElementX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')][last()]").MustWaitVisible()
+						response := img.MustElementX("parent::div/parent::div").MustWaitVisible()
+						answer := response.MustText()
+						channel_bard <- answer
+					} else {
+						channel_bard <- "✘✘  Bard, Please check the internet connection and verify login status."
+						relogin_bard = true
+
+					}
 				}
 			}
 		}
@@ -295,7 +309,7 @@ func main() {
 				record_chat_messages = gjson.Get(string(create_json), "chat_messages").String()
 				break
 			}
-		        time.Sleep(2 * time.Second)
+			time.Sleep(2 * time.Second)
 		}
 
 		if relogin_claude == true {
@@ -310,7 +324,7 @@ func main() {
 					page_claude.MustNavigate("https://claude.ai/api/account/statsig/" + org_uuid).MustWaitLoad()
 					page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid).MustWaitLoad()
 					page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid).MustWaitLoad()
-					time.Sleep(1 * time.Second) // delay to simulate human being
+					time.Sleep(1 * time.Second)                         // delay to simulate human being
 					question = strings.Replace(question, `"`, `\"`, -1) // escape " in input text when code into json
 
 					d := `{"completion":{"prompt":"` + question + `","timezone":"Asia/Shanghai","model":"claude-2"},"organization_uuid":"` + org_uuid + `","conversation_uuid":"` + new_uuid + `","text":"` + question + `","attachments":[]}`
@@ -353,7 +367,7 @@ func main() {
 							record_chat_messages = response_chat_messages
 							break
 						}
-						time.Sleep( 3 * time.Second)
+						time.Sleep(3 * time.Second)
 					}
 					if claude_response == true {
 						count := gjson.Get(string(response_chat_messages), "#").Int()
@@ -415,7 +429,7 @@ func main() {
 
 					// stop_icon
 					var stop_icon_disappear = false
-					for i := 1; i <= 30; i++ {
+					for i := 1; i <= 60; i++ {
 						if page_hc.MustHas("svg path[d='M24 6H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z']") {
 							stop_icon_disappear = false
 						} else {
@@ -495,7 +509,7 @@ func main() {
 					}
 
 					var regenerate_icon = false
-					for i := 1; i <= 30; i++ {
+					for i := 1; i <= 60; i++ {
 						if page_chatgpt.MustHas("svg path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']") {
 							regenerate_icon = true
 							break
