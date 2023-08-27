@@ -1,5 +1,3 @@
-# Aih
-
 <img src="aih.gif" alt="screenshot" style="width:80%;">
 
 ## Usage
