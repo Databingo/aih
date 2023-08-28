@@ -228,7 +228,7 @@ func main() {
 					// wait generated icon
 					var generated_icon_appear = false
 					for i := 1; i <= 60; i++ {
-						if page_bard.MustHasX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')][last()]") {
+						if page_bard.MustHasX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')]") {
 							generated_icon_appear = true
 							break
 						}
@@ -321,7 +321,8 @@ func main() {
 				case question := <-channel_claude:
 					// re-activate
 					page_claude.MustNavigate("https://claude.ai/api/account/statsig/" + org_uuid).MustWaitLoad()
-					page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid).MustWaitLoad()
+					record_json := page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid).MustElementX("//pre").MustText()
+					record_chat_messages = gjson.Get(string(record_json), "chat_messages").String()
 					page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid).MustWaitLoad()
 					time.Sleep(1 * time.Second)                         // delay to simulate human being
 					question = strings.Replace(question, `"`, `\"`, -1) // escape " in input text when code into json
@@ -360,9 +361,8 @@ func main() {
 					for i := 1; i <= 20; i++ {
 						response_json = page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid).MustElementX("//pre").MustText()
 						response_chat_messages = gjson.Get(string(response_json), "chat_messages").String()
-						if response_chat_messages != record_chat_messages {
+						if ( response_chat_messages != record_chat_messages ) {
 							claude_response = true
-							//fmt.Println(response_chat_messages)
 							record_chat_messages = response_chat_messages
 							break
 						}
@@ -484,7 +484,7 @@ func main() {
 		}()
 
 		for i := 1; i <= 30; i++ {
-			if page_chatgpt.MustHasX("//textarea[@id='prompt-textarea']") {
+			if  page_chatgpt.MustHasX("//textarea[@id='prompt-textarea']") && !page_chatgpt.MustHasX("//h2[contains(text(), 'Your session has expired')]") {
 				relogin_chatgpt = false
 				break
 			}
@@ -513,7 +513,7 @@ func main() {
 							regenerate_icon = true
 							break
 						}
-						time.Sleep(time.Second)
+						time.Sleep( 1 * time.Second)
 					}
 					if regenerate_icon == true {
 						answer := page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()[7:]
