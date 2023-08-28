@@ -172,9 +172,6 @@ func main() {
 
 	}
 
-        // Incognito for faster?
-        browser_ = browser_.MustIncognito()
-
 	// Share cookies
 	for _, i := range cookies {
 		browser_.MustSetCookies(i)
