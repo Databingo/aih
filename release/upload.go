@@ -31,10 +31,10 @@ func main() {
 
 	// Create a new release
 	release, _, err := client.Repositories.CreateRelease(ctx, owner, repo, &github.RepositoryRelease{
-		TagName:         github.String("v0.1.6.4"),
+		TagName:         github.String("v0.1.6.6"),
 		TargetCommitish: github.String("master"),
-		Name:            github.String("Release v0.1.6.4"),
-		Body:            github.String("Welcome to Aih! We have added session expired checking into ChatGPT logic; Optimized the waiting response logic for accurate result parsing of Claude."),
+		Name:            github.String("Release v0.1.6.6"),
+		Body:            github.String("Welcome to Aih! We have added more restrict condition(index increases by step of 2) to the waiting response logic for accurate result parsing of Claude."),
 		Draft:           github.Bool(false),
 		Prerelease:      github.Bool(false),
 	})

@@ -323,6 +323,7 @@ func main() {
 					page_claude.MustNavigate("https://claude.ai/api/account/statsig/" + org_uuid).MustWaitLoad()
 					record_json := page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid).MustElementX("//pre").MustText()
 					record_chat_messages = gjson.Get(string(record_json), "chat_messages").String()
+					record_count := gjson.Get(string(response_chat_messages), "#").Int()
 					page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid).MustWaitLoad()
 					time.Sleep(1 * time.Second)                         // delay to simulate human being
 					question = strings.Replace(question, `"`, `\"`, -1) // escape " in input text when code into json
@@ -361,7 +362,9 @@ func main() {
 					for i := 1; i <= 20; i++ {
 						response_json = page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid).MustElementX("//pre").MustText()
 						response_chat_messages = gjson.Get(string(response_json), "chat_messages").String()
-						if ( response_chat_messages != record_chat_messages ) {
+						count := gjson.Get(string(response_chat_messages), "#").Int()
+
+						if ( response_chat_messages != record_chat_messages && count == record_count + 2 ) {
 							claude_response = true
 							record_chat_messages = response_chat_messages
 							break
