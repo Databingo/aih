@@ -10,7 +10,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 ## Command list
 | Command    | Operation|
 |------------|----------|
-|.           | Select AI mode of Bard/ChatGPT/Claude(Claude2)/HuggingChat(Llama2)|
+|.           | Select AI mode of Bard/ChatGPT/Claude2/HuggingChat(Llama2)|
 |↑           | Previous input|
 |↓           | Next input|
 |<<          | Start multiple lines input mode|
@@ -24,7 +24,6 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 |q or Enter  | Back to conversation|
 |.c or .clear| Clear the screen|
 |.h or .history | Show history of conversations|
-|.key        | Set key of ChatGPT API|
 |.proxy      | Set proxy, for example: socks5://127.0.0.1:7890|
 |.help       | Show help|
 |.exit       | Exit Aih|
