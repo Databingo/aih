@@ -611,20 +611,22 @@ func main() {
 			fmt.Println("                           ")
 			fmt.Println("                 Welcome to Aih!                             ")
 			fmt.Println("------------------------------------------------------------ ")
-			fmt.Println(" .               Select AI mode of Bard/Bing/ChatGPT/Claude")
-			fmt.Println(" .proxy          Set proxy")
-			fmt.Println(" .key            Set key of ChatGPT API")
-			fmt.Println(" <<              Start multiple lines input")
-			fmt.Println(" >>              End multiple lines input")
+			fmt.Println(" .               Select AI mode of Bard/ChatGPT/Claude2/HuggingChat(Llama2)")
 			fmt.Println(" ↑               Previous input")
 			fmt.Println(" ↓               Next input")
-			fmt.Println(" .c or .clear    Clear screen")
-			fmt.Println(" .h or .history  Show history")
+			fmt.Println(" <<              Start multiple lines input")
+			fmt.Println(" >>              End multiple lines input")
 			fmt.Println(" j               Scroll down")
 			fmt.Println(" k               Scroll up")
-			fmt.Println(" gg              Scroll top")
+			fmt.Println(" f               Page down")
+			fmt.Println(" p               Page up")
+			fmt.Println(" g               Scroll top")
 			fmt.Println(" G               Scroll bottom")
 			fmt.Println(" q or Enter      Back to conversation")
+			fmt.Println(" .c or .clear    Clear screen")
+			fmt.Println(" .h or .history  Show history")
+			fmt.Println(" .key            Set key of ChatGPT API")
+			fmt.Println(" .proxy          Set proxy")
 			fmt.Println(" .help           Help")
 			fmt.Println(" .exit           Exit")
 			fmt.Println(" .speak          Voice speak context (MasOS only)")
@@ -1008,9 +1010,21 @@ func scrollUp(textView *tview.TextView) {
 	}
 }
 
+func scrollPageUp(textView *tview.TextView) {
+	row, _ := textView.GetScrollOffset()
+	if row > 0 {
+		textView.ScrollTo(row-30, 0)
+	}
+}
+
 func scrollDown(textView *tview.TextView) {
 	row, _ := textView.GetScrollOffset()
 	textView.ScrollTo(row+1, 0)
+}
+
+func scrollPageDown(textView *tview.TextView) {
+	row, _ := textView.GetScrollOffset()
+	textView.ScrollTo(row+30, 0)
 }
 
 func printer(colour tcell.Color, context string, history bool) {
@@ -1047,6 +1061,10 @@ func printer(colour tcell.Color, context string, history bool) {
 				scrollUp(textView)
 			case 'j':
 				scrollDown(textView)
+			case 'p':
+				scrollPageUp(textView)
+			case 'f':
+				scrollPageDown(textView)
 			case 'g':
 				textView.ScrollToBeginning()
 			case 'G':

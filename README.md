@@ -17,11 +17,14 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 |>>          | End multiple lines input mode|
 |j           | Scroll down|
 |k           | Scroll up|
+|f           | Page down|
+|p           | Page up|
 |g           | Scroll to top|
 |G           | Scroll to bottom|
 |q or Enter  | Back to conversation|
 |.c or .clear| Clear the screen|
 |.h or .history | Show history of conversations|
+|.key        | Set key of ChatGPT API|
 |.proxy      | Set proxy, for example: socks5://127.0.0.1:7890|
 |.help       | Show help|
 |.exit       | Exit Aih|
