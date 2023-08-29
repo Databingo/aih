@@ -31,10 +31,10 @@ func main() {
 
 	// Create a new release
 	release, _, err := client.Repositories.CreateRelease(ctx, owner, repo, &github.RepositoryRelease{
-		TagName:         github.String("v0.1.6.7"),
+		TagName:         github.String("v0.1.6.8"),
 		TargetCommitish: github.String("master"),
-		Name:            github.String("Release v0.1.6.7"),
-		Body:            github.String("Welcome to Aih! We have added prompt information with generating such as 'Claude Done'; added timeout logic to huggingchat for weak internet condition; added page up and page down function; managed help information."),
+		Name:            github.String("Release v0.1.6.8"),
+		Body:            github.String("Welcome to Aih! We have changed all mode to raidcal concurrence; added monitor of daemon browser."),
 		Draft:           github.Bool(false),
 		Prerelease:      github.Bool(false),
 	})
