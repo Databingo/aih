@@ -34,7 +34,7 @@ func main() {
 		TagName:         github.String("v0.1.6.7"),
 		TargetCommitish: github.String("master"),
 		Name:            github.String("Release v0.1.6.7"),
-		Body:            github.String("Welcome to Aih! We have change daemon browser to incognito mode for maybe faster execution."),
+		Body:            github.String("Welcome to Aih! We have added prompt information with generating such as 'Claude Done'; added timeout logic to huggingchat for weak internet condition; added page up and page down function; managed help information."),
 		Draft:           github.Bool(false),
 		Prerelease:      github.Bool(false),
 	})
