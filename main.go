@@ -179,6 +179,7 @@ func main() {
 
 	// Renew browser to daemon
 	browser = browser_
+	browser.ServeMonitor(":7777")
 
 	//////////////////////0////////////////////////////
 	// Set up client of OpenAI API
@@ -218,13 +219,13 @@ func main() {
 			for {
 				select {
 				case question := <-channel_bard:
-					page_bard.MustActivate()
+					//page_bard.MustActivate()
 					page_bard.MustElementX("//textarea[@id='mat-input-0']").MustWaitVisible().MustInput(question)
 					page_bard.MustElementX("//button[@mattooltip='Submit']").MustClick()
 					fmt.Println("Bard generating...")
-					if role == ".all" {
-						channel_bard <- "click_bard"
-					}
+					//if role == ".all" {
+					//	channel_bard <- "click_bard"
+					//}
 					// wait generated icon
 					var generated_icon_appear = false
 					for i := 1; i <= 60; i++ {
@@ -351,9 +352,9 @@ func main() {
 		                              `
 					page_claude.MustEval(js, d).Str()
 					fmt.Println("Claude generating...")
-					if role == ".all" {
-						channel_claude <- "click_claude"
-					}
+					//if role == ".all" {
+					//	channel_claude <- "click_claude"
+					//}
 					time.Sleep(3 * time.Second) // delay to simulate human being
 
 					// wait answer
@@ -414,13 +415,13 @@ func main() {
 			for {
 				select {
 				case question := <-channel_hc:
-					page_hc.MustActivate()
+					//page_hc.MustActivate()
 					page_hc.Timeout( 20 * time.Second).MustElementX("//textarea[@enterkeyhint='send']").MustInput(question)
 					page_hc.Timeout( 20 * time.Second).MustElement("button svg path[d='M27.71 4.29a1 1 0 0 0-1.05-.23l-22 8a1 1 0 0 0 0 1.87l8.59 3.43L19.59 11L21 12.41l-6.37 6.37l3.44 8.59A1 1 0 0 0 19 28a1 1 0 0 0 .92-.66l8-22a1 1 0 0 0-.21-1.05Z']").MustClick()
 					fmt.Println("HuggingChat generating...")
-					if role == ".all" {
-						channel_hc <- "click_hc"
-					}
+					//if role == ".all" {
+					//	channel_hc <- "click_hc"
+					//}
 					for {
 						info := page_hc.MustInfo()
 						if strings.HasPrefix(info.URL, "https://huggingface.co/chat/conversation") {
@@ -502,13 +503,13 @@ func main() {
 			for {
 				select {
 				case question := <-channel_chatgpt:
-					page_chatgpt.MustActivate()
+					//page_chatgpt.MustActivate()
 					page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustWaitVisible().MustInput(question)
 					page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']/..//button").MustClick()
 					fmt.Println("ChatGPT generating...")
-					if role == ".all" {
-						channel_chatgpt <- "click_chatgpt"
-					}
+					//if role == ".all" {
+					//	channel_chatgpt <- "click_chatgpt"
+					//}
 
 					var regenerate_icon = false
 					for i := 1; i <= 60; i++ {
@@ -806,42 +807,42 @@ func main() {
 		if role == ".all" {
 			if relogin_bard == false {
 				channel_bard <- userInput
-				<-channel_bard
+				//<-channel_bard
 			}
 			if relogin_chatgpt == false {
 				channel_chatgpt <- userInput
-				<-channel_chatgpt
+				//<-channel_chatgpt
 			}
 			if relogin_claude == false {
 				channel_claude <- userInput
-				<-channel_claude
+				//<-channel_claude
 			}
 			if relogin_hc == false {
 				channel_hc <- userInput
-				<-channel_hc
+				//<-channel_hc
 			}
 
 			if relogin_bard == false {
 				answer_bard := <-channel_bard
-				fmt.Println("Bard Done.")
+				fmt.Println(">Bard Done.")
 				RESP += "\n\n---------------- bard answer ----------------\n"
 				RESP += strings.TrimSpace(answer_bard)
 			}
 			if relogin_chatgpt == false {
 				answer_chatgpt := <-channel_chatgpt
-				fmt.Println("ChatGPT Done.")
+				fmt.Println(">ChatGPT Done.")
 				RESP += "\n\n---------------- chatgpt answer ----------------\n"
 				RESP += strings.TrimSpace(answer_chatgpt)
 			}
 			if relogin_claude == false {
 				answer_claude := <-channel_claude
-				fmt.Println("Claude Done.")
+				fmt.Println(">Claude Done.")
 				RESP += "\n\n---------------- claude answer ----------------\n"
 				RESP += strings.TrimSpace(answer_claude)
 			}
 			if relogin_hc == false {
 				answer_hc := <-channel_hc
-				fmt.Println("HuggingChat Done.")
+				fmt.Println(">HuggingChat Done.")
 				RESP += "\n\n---------------- huggingchat answer ----------------\n"
 				RESP += strings.TrimSpace(answer_hc)
 			}

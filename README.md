@@ -38,7 +38,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 - More usage of command [Liner](https://github.com/peterh/liner#line-editing).
 - Answer will be auotmatically saved in system clipboard for pasting.
 - Conversations were persisted in `history.txt` beside Aih binary.
-- `./aih -rod=show` to display pages in real browser.
+- Monitor at `http://localhost:7777` in your browser.
 - All-In-One mode will display answers from all the AI modes.
 <img src="ai1.png" alt="screenshot" style="width:80%;">
 
