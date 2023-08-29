@@ -236,7 +236,7 @@ func main() {
 						time.Sleep(1 * time.Second)
 					}
 					if generated_icon_appear == true {
-					        img := page_bard.MustElementX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')][last()]").MustWaitVisible()
+						img := page_bard.MustElementX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')][last()]").MustWaitVisible()
 						response := img.MustElementX("parent::div/parent::div").MustWaitVisible()
 						answer := response.MustText()
 						channel_bard <- answer
@@ -365,7 +365,7 @@ func main() {
 						response_chat_messages = gjson.Get(string(response_json), "chat_messages").String()
 						count := gjson.Get(string(response_chat_messages), "#").Int()
 
-						if ( response_chat_messages != record_chat_messages && count == record_count + 2 ) {
+						if response_chat_messages != record_chat_messages && count == record_count+2 {
 							claude_response = true
 							record_chat_messages = response_chat_messages
 							break
@@ -416,8 +416,8 @@ func main() {
 				select {
 				case question := <-channel_hc:
 					//page_hc.MustActivate()
-					page_hc.Timeout( 20 * time.Second).MustElementX("//textarea[@enterkeyhint='send']").MustInput(question)
-					page_hc.Timeout( 20 * time.Second).MustElement("button svg path[d='M27.71 4.29a1 1 0 0 0-1.05-.23l-22 8a1 1 0 0 0 0 1.87l8.59 3.43L19.59 11L21 12.41l-6.37 6.37l3.44 8.59A1 1 0 0 0 19 28a1 1 0 0 0 .92-.66l8-22a1 1 0 0 0-.21-1.05Z']").MustClick()
+					page_hc.Timeout(20 * time.Second).MustElementX("//textarea[@enterkeyhint='send']").MustInput(question)
+					page_hc.Timeout(20 * time.Second).MustElement("button svg path[d='M27.71 4.29a1 1 0 0 0-1.05-.23l-22 8a1 1 0 0 0 0 1.87l8.59 3.43L19.59 11L21 12.41l-6.37 6.37l3.44 8.59A1 1 0 0 0 19 28a1 1 0 0 0 .92-.66l8-22a1 1 0 0 0-.21-1.05Z']").MustClick()
 					fmt.Println("HuggingChat generating...")
 					//if role == ".all" {
 					//	channel_hc <- "click_hc"
@@ -488,7 +488,7 @@ func main() {
 		}()
 
 		for i := 1; i <= 30; i++ {
-			if  page_chatgpt.MustHasX("//textarea[@id='prompt-textarea']") && !page_chatgpt.MustHasX("//h2[contains(text(), 'Your session has expired')]") {
+			if page_chatgpt.MustHasX("//textarea[@id='prompt-textarea']") && !page_chatgpt.MustHasX("//h2[contains(text(), 'Your session has expired')]") {
 				relogin_chatgpt = false
 				break
 			}
@@ -504,6 +504,13 @@ func main() {
 				select {
 				case question := <-channel_chatgpt:
 					//page_chatgpt.MustActivate()
+					if page_chatgpt.MustHasX("//div[contains(text(), 'Something went wrong. If this issue persists please')]") {
+
+						fmt.Println("ChatGPT web error")
+						channel_chatgpt <- "✘✘  ChatGPT, Please check the internet connection and verify login status."
+						relogin_chatgpt = true
+
+					}
 					page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustWaitVisible().MustInput(question)
 					page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']/..//button").MustClick()
 					fmt.Println("ChatGPT generating...")
@@ -517,7 +524,7 @@ func main() {
 							regenerate_icon = true
 							break
 						}
-						time.Sleep( 1 * time.Second)
+						time.Sleep(1 * time.Second)
 					}
 					if regenerate_icon == true {
 						answer := page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()[7:]
