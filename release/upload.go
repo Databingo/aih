@@ -31,10 +31,10 @@ func main() {
 
 	// Create a new release
 	release, _, err := client.Repositories.CreateRelease(ctx, owner, repo, &github.RepositoryRelease{
-		TagName:         github.String("v0.1.6.8.1"),
+		TagName:         github.String("v0.1.6.8.2"),
 		TargetCommitish: github.String("master"),
-		Name:            github.String("Release v0.1.6.8.1"),
-		Body:            github.String("Welcome to Aih! We have added checking 'web error' to ChatGPT logic."),
+		Name:            github.String("Release v0.1.6.8.2"),
+		Body:            github.String("Welcome to Aih! We have removed monitor because the frequent error happenings."),
 		Draft:           github.Bool(false),
 		Prerelease:      github.Bool(false),
 	})
