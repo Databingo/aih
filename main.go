@@ -179,7 +179,7 @@ func main() {
 
 	// Renew browser to daemon
 	browser = browser_
-	browser.ServeMonitor(":7777")
+	// browser.ServeMonitor(":7777")
 
 	//////////////////////0////////////////////////////
 	// Set up client of OpenAI API
