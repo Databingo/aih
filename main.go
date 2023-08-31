@@ -1080,7 +1080,7 @@ func save_conversation(role, uInput, RESP string) {
 	if fs, err := os.OpenFile("history.txt", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0666); err == nil {
 		time_string := time.Now().Format("2006-01-02 15:04:05")
 		_, err = fs.WriteString("--------------------\n")
-		_, err = fs.WriteString(time_string + role + "\n\nQuestion:\n" + uInput + "\n\n")
+		_, err = fs.WriteString(time_string + role + "\nQuestion:\n" + uInput + "\n")
 		_, err = fs.WriteString("Answer:" + "\n" + RESP + "\n")
 		if err != nil {
 			panic(err)
