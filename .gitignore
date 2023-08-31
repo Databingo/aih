@@ -5,3 +5,4 @@ aih.mov
 release/*
 !release/upload.go
 history.txt
+test.txt
