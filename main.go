@@ -544,9 +544,7 @@ func main() {
 	}()
 
 	//////////////////////c5////////////////////////////
-        //https://my.slack.com/messages
-
-
+	//https://my.slack.com/messages
 
 	// Exit when wake up for the disconnecting with daemon browser
 	go func() {
@@ -862,7 +860,8 @@ func main() {
 				RESP += "\n\n---------------- huggingchat answer ----------------\n"
 				RESP += strings.TrimSpace(answer_hc)
 			}
-                        save_conversation(role, userInput, RESP)
+			speak_out(speak, RESP)
+			save_conversation(role, userInput, RESP)
 			printer(color_chat, RESP, false)
 
 		}
@@ -877,7 +876,8 @@ func main() {
 
 				// Print the response to the terminal
 				RESP = strings.TrimSpace(answer)
-                                save_conversation(role, userInput,RESP)
+				speak_out(speak, RESP)
+				save_conversation(role, userInput, RESP)
 				printer(color_bard, RESP, false)
 			}
 
@@ -892,7 +892,8 @@ func main() {
 				answer := <-channel_claude
 
 				RESP = strings.TrimSpace(answer)
-                                save_conversation(role, userInput,RESP)
+				speak_out(speak, RESP)
+				save_conversation(role, userInput, RESP)
 				printer(color_claude, RESP, false)
 			}
 
@@ -907,7 +908,8 @@ func main() {
 
 				// Print the response to the terminal
 				RESP = strings.TrimSpace(answer)
-                                save_conversation(role, userInput,RESP)
+				speak_out(speak, RESP)
+				save_conversation(role, userInput, RESP)
 				printer(color_chatapi, RESP, false)
 			}
 
@@ -923,7 +925,8 @@ func main() {
 
 				// Print the response to the terminal
 				RESP = strings.TrimSpace(answer)
-                                save_conversation(role, userInput,RESP)
+				speak_out(speak, RESP)
+				save_conversation(role, userInput, RESP)
 				printer(color_huggingchat, RESP, false)
 			}
 
@@ -981,46 +984,13 @@ func main() {
 			RESP = strings.TrimSpace(resp.Choices[0].Message.Content)
 			used_tokens = resp.Usage.TotalTokens
 			left_tokens = max_tokens - used_tokens
-                        save_conversation(role, userInput,RESP)
+			speak_out(speak, RESP)
+			save_conversation(role, userInput, RESP)
 			printer(color_chatapi, RESP, false)
 
 		}
 
-		// -------------for all AI's RESP---------------
-
-		// Persistent conversation uInput + response
-		//if fs, err := os.OpenFile("history.txt", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0666); err == nil {
-		//	time_string := time.Now().Format("2006-01-02 15:04:05")
-		//	_, err = fs.WriteString("--------------------\n")
-		//	_, err = fs.WriteString(time_string + role + "\n\nQuestion:\n" + uInput + "\n\n")
-		//	_, err = fs.WriteString("Answer:" + "\n" + RESP + "\n")
-		//	if err != nil {
-		//		panic(err)
-		//	}
-		//	fs.Close()
-		//}
-
-		// Speak all the response RESP using the "say" command
-		if speak == 1 {
-
-			fmt.Println("speaking")
-			go func() {
-				switch runtime.GOOS {
-				case "linux", "darwin":
-					cmd := exec.Command("say", RESP)
-					err = cmd.Run()
-					if err != nil {
-						fmt.Println(err)
-					}
-				case "windows":
-					// to do
-					_ = 1 + 1
-
-				}
-
-			}()
-		}
-
+		// clean RESP
 		RESP = ""
 
 	}
@@ -1105,17 +1075,38 @@ func printer(colour tcell.Color, context string, history bool) {
 
 }
 
-
-		// Persistent conversation uInput + response
-func save_conversation(role, uInput, RESP string){
-		if fs, err := os.OpenFile("history.txt", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0666); err == nil {
-			time_string := time.Now().Format("2006-01-02 15:04:05")
-			_, err = fs.WriteString("--------------------\n")
-			_, err = fs.WriteString(time_string + role + "\n\nQuestion:\n" + uInput + "\n\n")
-			_, err = fs.WriteString("Answer:" + "\n" + RESP + "\n")
-			if err != nil {
-				panic(err)
-			}
-			fs.Close()
+// Persistent conversation uInput + response
+func save_conversation(role, uInput, RESP string) {
+	if fs, err := os.OpenFile("history.txt", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0666); err == nil {
+		time_string := time.Now().Format("2006-01-02 15:04:05")
+		_, err = fs.WriteString("--------------------\n")
+		_, err = fs.WriteString(time_string + role + "\n\nQuestion:\n" + uInput + "\n\n")
+		_, err = fs.WriteString("Answer:" + "\n" + RESP + "\n")
+		if err != nil {
+			panic(err)
 		}
-	       }
+		fs.Close()
+	}
+}
+
+// Speak all the response RESP using the "say" command
+func speak_out(speak int, RESP string) {
+	if speak == 1 {
+		//fmt.Println("speaking")
+		go func() {
+			switch runtime.GOOS {
+			case "linux", "darwin":
+				cmd := exec.Command("say", RESP)
+				err := cmd.Run()
+				if err != nil {
+					fmt.Println(err)
+				}
+			case "windows":
+				// to do
+				_ = 1 + 1
+
+			}
+
+		}()
+	}
+}
