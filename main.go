@@ -665,6 +665,11 @@ func main() {
 		case ".c", ".clear":
 			clear()
 			continue
+		case ".v", ".vi", ".vim":
+			//Liner.Close()
+			ry.Ry()
+			fmt.Println("Ry closed")
+			continue
 		case ".h", ".history":
 			cnt, _ := ioutil.ReadFile("history.txt")
 			printer(color_chat, string(cnt), true)

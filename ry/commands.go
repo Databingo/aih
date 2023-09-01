@@ -1,4 +1,5 @@
-package main
+//package main
+package ry
 
 import (
 	"io/ioutil"
@@ -180,7 +181,8 @@ func initCommands() {
 		b := currentViewTree.Leaf.Buf
 		b.SetPath("./quest.txt")
 		b.Save()
-		closeCurrentBuffer(true)
+		closeCurrentBuffer(false)
+		return 
 
 	})
 	///////////

@@ -1,4 +1,5 @@
-package main
+//package main
+package ry
 
 var (
 	hooks_buffer map[string][]func(*Buffer)

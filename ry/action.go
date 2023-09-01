@@ -1,4 +1,5 @@
-package main
+//package main
+package ry
 
 type ActionType int
 
