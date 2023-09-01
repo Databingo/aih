@@ -175,6 +175,15 @@ func initCommands() {
 		b.Save()
 	})
 	addAlias("w", "write")
+	///////////
+	addCommand("ai", func(args []string) {
+		b := currentViewTree.Leaf.Buf
+		b.SetPath("./quest.txt")
+		b.Save()
+		closeCurrentBuffer(true)
+
+	})
+	///////////
 	addCommand("edit", func(args []string) {
 		if len(args) < 2 {
 			messageError("Can't open buffer without a name or file path.")

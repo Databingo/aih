@@ -1,7 +1,7 @@
 package main
 
 import (
-	"os"
+///	"os"
 
 	"github.com/gdamore/tcell"
 	"github.com/gdamore/tcell/encoding"
@@ -35,12 +35,13 @@ func initTermEvents() {
 }
 
 func initBuffers() {
-	for _, arg := range os.Args[1:] {
-		openBufferFromFile(arg)
-	}
-	if len(buffers) == 0 {
-		openBufferNamed("*scratch*")
-	}
+	//for _, arg := range os.Args[1:] {
+	//	openBufferFromFile(arg)
+	//}
+	//if len(buffers) == 0 {
+	//	openBufferNamed("*scratch*")
+	//}
+		openBufferFromFile("./quest.txt")
 }
 
 func initViews() {
