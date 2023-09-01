@@ -492,6 +492,10 @@ func main() {
 				relogin_chatgpt = false
 				break
 			}
+			if page_chatgpt.MustHasX("//h2[contains(text(), 'Your session has expired')]") {
+				relogin_chatgpt = true
+				break
+			}
 			time.Sleep(time.Second)
 		}
 
