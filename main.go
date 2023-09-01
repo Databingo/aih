@@ -209,6 +209,12 @@ func main() {
 				relogin_bard = false
 				break
 			}
+			// Check "I'm not a robot"
+			info := page_bard.MustInfo()
+			if strings.HasPrefix(info.URL, "https://google.com/sorry") {
+				relogin_bard = true
+				break
+			}
 			time.Sleep(time.Second)
 		}
 		if relogin_bard == true {
