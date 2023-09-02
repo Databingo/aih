@@ -33,7 +33,8 @@ import (
 )
 
 var trace = false
-//var trace = true
+
+// var trace = true
 var userInput string
 var color_bard = tcell.ColorDarkCyan
 var color_bing = tcell.ColorDarkMagenta
@@ -569,7 +570,7 @@ func main() {
 		//	time.Sleep(time.Second)
 		//}
 		for i := 1; i <= 30; i++ {
-			if page_chatgpt.MustHasX("//textarea[@id='prompt-textarea']") && !page_chatgpt.MustHasX("//h2[contains(text(), 'Your session has expired')]"){
+			if page_chatgpt.MustHasX("//textarea[@id='prompt-textarea']") && !page_chatgpt.MustHasX("//h2[contains(text(), 'Your session has expired')]") {
 				relogin_chatgpt = false
 				break
 			}
@@ -640,7 +641,6 @@ func main() {
 			}
 		}
 	}()
-
 
 	// Exit when wake up for the disconnecting with daemon browser
 	go func() {
@@ -787,9 +787,15 @@ func main() {
 			ptmx.Close()
 			// Reset stdin model
 			err = terminal.Restore(int(os.Stdin.Fd()), oldState)
-			// Read question
+			// Read quest
 			ipt, _ := ioutil.ReadFile(".quest.txt")
-			// Empty file have "LF"(\n) when no edie or q!
+			// Clean quest with "LF" the ryy's tmpt value
+			if qs, err := os.OpenFile(".quest.txt", os.O_WRONLY|os.O_TRUNC, 0666); err == nil {
+				qs.Write([]byte{0x0a})
+				qs.Close()
+
+			}
+			// When no edie or q! Empty file have "LF"(\n)
 			if ipt[0] != []byte{0x0a}[0] {
 				userInput = string(ipt)
 				userInput = strings.Replace(userInput, "\r", "\n", -1)

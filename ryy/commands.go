@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
-	"fmt"
+//	"fmt"
 )
 
 func openBufferFromFile(path string) *Buffer {
@@ -161,12 +161,16 @@ func addAlias(alias, name string) {
 
 func initCommands() {
 	addCommand("quit", func(args []string) {
+		/////
+		screen.Fini()
+		os.Exit(0)
+		/////
 		//closeCurrentBuffer(false)
 		closeCurrentBuffer(true)
 	})
 	addAlias("q", "quit")
 	addCommand("quit!", func(args []string) {
-		closeCurrentBuffer(true)
+		closeCurrentBuffer(false)
 	})
 	addAlias("q!", "quit!")
 	addCommand("write", func(args []string) {
@@ -182,9 +186,9 @@ func initCommands() {
 		b := currentViewTree.Leaf.Buf
 		b.SetPath("./.quest.txt")
 		b.Save()
-		fmt.Println("close")
-			screen.Fini()
-			os.Exit(0)
+		//fmt.Println("close")
+		screen.Fini()
+		os.Exit(0)
 		//closeCurrentBuffer(false)
 	})
 	addAlias("ai", "wai")
