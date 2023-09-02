@@ -245,11 +245,11 @@ func main() {
 			for {
 				select {
 				case question := <-channel_bard:
-					page_bard.MustActivate()
+					//page_bard.MustActivate()
 					page_bard.MustElementX("//textarea[@id='mat-input-0']").MustWaitVisible().MustInput(question)
 					page_bard.MustElementX("//button[@mattooltip='Submit']").MustClick()
 					fmt.Println("Bard generating...")
-					page_bard.MustActivate()
+					//page_bard.MustActivate()
 					//if role == ".all" {
 					//	channel_bard <- "click_bard"
 					//}
@@ -443,7 +443,7 @@ func main() {
 			for {
 				select {
 				case question := <-channel_hc:
-					page_hc.MustActivate()
+					//page_hc.MustActivate()
 					//fmt.Println("HuggingChat received question...", question)
 					for i := 1; i <= 60; i++ {
 						if page_hc.MustHasX("//textarea[@enterkeyhint='send']") {
@@ -461,7 +461,7 @@ func main() {
 						time.Sleep(time.Second)
 					}
 					fmt.Println("HuggingChat generating...")
-					page_hc.MustActivate() // Sometime three dot to hang
+					//page_hc.MustActivate() // Sometime three dot to hang
 					//if role == ".all" {
 					//	channel_hc <- "click_hc"
 					//}
@@ -550,7 +550,7 @@ func main() {
 			for {
 				select {
 				case question := <-channel_chatgpt:
-					page_chatgpt.MustActivate()
+					//page_chatgpt.MustActivate()
 					if page_chatgpt.MustHasX("//div[contains(text(), 'Something went wrong. If this issue persists please')]") {
 
 						fmt.Println("ChatGPT web error")
@@ -561,7 +561,7 @@ func main() {
 					page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustWaitVisible().MustInput(question)
 					page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']/..//button").MustClick()
 					fmt.Println("ChatGPT generating...")
-					page_chatgpt.MustActivate()
+					//page_chatgpt.MustActivate()
 					//if role == ".all" {
 					//	channel_chatgpt <- "click_chatgpt"
 					//}
