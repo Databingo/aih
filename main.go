@@ -239,7 +239,7 @@ func main() {
 		}
 		if relogin_bard == true {
 			sprint("✘ Bard")
-			page_bard.MustPDF("./tmp/Bard✘.pdf")
+			//page_bard.MustPDF("./tmp/Bard✘.pdf")
 		}
 		if relogin_bard == false {
 			sprint("✔ Bard")
@@ -271,7 +271,7 @@ func main() {
 					} else {
 						channel_bard <- "✘✘  Bard, Please check the internet connection and verify login status."
 						relogin_bard = true
-						page_bard.MustPDF("./tmp/Bard✘.pdf")
+						//page_bard.MustPDF("./tmp/Bard✘.pdf")
 
 					}
 				}
@@ -343,7 +343,7 @@ func main() {
 
 		if relogin_claude == true {
 			sprint("✘ Claude")
-			page_claude.MustPDF("./tmp/Claude✘.pdf")
+			//page_claude.MustPDF("./tmp/Claude✘.pdf")
 		}
 		if relogin_claude == false {
 			sprint("✔ Claude")
@@ -412,7 +412,7 @@ func main() {
 					} else {
 						channel_claude <- "✘✘  Claude, Please check the internet connection and verify login status."
 						relogin_claude = true
-						page_claude.MustPDF("./tmp/Claude✘.pdf")
+						//page_claude.MustPDF("./tmp/Claude✘.pdf")
 					}
 				}
 			}
@@ -443,7 +443,7 @@ func main() {
 		}
 		if relogin_hc == true {
 			sprint("✘ HuggingChat")
-			page_hc.MustPDF("./tmp/HuggingChat✘.pdf")
+			//page_hc.MustPDF("./tmp/HuggingChat✘.pdf")
 		}
 		if relogin_hc == false {
 			sprint("✔ HuggingChat")
@@ -507,7 +507,7 @@ func main() {
 					} else {
 						channel_hc <- "✘✘  HuggingChat, Please check the internet connection and verify login status."
 						relogin_hc = true
-						page_hc.MustPDF("./tmp/HuggingChat✘.pdf")
+						//page_hc.MustPDF("./tmp/HuggingChat✘.pdf")
 
 					}
 				}
@@ -578,7 +578,7 @@ func main() {
 
 		if relogin_chatgpt == true {
 			sprint("✘ ChatGPT")
-			page_chatgpt.MustPDF("./tmp/ChatGPT✘.pdf")
+			//page_chatgpt.MustPDF("./tmp/ChatGPT✘.pdf")
 		}
 		if relogin_chatgpt == false {
 			sprint("✔ ChatGPT")
@@ -633,7 +633,7 @@ func main() {
 					} else {
 						channel_chatgpt <- "✘✘  ChatGPT, Please check the internet connection and verify login status."
 						relogin_chatgpt = true
-						page_chatgpt.MustPDF("./tmp/ChatGPT✘.pdf")
+						//page_chatgpt.MustPDF("./tmp/ChatGPT✘.pdf")
 
 					}
 				}
@@ -720,7 +720,7 @@ func main() {
 		case ".help":
 			fmt.Println("                           ")
 			fmt.Println("                 Welcome to Aih!                             ")
-			fmt.Println("------------------------------------------------------------ ")
+			fmt.Println("--------------------------------------------------------------------------- ")
 			fmt.Println(" .               Select AI mode of Bard/ChatGPT/Claude2/HuggingChat(Llama2)")
 			fmt.Println(" ↑               Previous input")
 			fmt.Println(" ↓               Next input")
@@ -743,7 +743,7 @@ func main() {
 			fmt.Println(" .speak          Voice speak context (MasOS only)")
 			fmt.Println(" .quiet          Not speak")
 			//fmt.Println(" .new            New conversation of ChatGPT")
-			fmt.Println("------------------------------------------------------------ ")
+			fmt.Println("--------------------------------------------------------------------------- ")
 			fmt.Println("                           ")
 			fmt.Println("                           ")
 			continue
