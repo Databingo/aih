@@ -32,8 +32,8 @@ import (
 	"time"
 )
 
-// var trace = false
-var trace = true
+var trace = false
+//var trace = true
 var userInput string
 var color_bard = tcell.ColorDarkCyan
 var color_bing = tcell.ColorDarkMagenta
@@ -569,7 +569,7 @@ func main() {
 		//	time.Sleep(time.Second)
 		//}
 		for i := 1; i <= 30; i++ {
-			if page_chatgpt.MustHasX("//textarea[@id='prompt-textarea']") && !page_chatgpt.MustHasX("//h2[contains(text(), 'Your session has expired')]") {
+			if page_chatgpt.MustHasX("//textarea[@id='prompt-textarea']") && !page_chatgpt.MustHasX("//h2[contains(text(), 'Your session has expired')]"){
 				relogin_chatgpt = false
 				break
 			}
