@@ -65,6 +65,7 @@ $ go mod tidy && go build -tags vi
 - github.com/tidwall/sjson
 - github.com/manifoldco/promptui
 - github.com/sashabaranov/go-openai 
+- github.com/kiasaki/ry
 
 ## License
 MIT and "You can choose not to include this MIT license into your copies".
