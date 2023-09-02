@@ -4,7 +4,7 @@ package ry
 import (
 	"strings"
 
-	"github.com/gdamore/tcell"
+	"github.com/gdamore/tcell/v2"
 )
 
 var (
@@ -36,7 +36,7 @@ func init_highlighting() {
 func highlight_buffer(b *Buffer) {
 	s := style("default")
 	ss := style("special")
-	sse := style("search")
+	//sse := style("search")
 	svi := style("visual")
 	sts := style("text.string")
 	stn := style("text.number")
@@ -70,9 +70,9 @@ func highlight_buffer(b *Buffer) {
 
 			if high_len := search_highlight(b, l, c); high_len > 0 {
 				for i := 0; i < high_len; i++ {
-					if style_map[l][c+i] == 0 {
-						style_map[l][c+i] = sse
-					}
+					//if style_map[l][c+i] == 0 {
+					//	style_map[l][c+i] = sse
+					//}
 				}
 			}
 			if visualHighlight(b, l, c) {
@@ -100,9 +100,9 @@ func highlight_buffer(b *Buffer) {
 				}
 				style_map[l][c] = sts
 			}
-			if style_map[l][c] != 0 {
-				continue
-			}
+			//if style_map[l][c] != 0 {
+			//	continue
+			//}
 			if in_string > 0 {
 				style_map[l][c] = sts
 			} else if listContainsString(highlighting_special_words, word) && c+1 < len(b.Data[l]) && !isWord(b.Data[l][c+1]) {

@@ -5,7 +5,8 @@ go 1.19
 require (
 	github.com/Databingo/aih/ry v0.0.0-bef1172
 	github.com/atotto/clipboard v0.1.4
-	github.com/gdamore/tcell/v2 v2.6.0
+	github.com/creack/pty v1.1.18
+	github.com/gdamore/tcell/v2 v2.6.1-0.20230827060410-08c7757cd1c9
 	github.com/go-rod/rod v0.114.2
 	github.com/go-rod/stealth v0.4.9
 	github.com/google/go-github v17.0.0+incompatible
@@ -16,6 +17,7 @@ require (
 	github.com/sashabaranov/go-openai v1.9.0
 	github.com/tidwall/gjson v1.14.4
 	github.com/tidwall/sjson v1.2.5
+	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
 	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
 	jaytaylor.com/html2text v0.0.0-20230321000545-74c2419ad056
 )
@@ -25,7 +27,6 @@ replace github.com/Databingo/aih/ry => ./ry
 require (
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect
 	github.com/gdamore/encoding v1.0.0 // indirect
-	github.com/gdamore/tcell v1.3.0 // indirect
 	github.com/go-errors/errors v1.0.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/go-cmp v0.5.7 // indirect
@@ -44,9 +45,9 @@ require (
 	github.com/ysmood/leakless v0.8.0 // indirect
 	github.com/zyedidia/clipboard v0.0.0-20180208191628-4611e809d8b1 // indirect
 	golang.org/x/net v0.9.0 // indirect
-	golang.org/x/sys v0.7.0 // indirect
-	golang.org/x/term v0.7.0 // indirect
-	golang.org/x/text v0.9.0 // indirect
+	golang.org/x/sys v0.11.0 // indirect
+	golang.org/x/term v0.9.0 // indirect
+	golang.org/x/text v0.12.0 // indirect
 	google.golang.org/appengine v1.6.6 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
 )

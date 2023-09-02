@@ -24,7 +24,12 @@ import (
 	"strings"
 	"syscall"
 	"time"
-	"github.com/Databingo/aih/ry"
+//	"github.com/Databingo/aih/ry"
+	"golang.org/x/crypto/ssh/terminal"
+	"github.com/creack/pty"
+	"os/signal"
+	"io"
+	"log"
 )
 
 // var trace = true
@@ -63,7 +68,6 @@ func multiln_input(Liner *liner.State, prompt string) string {
 	// |true  && != ">>"          | record;
 	// |true  && == ">>"          | record; break; rm >>;
 	// |--------------------------|------
-
 	var ln string
 	var lns []string
 	recording := false
@@ -596,7 +600,7 @@ func main() {
 	chat_mode := openai.GPT3Dot5Turbo
 	chat_completion := true
 
-	// Start loop to read user input
+	// Start Loop to read user input
 	for {
 		// Re-read user input history
 		if f, err := os.Open(".history"); err == nil {
@@ -667,8 +671,38 @@ func main() {
 			continue
 		case ".v", ".vi", ".vim":
 			//Liner.Close()
-			ry.Ry()
-			fmt.Println("Ry closed")
+		cmd := exec.Command("./ryy")
+		ptmx, err := pty.Start(cmd)
+		//---------------------
+		// Handle pty size.
+		ch := make(chan os.Signal, 1)
+		signal.Notify(ch, syscall.SIGWINCH)
+		go func() {
+			for range ch {
+				if err := pty.InheritSize(os.Stdin, ptmx); err != nil {
+					log.Printf("can't resizing pty: %s", err)
+				}
+			}
+		}()
+		ch <- syscall.SIGWINCH // Initial resize.
+
+		// Set stdin in raw mode.
+		//oldState, err := terminal.MakeRaw(int(os.Stdin.Fd()))
+		_, err = terminal.MakeRaw(int(os.Stdin.Fd()))
+		if err != nil {
+			log.Println(fmt.Sprintf("can't make terminal raw mode: %s", err))
+			//	g.Message(err.Error(), "main", func() {})
+			return
+		       }
+		// Copy stdin to the pty and the pty to stdout.
+		go io.Copy(ptmx, os.Stdin)
+		io.Copy(os.Stdout, ptmx)
+		ptmx.Close()
+			//ry.Ry()
+			//Liner = liner.NewLiner()
+		        ///userInput := multiln_input(Linerr, "prompt")
+			///fmt.Println(userInput)
+			//clear()
 			continue
 		case ".h", ".history":
 			cnt, _ := ioutil.ReadFile("history.txt")

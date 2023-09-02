@@ -4,8 +4,8 @@ package ry
 import (
 ///	"os"
 
-	"github.com/gdamore/tcell"
-	"github.com/gdamore/tcell/encoding"
+	"github.com/gdamore/tcell/v2"
+	"github.com/gdamore/tcell/v2/encoding"
 )
 
 func initScreen() {

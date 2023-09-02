@@ -105,8 +105,10 @@ func selectAvailableBuffer(closeIfNone bool) {
 	if len(buffers) == 0 {
 		if closeIfNone {
 			// TODO Use method here (don't handcode screen.Fini())
+			screen.Clear()
 			screen.Fini()
-			os.Exit(0)
+			//screen.Tty()
+			//os.Exit(0)
 		}
 	} else {
 		currentViewTree = NewViewTreeLeaf(nil, NewView(buffers[0]))
