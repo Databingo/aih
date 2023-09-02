@@ -672,7 +672,16 @@ func main() {
 			continue
 		case ".v", ".vi", ".vim":
 			//Liner.Close()
-		cmd := exec.Command("./ryy")
+		var cmd *exec.Cmd
+	        switch runtime.GOOS {
+	        case "linux", "darwin":
+	        	cmd = exec.Command("./ryy")
+	        	//cmd.Stdout = os.Stdout
+	        case "windows":
+	        	cmd = exec.Command("./ryy.exe")
+	        }
+		//cmd := exec.Command("./ryy")
+		//cmd := exec.Command("./ry")
 		ptmx, err := pty.Start(cmd)
 		//---------------------
 		// Handle pty size.
@@ -708,7 +717,10 @@ func main() {
 		        ///userInput := multiln_input(Linerr, "prompt")
 			///fmt.Println(userInput)
 			//clear()
-			continue
+			ipt, _ := ioutil.ReadFile("quest.txt")
+			userInput = string(ipt)
+			fmt.Println(userInput)
+			//continue
 		case ".h", ".history":
 			cnt, _ := ioutil.ReadFile("history.txt")
 			printer(color_chat, string(cnt), true)

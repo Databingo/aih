@@ -1,5 +1,4 @@
-//package main
-package ry
+package main
 
 import (
 	"io/ioutil"
@@ -105,10 +104,8 @@ func selectAvailableBuffer(closeIfNone bool) {
 	if len(buffers) == 0 {
 		if closeIfNone {
 			// TODO Use method here (don't handcode screen.Fini())
-			screen.Clear()
 			screen.Fini()
-			//screen.Tty()
-			//os.Exit(0)
+			os.Exit(0)
 		}
 	} else {
 		currentViewTree = NewViewTreeLeaf(nil, NewView(buffers[0]))

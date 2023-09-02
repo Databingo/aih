@@ -1,11 +1,10 @@
-//package main
-package ry
+package main
 
 import (
-///	"os"
+	"os"
 
-	"github.com/gdamore/tcell/v2"
-	"github.com/gdamore/tcell/v2/encoding"
+	"github.com/gdamore/tcell"
+	"github.com/gdamore/tcell/encoding"
 )
 
 func initScreen() {
@@ -36,13 +35,12 @@ func initTermEvents() {
 }
 
 func initBuffers() {
-	//for _, arg := range os.Args[1:] {
-	//	openBufferFromFile(arg)
-	//}
-	//if len(buffers) == 0 {
-	//	openBufferNamed("*scratch*")
-	//}
-		openBufferFromFile("./quest.txt")
+	for _, arg := range os.Args[1:] {
+		openBufferFromFile(arg)
+	}
+	if len(buffers) == 0 {
+		openBufferNamed("*scratch*")
+	}
 }
 
 func initViews() {

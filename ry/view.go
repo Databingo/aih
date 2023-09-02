@@ -1,10 +1,9 @@
-//package main
-package ry
+package main
 
 import (
 	"math"
 
-	"github.com/gdamore/tcell/v2"
+	"github.com/gdamore/tcell"
 )
 
 type ViewHighlight struct {

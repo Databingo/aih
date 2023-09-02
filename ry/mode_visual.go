@@ -1,5 +1,4 @@
-//package main
-package ry
+package main
 
 func initVisual() {
 	addMode("visual")

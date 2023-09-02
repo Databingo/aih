@@ -1,5 +1,4 @@
-//package main
-package ry
+package main
 
 var (
 	config map[string]interface{}

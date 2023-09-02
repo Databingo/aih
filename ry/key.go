@@ -1,11 +1,10 @@
-//package main
-package ry
+package main
 
 import (
 	"strings"
 	"unicode"
 
-	"github.com/gdamore/tcell/v2"
+	"github.com/gdamore/tcell"
 )
 
 type Key struct {

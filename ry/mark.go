@@ -1,5 +1,4 @@
-//package main
-package ry
+package main
 
 type Mark struct {
 	Loc        *Location

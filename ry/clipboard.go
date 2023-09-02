@@ -1,5 +1,4 @@
-//package main
-package ry
+package main
 
 import (
 	zclip "github.com/zyedidia/clipboard"

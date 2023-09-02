@@ -1,5 +1,4 @@
-//package main
-package ry
+package main
 
 import (
 	"fmt"
@@ -8,7 +7,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/gdamore/tcell/v2"
+	"github.com/gdamore/tcell"
 	"github.com/go-errors/errors"
 	runewidth "github.com/mattn/go-runewidth"
 )

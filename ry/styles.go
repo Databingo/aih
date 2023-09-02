@@ -1,7 +1,6 @@
-//package main
-package ry
+package main
 
-import "github.com/gdamore/tcell/v2"
+import "github.com/gdamore/tcell"
 
 func style(name string) tcell.Style {
 	// TODO make table based and configurable
