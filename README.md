@@ -50,6 +50,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 $ git clone https://github.com/Databingo/aih
 $ go clean -cache && go clean -modcache 
 $ cd aih && go mod tidy && go build 
+$ cd ryy && go mod tidy && go build -o ../mvi && cd ..
 ```
 ## Acknowledgements
 - github.com/rivo/tview

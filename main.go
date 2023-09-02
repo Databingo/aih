@@ -675,10 +675,9 @@ func main() {
 		var cmd *exec.Cmd
 	        switch runtime.GOOS {
 	        case "linux", "darwin":
-	        	cmd = exec.Command("./ryy")
-	        	//cmd.Stdout = os.Stdout
+	        	cmd = exec.Command("./mvi")
 	        case "windows":
-	        	cmd = exec.Command("./ryy.exe")
+	        	cmd = exec.Command("./mvi.exe")
 	        }
 		//cmd := exec.Command("./ryy")
 		//cmd := exec.Command("./ry")
@@ -717,7 +716,7 @@ func main() {
 		        ///userInput := multiln_input(Linerr, "prompt")
 			///fmt.Println(userInput)
 			//clear()
-			ipt, _ := ioutil.ReadFile("quest.txt")
+			ipt, _ := ioutil.ReadFile(".quest.txt")
 			userInput = string(ipt)
 			fmt.Println(userInput)
 			//continue

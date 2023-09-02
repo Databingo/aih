@@ -1,4 +1,4 @@
-module github.com/kiasaki/ry
+module github.com/Databingo/ryy
 
 go 1.13
 
