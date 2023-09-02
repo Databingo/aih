@@ -706,7 +706,9 @@ func main() {
 		// Copy stdin to the pty and the pty to stdout.
 		go io.Copy(ptmx, os.Stdin)
 		io.Copy(os.Stdout, ptmx)
+		fmt.Println("ptmxClosing")
 		ptmx.Close()
+		fmt.Println("ptmxClosed")
 		clear()
 		err = terminal.Restore(int(os.Stdin.Fd()), oldState)
 		//exec.Command("reset").Run()
@@ -717,8 +719,15 @@ func main() {
 			///fmt.Println(userInput)
 			//clear()
 			ipt, _ := ioutil.ReadFile(".quest.txt")
+			fmt.Println(ipt)
+			fmt.Println(string(ipt))
+			if ipt[0]  != []byte{0x0a}[0] {
 			userInput = string(ipt)
 			fmt.Println(userInput)
+		       } else {
+			fmt.Println("LF")
+			userInput = "string(ipt)"
+			}
 			//continue
 		case ".h", ".history":
 			cnt, _ := ioutil.ReadFile("history.txt")

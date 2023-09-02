@@ -59,5 +59,6 @@ func style(name string) tcell.Style {
 	if name == "cursor" {
 		return tcell.StyleDefault.Reverse(true)
 	}
-	return tcell.StyleDefault.Foreground(tcell.Color(10))
+	//return tcell.StyleDefault.Foreground(tcell.Color(0))
+	return tcell.StyleDefault.Foreground(tcell.Color(2))
 }
