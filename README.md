@@ -37,6 +37,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 ## Tips
 - Close Chrome browser before run Aih at the first time.
 - More usage of command [Liner](https://github.com/peterh/liner#line-editing).
+- More usage of mini [vi](https://github.com/kiasaki/ry).
 - Answer will be auotmatically saved in system clipboard for pasting.
 - Conversations were persisted in `history.txt` beside Aih binary.
 - `./aih -rod=show` to monitor in browser.
