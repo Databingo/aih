@@ -610,6 +610,7 @@ func main() {
 
 		prompt := strconv.Itoa(left_tokens) + role + "> "
 		userInput := multiln_input(Liner, prompt)
+		//userInput, _ := Liner.Prompt(prompt)
 		//fmt.Println("userInput:", userInput)
 
 		// Check Aih commands
@@ -687,8 +688,8 @@ func main() {
 		ch <- syscall.SIGWINCH // Initial resize.
 
 		// Set stdin in raw mode.
-		//oldState, err := terminal.MakeRaw(int(os.Stdin.Fd()))
-		_, err = terminal.MakeRaw(int(os.Stdin.Fd()))
+		oldState, err := terminal.MakeRaw(int(os.Stdin.Fd()))
+		//_, err = terminal.MakeRaw(int(os.Stdin.Fd()))
 		if err != nil {
 			log.Println(fmt.Sprintf("can't make terminal raw mode: %s", err))
 			//	g.Message(err.Error(), "main", func() {})
@@ -698,6 +699,10 @@ func main() {
 		go io.Copy(ptmx, os.Stdin)
 		io.Copy(os.Stdout, ptmx)
 		ptmx.Close()
+		clear()
+		err = terminal.Restore(int(os.Stdin.Fd()), oldState)
+		//exec.Command("reset").Run()
+		//exec.Command("stty sane").Run()
 			//ry.Ry()
 			//Liner = liner.NewLiner()
 		        ///userInput := multiln_input(Linerr, "prompt")
