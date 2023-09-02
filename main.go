@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
+	_ "embed"
 	"fmt"
 	"github.com/atotto/clipboard"
+	"github.com/creack/pty"
 	"github.com/gdamore/tcell/v2"
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
@@ -16,20 +18,18 @@ import (
 	openai "github.com/sashabaranov/go-openai"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
-	"io/ioutil"
-	"os"
+	"golang.org/x/crypto/ssh/terminal"
 	"io"
+	"io/ioutil"
 	"log"
+	"os"
 	"os/exec"
+	"os/signal"
 	"runtime"
 	"strconv"
 	"strings"
 	"syscall"
 	"time"
-	_ "embed"
-	"github.com/creack/pty"
-	"golang.org/x/crypto/ssh/terminal"
-	"os/signal"
 )
 
 // var trace = true
@@ -245,10 +245,11 @@ func main() {
 			for {
 				select {
 				case question := <-channel_bard:
-					//page_bard.MustActivate()
+					page_bard.MustActivate()
 					page_bard.MustElementX("//textarea[@id='mat-input-0']").MustWaitVisible().MustInput(question)
 					page_bard.MustElementX("//button[@mattooltip='Submit']").MustClick()
 					fmt.Println("Bard generating...")
+					page_bard.MustActivate()
 					//if role == ".all" {
 					//	channel_bard <- "click_bard"
 					//}
@@ -356,6 +357,7 @@ func main() {
 					question = strings.Replace(question, `"`, `\"`, -1) // escape " in input text when code into json
 
 					d := `{"completion":{"prompt":"` + question + `","timezone":"Asia/Shanghai","model":"claude-2"},"organization_uuid":"` + org_uuid + `","conversation_uuid":"` + new_uuid + `","text":"` + question + `","attachments":[]}`
+					//fmt.Println(d)
 					js := `
 		                               (sdata, new_uuid) => {
 		                               var xhr = new XMLHttpRequest();
@@ -441,10 +443,25 @@ func main() {
 			for {
 				select {
 				case question := <-channel_hc:
-					//page_hc.MustActivate()
-					page_hc.Timeout(20 * time.Second).MustElementX("//textarea[@enterkeyhint='send']").MustInput(question)
-					page_hc.Timeout(20 * time.Second).MustElement("button svg path[d='M27.71 4.29a1 1 0 0 0-1.05-.23l-22 8a1 1 0 0 0 0 1.87l8.59 3.43L19.59 11L21 12.41l-6.37 6.37l3.44 8.59A1 1 0 0 0 19 28a1 1 0 0 0 .92-.66l8-22a1 1 0 0 0-.21-1.05Z']").MustClick()
+					page_hc.MustActivate()
+					//fmt.Println("HuggingChat received question...", question)
+					for i := 1; i <= 60; i++ {
+						if page_hc.MustHasX("//textarea[@enterkeyhint='send']") {
+							page_hc.MustElementX("//textarea[@enterkeyhint='send']").MustInput(question)
+							break
+						}
+						time.Sleep(time.Second)
+					}
+					//fmt.Println("HuggingChat input typed...")
+					for i := 1; i <= 60; i++ {
+						if page_hc.MustHas("button svg path[d='M27.71 4.29a1 1 0 0 0-1.05-.23l-22 8a1 1 0 0 0 0 1.87l8.59 3.43L19.59 11L21 12.41l-6.37 6.37l3.44 8.59A1 1 0 0 0 19 28a1 1 0 0 0 .92-.66l8-22a1 1 0 0 0-.21-1.05Z']") {
+							page_hc.MustElement("button svg path[d='M27.71 4.29a1 1 0 0 0-1.05-.23l-22 8a1 1 0 0 0 0 1.87l8.59 3.43L19.59 11L21 12.41l-6.37 6.37l3.44 8.59A1 1 0 0 0 19 28a1 1 0 0 0 .92-.66l8-22a1 1 0 0 0-.21-1.05Z']").MustClick()
+							break
+						}
+						time.Sleep(time.Second)
+					}
 					fmt.Println("HuggingChat generating...")
+					page_hc.MustActivate() // Sometime three dot to hang
 					//if role == ".all" {
 					//	channel_hc <- "click_hc"
 					//}
@@ -533,7 +550,7 @@ func main() {
 			for {
 				select {
 				case question := <-channel_chatgpt:
-					//page_chatgpt.MustActivate()
+					page_chatgpt.MustActivate()
 					if page_chatgpt.MustHasX("//div[contains(text(), 'Something went wrong. If this issue persists please')]") {
 
 						fmt.Println("ChatGPT web error")
@@ -544,6 +561,7 @@ func main() {
 					page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustWaitVisible().MustInput(question)
 					page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']/..//button").MustClick()
 					fmt.Println("ChatGPT generating...")
+					page_chatgpt.MustActivate()
 					//if role == ".all" {
 					//	channel_chatgpt <- "click_chatgpt"
 					//}
@@ -721,11 +739,13 @@ func main() {
 			ptmx.Close()
 			// Reset stdin model
 			err = terminal.Restore(int(os.Stdin.Fd()), oldState)
-                        // Read question
+			// Read question
 			ipt, _ := ioutil.ReadFile(".quest.txt")
 			// Empty file have "LF"(\n) when no edie or q!
 			if ipt[0] != []byte{0x0a}[0] {
 				userInput = string(ipt)
+				userInput = strings.Replace(userInput, "\r", "\n", -1)
+				userInput = strings.TrimSuffix(userInput, "\n")
 				fmt.Println(userInput)
 				// Re-read user input history in case other process alternated
 				if f, err := os.Open(".history"); err == nil {
