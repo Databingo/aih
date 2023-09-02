@@ -32,8 +32,8 @@ import (
 	"time"
 )
 
-// var trace = true
-var trace = false
+// var trace = false
+var trace = true
 var userInput string
 var color_bard = tcell.ColorDarkCyan
 var color_bing = tcell.ColorDarkMagenta
@@ -239,6 +239,7 @@ func main() {
 		}
 		if relogin_bard == true {
 			sprint("✘ Bard")
+			page_bard.MustPDF("./tmp/Bard✘.pdf")
 		}
 		if relogin_bard == false {
 			sprint("✔ Bard")
@@ -270,6 +271,7 @@ func main() {
 					} else {
 						channel_bard <- "✘✘  Bard, Please check the internet connection and verify login status."
 						relogin_bard = true
+						page_bard.MustPDF("./tmp/Bard✘.pdf")
 
 					}
 				}
@@ -341,6 +343,7 @@ func main() {
 
 		if relogin_claude == true {
 			sprint("✘ Claude")
+			page_claude.MustPDF("./tmp/Claude✘.pdf")
 		}
 		if relogin_claude == false {
 			sprint("✔ Claude")
@@ -389,14 +392,16 @@ func main() {
 					var claude_response = false
 					var response_json string
 					for i := 1; i <= 20; i++ {
-						response_json = page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid).MustElementX("//pre").MustText()
-						response_chat_messages = gjson.Get(string(response_json), "chat_messages").String()
-						count := gjson.Get(string(response_chat_messages), "#").Int()
+						if page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid).MustHasX("//pre") {
+							response_json = page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid).MustElementX("//pre").MustText()
+							response_chat_messages = gjson.Get(string(response_json), "chat_messages").String()
+							count := gjson.Get(string(response_chat_messages), "#").Int()
 
-						if response_chat_messages != record_chat_messages && count == record_count+2 {
-							claude_response = true
-							record_chat_messages = response_chat_messages
-							break
+							if response_chat_messages != record_chat_messages && count == record_count+2 {
+								claude_response = true
+								record_chat_messages = response_chat_messages
+								break
+							}
 						}
 						time.Sleep(3 * time.Second)
 					}
@@ -407,6 +412,7 @@ func main() {
 					} else {
 						channel_claude <- "✘✘  Claude, Please check the internet connection and verify login status."
 						relogin_claude = true
+						page_claude.MustPDF("./tmp/Claude✘.pdf")
 					}
 				}
 			}
@@ -437,6 +443,7 @@ func main() {
 		}
 		if relogin_hc == true {
 			sprint("✘ HuggingChat")
+			page_hc.MustPDF("./tmp/HuggingChat✘.pdf")
 		}
 		if relogin_hc == false {
 			sprint("✔ HuggingChat")
@@ -445,7 +452,7 @@ func main() {
 				case question := <-channel_hc:
 					//page_hc.MustActivate()
 					//fmt.Println("HuggingChat received question...", question)
-					for i := 1; i <= 60; i++ {
+					for i := 1; i <= 20; i++ {
 						if page_hc.MustHasX("//textarea[@enterkeyhint='send']") {
 							page_hc.MustElementX("//textarea[@enterkeyhint='send']").MustInput(question)
 							break
@@ -453,7 +460,7 @@ func main() {
 						time.Sleep(time.Second)
 					}
 					//fmt.Println("HuggingChat input typed...")
-					for i := 1; i <= 60; i++ {
+					for i := 1; i <= 20; i++ {
 						if page_hc.MustHas("button svg path[d='M27.71 4.29a1 1 0 0 0-1.05-.23l-22 8a1 1 0 0 0 0 1.87l8.59 3.43L19.59 11L21 12.41l-6.37 6.37l3.44 8.59A1 1 0 0 0 19 28a1 1 0 0 0 .92-.66l8-22a1 1 0 0 0-.21-1.05Z']") {
 							page_hc.MustElement("button svg path[d='M27.71 4.29a1 1 0 0 0-1.05-.23l-22 8a1 1 0 0 0 0 1.87l8.59 3.43L19.59 11L21 12.41l-6.37 6.37l3.44 8.59A1 1 0 0 0 19 28a1 1 0 0 0 .92-.66l8-22a1 1 0 0 0-.21-1.05Z']").MustClick()
 							break
@@ -461,11 +468,11 @@ func main() {
 						time.Sleep(time.Second)
 					}
 					fmt.Println("HuggingChat generating...")
-					//page_hc.MustActivate() // Sometime three dot to hang
+					page_hc.MustActivate() // Sometime three dot to hang
 					//if role == ".all" {
 					//	channel_hc <- "click_hc"
 					//}
-					for {
+					for i := 1; i <= 20; i++ {
 						info := page_hc.MustInfo()
 						if strings.HasPrefix(info.URL, "https://huggingface.co/chat/conversation") {
 							break
@@ -479,14 +486,19 @@ func main() {
 						if page_hc.MustHas("svg path[d='M24 6H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z']") {
 							stop_icon_disappear = false
 						} else {
-							stop_icon_disappear = true
-							break
+							if page_hc.MustHasX("//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')]") {
+
+								if page_hc.MustElementX("(//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')])[last()]").MustHasX("following-sibling::div[1]") {
+									stop_icon_disappear = true
+									break
+								}
+							}
 
 						}
 						time.Sleep(time.Second)
 					}
 					if stop_icon_disappear == true {
-						page_hc.MustHasX("//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')]")
+						//page_hc.MustHasX("//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')]")
 						page_hc.MustElementX("//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')]").MustWaitVisible()
 						img := page_hc.MustElementX("(//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')])[last()]")
 						content := img.MustElementX("following-sibling::div[1]")
@@ -495,6 +507,7 @@ func main() {
 					} else {
 						channel_hc <- "✘✘  HuggingChat, Please check the internet connection and verify login status."
 						relogin_hc = true
+						page_hc.MustPDF("./tmp/HuggingChat✘.pdf")
 
 					}
 				}
@@ -526,17 +539,38 @@ func main() {
 					close(channel_chatgpt_tips)
 					break
 				}
+				if page_chatgpt.MustHasX("//h2[contains(text(), 'Your session has expired')]") {
+					relogin_chatgpt = true
+					close(channel_chatgpt_tips)
+					break
+				}
 				time.Sleep(time.Second)
 			}
 		}()
 
+		//for i := 1; i <= 30; i++ {
+		//	if page_chatgpt.MustHasX("//div[contains(text(), 'Okay, let')]") {
+		//		page_chatgpt.MustElementX("//div[contains(text(), 'Okay, let')]").MustWaitVisible().MustClick()
+		//	}
+		//	time.Sleep(time.Second)
+		//}
+		//for i := 1; i <= 30; i++ {
+		//	if page_chatgpt.MustHasX("//h2[contains(text(), 'Your session has expired')]") {
+		//		relogin_chatgpt = true
+		//		break
+		//	}
+		//	if page_chatgpt.MustHasX("//div[contains(text(), 'Something went wrong. If this issue persists please')]") {
+		//		//fmt.Println("ChatGPT web error")
+		//		//channel_chatgpt <- "✘✘  ChatGPT, Please check the internet connection and verify login status."
+		//		relogin_chatgpt = true
+		//		break
+		//		//page_chatgpt.MustPDF("ChatGPT✘.pdf")
+		//	}
+		//	time.Sleep(time.Second)
+		//}
 		for i := 1; i <= 30; i++ {
 			if page_chatgpt.MustHasX("//textarea[@id='prompt-textarea']") && !page_chatgpt.MustHasX("//h2[contains(text(), 'Your session has expired')]") {
 				relogin_chatgpt = false
-				break
-			}
-			if page_chatgpt.MustHasX("//h2[contains(text(), 'Your session has expired')]") {
-				relogin_chatgpt = true
 				break
 			}
 			time.Sleep(time.Second)
@@ -544,6 +578,7 @@ func main() {
 
 		if relogin_chatgpt == true {
 			sprint("✘ ChatGPT")
+			page_chatgpt.MustPDF("./tmp/ChatGPT✘.pdf")
 		}
 		if relogin_chatgpt == false {
 			sprint("✔ ChatGPT")
@@ -551,15 +586,29 @@ func main() {
 				select {
 				case question := <-channel_chatgpt:
 					//page_chatgpt.MustActivate()
-					if page_chatgpt.MustHasX("//div[contains(text(), 'Something went wrong. If this issue persists please')]") {
+					//if page_chatgpt.MustHasX("//div[contains(text(), 'Something went wrong. If this issue persists please')]") {
+					//	fmt.Println("ChatGPT web error")
+					//	channel_chatgpt <- "✘✘  ChatGPT, Please check the internet connection and verify login status."
+					//	relogin_chatgpt = true
+					//	page_chatgpt.MustPDF("ChatGPT✘.pdf")
+					//}
 
-						fmt.Println("ChatGPT web error")
-						channel_chatgpt <- "✘✘  ChatGPT, Please check the internet connection and verify login status."
-						relogin_chatgpt = true
-
+					//page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustWaitVisible().MustInput(question)
+					//page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']/..//button").MustClick()
+					for i := 1; i <= 20; i++ {
+						if page_chatgpt.MustHasX("//textarea[@id='prompt-textarea']") {
+							page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustInput(question)
+							break
+						}
+						time.Sleep(1 * time.Second)
 					}
-					page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustWaitVisible().MustInput(question)
-					page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']/..//button").MustClick()
+					for i := 1; i <= 20; i++ {
+						if page_chatgpt.MustHasX("//textarea[@id='prompt-textarea']/..//button") {
+							page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']/..//button").MustClick()
+							break
+						}
+						time.Sleep(1 * time.Second)
+					}
 					fmt.Println("ChatGPT generating...")
 					//page_chatgpt.MustActivate()
 					//if role == ".all" {
@@ -584,6 +633,7 @@ func main() {
 					} else {
 						channel_chatgpt <- "✘✘  ChatGPT, Please check the internet connection and verify login status."
 						relogin_chatgpt = true
+						page_chatgpt.MustPDF("./tmp/ChatGPT✘.pdf")
 
 					}
 				}
