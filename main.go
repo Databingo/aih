@@ -24,17 +24,18 @@ import (
 	"strings"
 	"syscall"
 	"time"
-//	"github.com/Databingo/aih/ry"
-	"golang.org/x/crypto/ssh/terminal"
+	//	"github.com/Databingo/aih/ry"
+	_ "embed"
 	"github.com/creack/pty"
-	"os/signal"
+	"golang.org/x/crypto/ssh/terminal"
 	"io"
 	"log"
+	"os/signal"
 )
 
 // var trace = true
 var trace = false
-
+var userInput string
 var color_bard = tcell.ColorDarkCyan
 var color_bing = tcell.ColorDarkMagenta
 var color_chat = tcell.ColorWhite
@@ -55,6 +56,12 @@ func clear() {
 	}
 }
 
+func sprint(s string) {
+	if userInput != ".v" && userInput != ".vi" && userInput != ".vim" {
+		fmt.Println(s)
+	}
+
+}
 func multiln_input(Liner *liner.State, prompt string) string {
 	// For recognize multipile lines input module
 	// |--------------------------|------
@@ -114,6 +121,15 @@ func save2clip_board(rs string) {
 }
 
 func main() {
+
+	// Save miv locally
+	switch runtime.GOOS {
+	case "linux", "darwin":
+		os.WriteFile(".mvi", vi, 0755)
+	case "windows":
+		os.WriteFile(".mvi.exe", vi, 0755)
+	}
+
 	// Create prompt for user input
 	Liner := liner.NewLiner()
 	defer Liner.Close()
@@ -122,9 +138,9 @@ func main() {
 	var RESP string
 
 	// Read Aih Configure
-	aih_json, err := ioutil.ReadFile("aih.json")
+	aih_json, err := ioutil.ReadFile(".aih.json")
 	if err != nil {
-		err = ioutil.WriteFile("aih.json", []byte(""), 0644)
+		err = ioutil.WriteFile(".aih.json", []byte(""), 0644)
 	}
 
 	// Read Proxy
@@ -223,10 +239,10 @@ func main() {
 			time.Sleep(time.Second)
 		}
 		if relogin_bard == true {
-			fmt.Println("✘ Bard")
+			sprint("✘ Bard")
 		}
 		if relogin_bard == false {
-			fmt.Println("✔ Bard")
+			sprint("✔ Bard")
 			for {
 				select {
 				case question := <-channel_bard:
@@ -324,10 +340,10 @@ func main() {
 		}
 
 		if relogin_claude == true {
-			fmt.Println("✘ Claude")
+			sprint("✘ Claude")
 		}
 		if relogin_claude == false {
-			fmt.Println("✔ Claude")
+			sprint("✔ Claude")
 			for {
 				select {
 				case question := <-channel_claude:
@@ -419,10 +435,10 @@ func main() {
 			time.Sleep(time.Second)
 		}
 		if relogin_hc == true {
-			fmt.Println("✘ HuggingChat")
+			sprint("✘ HuggingChat")
 		}
 		if relogin_hc == false {
-			fmt.Println("✔ HuggingChat")
+			sprint("✔ HuggingChat")
 			for {
 				select {
 				case question := <-channel_hc:
@@ -511,10 +527,10 @@ func main() {
 		}
 
 		if relogin_chatgpt == true {
-			fmt.Println("✘ ChatGPT")
+			sprint("✘ ChatGPT")
 		}
 		if relogin_chatgpt == false {
-			fmt.Println("✔ ChatGPT")
+			sprint("✔ ChatGPT")
 			for {
 				select {
 				case question := <-channel_chatgpt:
@@ -609,7 +625,7 @@ func main() {
 		}
 
 		prompt := strconv.Itoa(left_tokens) + role + "> "
-		userInput := multiln_input(Liner, prompt)
+		userInput = multiln_input(Liner, prompt)
 		//userInput, _ := Liner.Prompt(prompt)
 		//fmt.Println("userInput:", userInput)
 
@@ -622,9 +638,9 @@ func main() {
 			if proxy == "" {
 				continue
 			}
-			aihj, err := ioutil.ReadFile("aih.json")
+			aihj, err := ioutil.ReadFile(".aih.json")
 			new_aihj, _ := sjson.Set(string(aihj), "proxy", proxy)
-			err = ioutil.WriteFile("aih.json", []byte(new_aihj), 0644)
+			err = ioutil.WriteFile(".aih.json", []byte(new_aihj), 0644)
 			if err != nil {
 				fmt.Println("Save failed.")
 			}
@@ -672,61 +688,63 @@ func main() {
 			continue
 		case ".v", ".vi", ".vim":
 			//Liner.Close()
-		var cmd *exec.Cmd
-	        switch runtime.GOOS {
-	        case "linux", "darwin":
-	        	cmd = exec.Command("./mvi")
-	        case "windows":
-	        	cmd = exec.Command("./mvi.exe")
-	        }
-		//cmd := exec.Command("./ryy")
-		//cmd := exec.Command("./ry")
-		ptmx, err := pty.Start(cmd)
-		//---------------------
-		// Handle pty size.
-		ch := make(chan os.Signal, 1)
-		signal.Notify(ch, syscall.SIGWINCH)
-		go func() {
-			for range ch {
-				if err := pty.InheritSize(os.Stdin, ptmx); err != nil {
-					log.Printf("can't resizing pty: %s", err)
-				}
+			var cmd *exec.Cmd
+			switch runtime.GOOS {
+			case "linux", "darwin":
+				cmd = exec.Command("./.mvi")
+			case "windows":
+				cmd = exec.Command("./.mvi.exe")
 			}
-		}()
-		ch <- syscall.SIGWINCH // Initial resize.
+			ptmx, err := pty.Start(cmd)
+			//---------------------
+			// Handle pty size.
+			ch := make(chan os.Signal, 1)
+			signal.Notify(ch, syscall.SIGWINCH)
+			go func() {
+				for range ch {
+					if err := pty.InheritSize(os.Stdin, ptmx); err != nil {
+						log.Printf("can't resizing pty: %s", err)
+					}
+				}
+			}()
+			ch <- syscall.SIGWINCH // Initial resize.
 
-		// Set stdin in raw mode.
-		oldState, err := terminal.MakeRaw(int(os.Stdin.Fd()))
-		//_, err = terminal.MakeRaw(int(os.Stdin.Fd()))
-		if err != nil {
-			log.Println(fmt.Sprintf("can't make terminal raw mode: %s", err))
-			//	g.Message(err.Error(), "main", func() {})
-			return
-		       }
-		// Copy stdin to the pty and the pty to stdout.
-		go io.Copy(ptmx, os.Stdin)
-		io.Copy(os.Stdout, ptmx)
-		fmt.Println("ptmxClosing")
-		ptmx.Close()
-		fmt.Println("ptmxClosed")
-		clear()
-		err = terminal.Restore(int(os.Stdin.Fd()), oldState)
-		//exec.Command("reset").Run()
-		//exec.Command("stty sane").Run()
-			//ry.Ry()
+			// Set stdin in raw mode.
+			oldState, err := terminal.MakeRaw(int(os.Stdin.Fd()))
+			if err != nil {
+				log.Println(fmt.Sprintf("can't make terminal raw mode: %s", err))
+				//	g.Message(err.Error(), "main", func() {})
+				return
+			}
+			// Copy stdin to the pty and the pty to stdout.
+			go io.Copy(ptmx, os.Stdin)
+			io.Copy(os.Stdout, ptmx)
+			ptmx.Close()
+			err = terminal.Restore(int(os.Stdin.Fd()), oldState)
 			//Liner = liner.NewLiner()
-		        ///userInput := multiln_input(Linerr, "prompt")
-			///fmt.Println(userInput)
-			//clear()
 			ipt, _ := ioutil.ReadFile(".quest.txt")
-			fmt.Println(ipt)
-			fmt.Println(string(ipt))
-			if ipt[0]  != []byte{0x0a}[0] {
-			userInput = string(ipt)
-			fmt.Println(userInput)
-		       } else {
-			fmt.Println("LF")
-			userInput = "string(ipt)"
+			// Empty file have "LF"(\n) when no edie or q!
+			if ipt[0] != []byte{0x0a}[0] {
+				userInput = string(ipt)
+				fmt.Println(userInput)
+				// Re-read user input history in case other process alternated
+				if f, err := os.Open(".history"); err == nil {
+					Liner.ReadHistory(f)
+					f.Close()
+				}
+				// Record user input without Aih commands
+				uInput = strings.Replace(userInput, "\r", "\n", -1)
+				uInput = strings.Replace(uInput, "\n", " ", -1)
+				Liner.AppendHistory(uInput)
+				// Persistent user input
+				if f, err := os.Create(".history"); err == nil {
+					Liner.WriteHistory(f)
+					f.Close()
+				}
+			} else {
+				//fmt.Println("LF")
+				//userInput = "string(ipt)"
+				continue
 			}
 			//continue
 		case ".h", ".history":
@@ -885,6 +903,7 @@ func main() {
 			uInput = strings.Replace(uInput, "\n", " ", -1)
 			Liner.AppendHistory(uInput)
 			// Persistent user input
+			// fmt.Println("wirte .history")
 			if f, err := os.Create(".history"); err == nil {
 				Liner.WriteHistory(f)
 				f.Close()
@@ -1014,9 +1033,9 @@ func main() {
 				if OpenAI_Key == "" {
 					continue
 				}
-				aihj, err := ioutil.ReadFile("aih.json")
+				aihj, err := ioutil.ReadFile(".aih.json")
 				new_aihj, _ := sjson.Set(string(aihj), "key", OpenAI_Key)
-				err = ioutil.WriteFile("aih.json", []byte(new_aihj), 0644)
+				err = ioutil.WriteFile(".aih.json", []byte(new_aihj), 0644)
 				if err != nil {
 					fmt.Println("Save failed.")
 				}

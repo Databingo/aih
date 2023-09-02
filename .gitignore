@@ -9,3 +9,5 @@ release/*
 history.txt
 test
 test/*
+ryy/.git
+ryy/.gitignore

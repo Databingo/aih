@@ -161,7 +161,8 @@ func addAlias(alias, name string) {
 
 func initCommands() {
 	addCommand("quit", func(args []string) {
-		closeCurrentBuffer(false)
+		//closeCurrentBuffer(false)
+		closeCurrentBuffer(true)
 	})
 	addAlias("q", "quit")
 	addCommand("quit!", func(args []string) {
