@@ -735,7 +735,7 @@ func main() {
 			fmt.Println(" g               Scroll top")
 			fmt.Println(" G               Scroll bottom")
 			fmt.Println(" q or Enter      Back to conversation")
-			fmt.Println(" .v              Mini vi to edit question, `:ai` send, `:q` cancel")
+			fmt.Println(" .v              Mini vi to edit quest, `:ai` send, `:q` cancel")
 			fmt.Println(" .c or .clear    Clear screen")
 			fmt.Println(" .h or .history  Show history")
 			fmt.Println(" .key            Set key of ChatGPT API")
