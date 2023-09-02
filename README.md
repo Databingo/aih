@@ -22,6 +22,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 |g           | Scroll to top|
 |G           | Scroll to bottom|
 |q or Enter  | Back to conversation|
+|.v          | Mini `vi` to edit quest, `:ai` send, `:q` cancel|
 |.c or .clear| Clear the screen|
 |.h or .history | Show history of conversations|
 |.proxy      | Set proxy, for example: socks5://127.0.0.1:7890|
@@ -36,6 +37,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 ## Tips
 - Close Chrome browser before run Aih at the first time.
 - More usage of command [Liner](https://github.com/peterh/liner#line-editing).
+- More usage of mini [vi](https://github.com/kiasaki/ry).
 - Answer will be auotmatically saved in system clipboard for pasting.
 - Conversations were persisted in `history.txt` beside Aih binary.
 - `./aih -rod=show` to monitor in browser.
@@ -49,7 +51,8 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 ```
 $ git clone https://github.com/Databingo/aih
 $ go clean -cache && go clean -modcache 
-$ cd aih && go mod tidy && go build 
+$ cd aih/ryy && go mod tidy && go build -o ../vi && cd ..
+$ go mod tidy && go build -tags vi
 ```
 ## Acknowledgements
 - github.com/rivo/tview
@@ -62,6 +65,7 @@ $ cd aih && go mod tidy && go build
 - github.com/tidwall/sjson
 - github.com/manifoldco/promptui
 - github.com/sashabaranov/go-openai 
+- github.com/kiasaki/ry
 
 ## License
 MIT and "You can choose not to include this MIT license into your copies".
