@@ -18,18 +18,17 @@ import (
 	"github.com/tidwall/sjson"
 	"io/ioutil"
 	"os"
+	"io"
+	"log"
 	"os/exec"
 	"runtime"
 	"strconv"
 	"strings"
 	"syscall"
 	"time"
-	//	"github.com/Databingo/aih/ry"
 	_ "embed"
 	"github.com/creack/pty"
 	"golang.org/x/crypto/ssh/terminal"
-	"io"
-	"log"
 	"os/signal"
 )
 
@@ -353,16 +352,16 @@ func main() {
 					record_chat_messages = gjson.Get(string(record_json), "chat_messages").String()
 					record_count := gjson.Get(string(response_chat_messages), "#").Int()
 					page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid).MustWaitLoad()
-					time.Sleep(1 * time.Second)                         // delay to simulate human being
+					time.Sleep(2 * time.Second)                         // delay to simulate human being
 					question = strings.Replace(question, `"`, `\"`, -1) // escape " in input text when code into json
 
 					d := `{"completion":{"prompt":"` + question + `","timezone":"Asia/Shanghai","model":"claude-2"},"organization_uuid":"` + org_uuid + `","conversation_uuid":"` + new_uuid + `","text":"` + question + `","attachments":[]}`
 					js := `
-		                               (sdata) => {
+		                               (sdata, new_uuid) => {
 		                               var xhr = new XMLHttpRequest();
 		                               xhr.open("POST", "https://claude.ai/api/append_message");
 		                               xhr.setRequestHeader('Content-Type', 'application/json');
-		                               xhr.setRequestHeader('Referer', 'https://claude.ai/chats');
+		                               xhr.setRequestHeader('Referer', 'https://claude.ai/chat/new_uuid');
 		                               xhr.setRequestHeader('Origin', 'https://claude.ai');
 		                               xhr.setRequestHeader('TE', 'trailers');
 		                               xhr.setRequestHeader('Connection', 'keep-alive');
@@ -377,7 +376,7 @@ func main() {
 		                               xhr.send(sdata);
 		                               }
 		                              `
-					page_claude.MustEval(js, d).Str()
+					page_claude.MustEval(js, d, new_uuid).Str()
 					fmt.Println("Claude generating...")
 					//if role == ".all" {
 					//	channel_claude <- "click_claude"
@@ -626,8 +625,6 @@ func main() {
 
 		prompt := strconv.Itoa(left_tokens) + role + "> "
 		userInput = multiln_input(Liner, prompt)
-		//userInput, _ := Liner.Prompt(prompt)
-		//fmt.Println("userInput:", userInput)
 
 		// Check Aih commands
 		switch userInput {
@@ -670,6 +667,7 @@ func main() {
 			fmt.Println(" g               Scroll top")
 			fmt.Println(" G               Scroll bottom")
 			fmt.Println(" q or Enter      Back to conversation")
+			fmt.Println(" .v              Mini vi to edit question, `:ai` send, `:q` cancel")
 			fmt.Println(" .c or .clear    Clear screen")
 			fmt.Println(" .h or .history  Show history")
 			fmt.Println(" .key            Set key of ChatGPT API")
@@ -687,7 +685,6 @@ func main() {
 			clear()
 			continue
 		case ".v", ".vi", ".vim":
-			//Liner.Close()
 			var cmd *exec.Cmd
 			switch runtime.GOOS {
 			case "linux", "darwin":
@@ -695,8 +692,9 @@ func main() {
 			case "windows":
 				cmd = exec.Command("./.mvi.exe")
 			}
+			// Enter mini vi
 			ptmx, err := pty.Start(cmd)
-			//---------------------
+
 			// Handle pty size.
 			ch := make(chan os.Signal, 1)
 			signal.Notify(ch, syscall.SIGWINCH)
@@ -716,12 +714,14 @@ func main() {
 				//	g.Message(err.Error(), "main", func() {})
 				return
 			}
+
 			// Copy stdin to the pty and the pty to stdout.
 			go io.Copy(ptmx, os.Stdin)
 			io.Copy(os.Stdout, ptmx)
 			ptmx.Close()
+			// Reset stdin model
 			err = terminal.Restore(int(os.Stdin.Fd()), oldState)
-			//Liner = liner.NewLiner()
+                        // Read question
 			ipt, _ := ioutil.ReadFile(".quest.txt")
 			// Empty file have "LF"(\n) when no edie or q!
 			if ipt[0] != []byte{0x0a}[0] {
@@ -742,8 +742,6 @@ func main() {
 					f.Close()
 				}
 			} else {
-				//fmt.Println("LF")
-				//userInput = "string(ipt)"
 				continue
 			}
 			//continue
@@ -903,7 +901,6 @@ func main() {
 			uInput = strings.Replace(uInput, "\n", " ", -1)
 			Liner.AppendHistory(uInput)
 			// Persistent user input
-			// fmt.Println("wirte .history")
 			if f, err := os.Create(".history"); err == nil {
 				Liner.WriteHistory(f)
 				f.Close()
