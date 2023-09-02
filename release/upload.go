@@ -34,7 +34,7 @@ func main() {
 		TagName:         github.String("v0.2"),
 		TargetCommitish: github.String("master"),
 		Name:            github.String("Release v0.2"),
-		Body:            github.String("Welcome to Aih! We have a version update that introduces a milestone update for the mini VI mode of editing inspirational quest."),
+		Body:            github.String("Welcome to Aih! We have a milestone update of the mini VI mode for editing inspirational quest."),
 		Draft:           github.Bool(false),
 		Prerelease:      github.Bool(false),
 	})
