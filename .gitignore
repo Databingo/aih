@@ -4,6 +4,8 @@ aih.json
 aih.mov
 .history
 .quest.txt
+.aih.json
+.mvi
 release/*
 !release/upload.go
 history.txt
