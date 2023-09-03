@@ -200,7 +200,7 @@ func main() {
 
 	// Renew browser to daemon
 	browser = browser_
-	// browser.ServeMonitor(":7777")
+	//browser.ServeMonitor(":7777")
 
 	//////////////////////0////////////////////////////
 	// Set up client of OpenAI API
@@ -434,7 +434,6 @@ func main() {
 		}()
 		//page_hc = browser.MustPage("https://huggingface.co/chat")
 		page_hc = stealth.MustPage(browser)
-		page_hc1 := stealth.MustPage(browser)
 		page_hc.MustNavigate("https://huggingface.co/chat")
 		for i := 1; i <= 30; i++ {
 			if page_hc.MustHasX("//button[contains(text(), 'Sign Out')]") {
@@ -470,10 +469,25 @@ func main() {
 						time.Sleep(time.Second)
 					}
 					fmt.Println("HuggingChat generating...")
-					page_hc.MustActivate() // Sometime three dot to hang
+					//page_hc.MustActivate() // Sometime three dot to hang
 					//if role == ".all" {
 					//	channel_hc <- "click_hc"
 					//}
+					// Check too much traffic
+					channel_hc_check := make(chan string)
+					go func() {
+						for i := 1; i <= 20; i++ {
+							if page_hc.MustHasX("//*[contains(text(), 'Too much traffic, please try again')]") {
+								channel_hc <- "✘✘  HuggingChat, Please check the internet connection and verify login status. Traffic."
+								fmt.Println("HuggingChat too much traffic...")
+								relogin_hc = true
+								close(channel_hc_check)
+								break
+							}
+							time.Sleep(1 * time.Second)
+						}
+					}()
+					// Check redirect to conversation
 					for i := 1; i <= 20; i++ {
 						info := page_hc.MustInfo()
 						if strings.HasPrefix(info.URL, "https://huggingface.co/chat/conversation") {
@@ -481,18 +495,11 @@ func main() {
 						}
 						time.Sleep(1 * time.Second)
 					}
-					// Check too much traffic 404
-					conversation_url := page_hc.MustInfo().URL
-					page_hc1.MustNavigate(conversation_url)
-					if page_hc1.MustHasX("//h2[contains(text(), 'Conversation not found')]") {
-						channel_hc <- "✘✘  HuggingChat, Please check the internet connection and verify login status."
-						relogin_hc = true
-						continue
-					}
 
 					// stop_icon
 					var stop_icon_disappear = false
-					for i := 1; i <= 60; i++ {
+					for i := 1; i <= 80; i++ {
+						//for {
 						if page_hc.MustHas("svg path[d='M24 6H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z']") {
 							stop_icon_disappear = false
 						} else {
@@ -504,6 +511,9 @@ func main() {
 								}
 							}
 
+						}
+						if relogin_hc == true {
+							continue
 						}
 						time.Sleep(time.Second)
 					}
@@ -596,15 +606,6 @@ func main() {
 				select {
 				case question := <-channel_chatgpt:
 					//page_chatgpt.MustActivate()
-					//if page_chatgpt.MustHasX("//div[contains(text(), 'Something went wrong. If this issue persists please')]") {
-					//	fmt.Println("ChatGPT web error")
-					//	channel_chatgpt <- "✘✘  ChatGPT, Please check the internet connection and verify login status."
-					//	relogin_chatgpt = true
-					//	page_chatgpt.MustPDF("ChatGPT✘.pdf")
-					//}
-
-					//page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustWaitVisible().MustInput(question)
-					//page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']/..//button").MustClick()
 					for i := 1; i <= 20; i++ {
 						if page_chatgpt.MustHasX("//textarea[@id='prompt-textarea']") {
 							page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustInput(question)
