@@ -34,7 +34,7 @@ func main() {
 		TagName:         github.String("v0.2.1"),
 		TargetCommitish: github.String("master"),
 		Name:            github.String("Release v0.2.1"),
-		Body:            github.String("Welcome to Aih! Added 404 checking for Huggingchat when traffic too much."),
+		Body:            github.String("Welcome to Aih! Added tread checking for Huggingchat when traffic too much."),
 		Draft:           github.Bool(false),
 		Prerelease:      github.Bool(false),
 	})

@@ -43,6 +43,10 @@ Zulu:
 | Superhulpmiddel voor onderzoek
 | Υπερ εργαλείο έρευνας τεχνητής νοημοσύνης
 
+ | 科研神器 | 연구 슈퍼 도구 | L'artefact de recherche | El artefacto de investigación de | Das Forschungsartefakt | Артефакт исследования | Artefato de Pesquisa de | Artefatto di ricerca | एआई शोध का सुपर टूल | قطعة أثرية لبحث الذكاء الاصطناعي | เครื่องมือวิจัย ยอดเยี่ยม | Google | API | CLI | VIM |
+
+
+
 https://huggingface.co/chat/__data.json?x-sveltekit-invalidated=1_  conversation list 
 https://huggingface.co/chat/conversation/64f30169c498fd14c9f41469   404|could DELETE
 https://huggingface.co/chat/conversation/64f30169c498fd14c9f41469/web-search?
