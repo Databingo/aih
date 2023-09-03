@@ -1,0 +1,49 @@
+
+English: AI Research Artifact
+Japanese: AI 研究の神器
+Korean: AI 연구 슈퍼 도구
+French: L'artefact de recherche AI
+Spanish: El artefacto de investigación de IA
+German: Das AI-Forschungsartefakt
+Russian: Артефакт AI-исследования
+Portuguese: Artefato de Pesquisa de IA
+Italian: Artefatto di ricerca AI
+Hindi: एआई शोध का सुपर टूल
+Arabic: قطعة أثرية لبحث الذكاء الاصطناعي
+Vietnamese: Siêu công cụ nghiên cứu AI
+Thai: เครื่องมือวิจัย AI ยอดเยี่ยม
+Indonesian: Super alat penelitian AI
+Malay: Super alat penyelidikan AI
+Finnish: Supertyökalu tekoälyn tutkimukseen
+Swedish: Superverktyg för AI-forskning
+Dutch: Superhulpmiddel voor AI-onderzoek
+Romanian: Super unealtă de cercetare în domeniul inteligenței artificiale
+Greek: Υπερ εργαλείο έρευνας τεχνητής νοημοσύνης
+
+Indonesian: 
+Portuguese: 
+Dutch: 
+Polish:
+Hungarian: 
+Zulu:
+
+| 研究の神器
+| 연구 슈퍼 도구
+| L'artefact de recherche
+| El artefacto de investigación de
+| Das Forschungsartefakt
+| Артефакт исследования
+| Artefato de Pesquisa de 
+| Artefatto di ricerca
+| एआई शोध का सुपर टूल
+| قطعة أثرية لبحث الذكاء الاصطناعي
+| เครื่องมือวิจัย ยอดเยี่ยม
+| Supertyökalu tekoälyn tutkimukseen
+| Superverktyg för forskning
+| Superhulpmiddel voor onderzoek
+| Υπερ εργαλείο έρευνας τεχνητής νοημοσύνης
+
+yaml for histoy
+headless false to get cookie?
+https://huggingface.co/chat/__data.json?x-sveltekit-invalidated=1_  conversation list 
+https://huggingface.co/chat/conversation/64f30169c498fd14c9f41469   404|could DELETE
