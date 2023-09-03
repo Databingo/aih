@@ -434,6 +434,7 @@ func main() {
 		}()
 		//page_hc = browser.MustPage("https://huggingface.co/chat")
 		page_hc = stealth.MustPage(browser)
+		page_hc1 := stealth.MustPage(browser)
 		page_hc.MustNavigate("https://huggingface.co/chat")
 		for i := 1; i <= 30; i++ {
 			if page_hc.MustHasX("//button[contains(text(), 'Sign Out')]") {
@@ -479,6 +480,14 @@ func main() {
 							break
 						}
 						time.Sleep(1 * time.Second)
+					}
+					// Check too much traffic 404
+					conversation_url := page_hc.MustInfo().URL
+					page_hc1.MustNavigate(conversation_url)
+					if page_hc1.MustHasX("//h2[contains(text(), 'Conversation not found')]") {
+						channel_hc <- "✘✘  HuggingChat, Please check the internet connection and verify login status."
+						relogin_hc = true
+						continue
 					}
 
 					// stop_icon
