@@ -31,10 +31,10 @@ func main() {
 
 	// Create a new release
 	release, _, err := client.Repositories.CreateRelease(ctx, owner, repo, &github.RepositoryRelease{
-		TagName:         github.String("v0.2"),
+		TagName:         github.String("v0.2.1"),
 		TargetCommitish: github.String("master"),
-		Name:            github.String("Release v0.2"),
-		Body:            github.String("Welcome to Aih! We have a milestone update of the mini VI mode for editing inspirational quest."),
+		Name:            github.String("Release v0.2.1"),
+		Body:            github.String("Welcome to Aih! Added 404 checking for Huggingchat when traffic too much."),
 		Draft:           github.Bool(false),
 		Prerelease:      github.Bool(false),
 	})
