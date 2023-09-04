@@ -358,7 +358,7 @@ func main() {
 					record_count := gjson.Get(string(response_chat_messages), "#").Int()
 					page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid).MustWaitLoad()
 					time.Sleep(2 * time.Second)                         // delay to simulate human being
-					question = strings.Replace(question, `"`, `\"`, -1) // escape " in input text when code into json
+					//question = strings.Replace(question, `"`, `\"`, -1) // escape " in input text when code into json
 
 					d := `{"completion":{"prompt":"` + question + `","timezone":"Asia/Shanghai","model":"claude-2"},"organization_uuid":"` + org_uuid + `","conversation_uuid":"` + new_uuid + `","text":"` + question + `","attachments":[]}`
 					//fmt.Println(d)
@@ -807,10 +807,14 @@ func main() {
 			}
 			// When no edie or q! Empty file have "LF"(\n)
 			if ipt[0] != []byte{0x0a}[0] {
+			        // For claude ajax
 				userInput = string(ipt)
 				userInput = strings.Replace(userInput, "\r", "\n", -1)
+				userInput = strings.Replace(userInput, "\"", "\\\"", -1)
+				userInput = strings.Replace(userInput, "\n", "\\n", -1)
 				userInput = strings.TrimSuffix(userInput, "\n")
 				fmt.Println(userInput)
+
 				// Re-read user input history in case other process alternated
 				if f, err := os.Open(".history"); err == nil {
 					Liner.ReadHistory(f)
