@@ -56,3 +56,4 @@ TODO:
 yaml for histoy
 headless false to get cookie? NO
 check chatGPT verify mask? Difficult
+color setting of vi for symbols (now is black can't see in black background)
