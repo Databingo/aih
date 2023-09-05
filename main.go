@@ -236,6 +236,17 @@ func main() {
 				relogin_bard = true
 				break
 			}
+			// Check "Sign in"
+			if page_bard.MustHasX("//a[contains(text(), 'Sign in')]") {
+				relogin_bard = true
+				break
+			}
+			// Check "You've been signed out"
+			if page_bard.MustHasX("//h1[contains(text(), 've been signed out')]") {
+				relogin_bard = true
+				break
+			}
+
 			time.Sleep(time.Second)
 		}
 		if relogin_bard == true {
@@ -351,13 +362,17 @@ func main() {
 			for {
 				select {
 				case question := <-channel_claude:
+					question = strings.Replace(question, "\r", "\n", -1)
+					question = strings.Replace(question, "\"", "\\\"", -1)
+					question = strings.Replace(question, "\n", "\\n", -1)
+					question = strings.TrimSuffix(question, "\n")
 					// re-activate
 					page_claude.MustNavigate("https://claude.ai/api/account/statsig/" + org_uuid).MustWaitLoad()
 					record_json := page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid).MustElementX("//pre").MustText()
 					record_chat_messages = gjson.Get(string(record_json), "chat_messages").String()
 					record_count := gjson.Get(string(response_chat_messages), "#").Int()
 					page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid).MustWaitLoad()
-					time.Sleep(2 * time.Second)                         // delay to simulate human being
+					time.Sleep(2 * time.Second) // delay to simulate human being
 					//question = strings.Replace(question, `"`, `\"`, -1) // escape " in input text when code into json
 
 					d := `{"completion":{"prompt":"` + question + `","timezone":"Asia/Shanghai","model":"claude-2"},"organization_uuid":"` + org_uuid + `","conversation_uuid":"` + new_uuid + `","text":"` + question + `","attachments":[]}`
@@ -807,12 +822,12 @@ func main() {
 			}
 			// When no edie or q! Empty file have "LF"(\n)
 			if ipt[0] != []byte{0x0a}[0] {
-			        // For claude ajax
+				// For claude ajax
 				userInput = string(ipt)
-				userInput = strings.Replace(userInput, "\r", "\n", -1)
-				userInput = strings.Replace(userInput, "\"", "\\\"", -1)
-				userInput = strings.Replace(userInput, "\n", "\\n", -1)
-				userInput = strings.TrimSuffix(userInput, "\n")
+				//userInput = strings.Replace(userInput, "\r", "\n", -1)
+				//userInput = strings.Replace(userInput, "\"", "\\\"", -1)
+				//userInput = strings.Replace(userInput, "\n", "\\n", -1)
+				//userInput = strings.TrimSuffix(userInput, "\n")
 				fmt.Println(userInput)
 
 				// Re-read user input history in case other process alternated
