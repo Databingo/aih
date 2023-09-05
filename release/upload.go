@@ -31,10 +31,10 @@ func main() {
 
 	// Create a new release
 	release, _, err := client.Repositories.CreateRelease(ctx, owner, repo, &github.RepositoryRelease{
-		TagName:         github.String("v0.2.3"),
+		TagName:         github.String("v0.2.4"),
 		TargetCommitish: github.String("master"),
-		Name:            github.String("Release v0.2.3"),
-		Body:            github.String("Welcome to Aih! Fixed Claude json encoding with newline problem in multiple input mode."),
+		Name:            github.String("Release v0.2.4"),
+		Body:            github.String("Welcome to Aih! Fixed %%v print bug in tview by add escape producing."),
 		Draft:           github.Bool(false),
 		Prerelease:      github.Bool(false),
 	})

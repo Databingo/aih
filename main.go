@@ -1229,7 +1229,7 @@ func printer(colour tcell.Color, context string, history bool) {
 		AddItem(tview.NewTextView(), 0, 1, false), 0, 8, false).
 		AddItem(tview.NewTextView(), 0, 1, false)
 
-	fmt.Fprintf(textView, context)
+	fmt.Fprint(textView, tview.Escape(context))
 	if history {
 		textView.ScrollToEnd()
 	}
