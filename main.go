@@ -34,14 +34,14 @@ import (
 
 var trace = false
 
-// var trace = true
+//var trace = true
 var userInput string
 var color_bard = tcell.ColorDarkCyan
 var color_bing = tcell.ColorDarkMagenta
 var color_chat = tcell.ColorWhite
 var color_chatapi = tcell.ColorWhite
 var color_claude = tcell.ColorYellow
-var color_huggingchat = tcell.ColorDarkMagenta
+//var color_huggingchat = tcell.ColorDarkMagenta
 
 func clear() {
 	switch runtime.GOOS {
@@ -436,120 +436,120 @@ func main() {
 
 	}()
 
-	//////////////////////c3////////////////////////////
-	// Set up client of Huggingchat (Rod version)
-	var page_hc *rod.Page
-	var relogin_hc = true
-	channel_hc := make(chan string)
-	go func() {
-		defer func() {
-			if err := recover(); err != nil {
-				relogin_hc = true
-			}
-		}()
-		//page_hc = browser.MustPage("https://huggingface.co/chat")
-		page_hc = stealth.MustPage(browser)
-		page_hc.MustNavigate("https://huggingface.co/chat")
-		for i := 1; i <= 30; i++ {
-			if page_hc.MustHasX("//button[contains(text(), 'Sign Out')]") {
-				relogin_hc = false
-				break
-			}
-			time.Sleep(time.Second)
-		}
-		if relogin_hc == true {
-			sprint("✘ HuggingChat")
-			//page_hc.MustPDF("./tmp/HuggingChat✘.pdf")
-		}
-		if relogin_hc == false {
-			sprint("✔ HuggingChat")
-			for {
-				select {
-				case question := <-channel_hc:
-					//page_hc.MustActivate()
-					//fmt.Println("HuggingChat received question...", question)
-					for i := 1; i <= 20; i++ {
-						if page_hc.MustHasX("//textarea[@enterkeyhint='send']") {
-							page_hc.MustElementX("//textarea[@enterkeyhint='send']").MustInput(question)
-							break
-						}
-						time.Sleep(time.Second)
-					}
-					//fmt.Println("HuggingChat input typed...")
-					for i := 1; i <= 20; i++ {
-						if page_hc.MustHas("button svg path[d='M27.71 4.29a1 1 0 0 0-1.05-.23l-22 8a1 1 0 0 0 0 1.87l8.59 3.43L19.59 11L21 12.41l-6.37 6.37l3.44 8.59A1 1 0 0 0 19 28a1 1 0 0 0 .92-.66l8-22a1 1 0 0 0-.21-1.05Z']") {
-							page_hc.MustElement("button svg path[d='M27.71 4.29a1 1 0 0 0-1.05-.23l-22 8a1 1 0 0 0 0 1.87l8.59 3.43L19.59 11L21 12.41l-6.37 6.37l3.44 8.59A1 1 0 0 0 19 28a1 1 0 0 0 .92-.66l8-22a1 1 0 0 0-.21-1.05Z']").MustClick()
-							break
-						}
-						time.Sleep(time.Second)
-					}
-					fmt.Println("HuggingChat generating...")
-					//page_hc.MustActivate() // Sometime three dot to hang
-					//if role == ".all" {
-					//	channel_hc <- "click_hc"
-					//}
-					// Check too much traffic
-					channel_hc_check := make(chan string)
-					go func() {
-						for i := 1; i <= 20; i++ {
-							if page_hc.MustHasX("//*[contains(text(), 'Too much traffic, please try again')]") {
-								channel_hc <- "✘✘  HuggingChat, Please check the internet connection and verify login status. Traffic."
-								fmt.Println("HuggingChat too much traffic...")
-								relogin_hc = true
-								close(channel_hc_check)
-								break
-							}
-							time.Sleep(1 * time.Second)
-						}
-					}()
-					// Check redirect to conversation
-					for i := 1; i <= 20; i++ {
-						info := page_hc.MustInfo()
-						if strings.HasPrefix(info.URL, "https://huggingface.co/chat/conversation") {
-							break
-						}
-						time.Sleep(1 * time.Second)
-					}
+	////////////////////////c3////////////////////////////
+	//// Set up client of Huggingchat (Rod version)
+	//var page_hc *rod.Page
+	//var relogin_hc = true
+	//channel_hc := make(chan string)
+	//go func() {
+	//	defer func() {
+	//		if err := recover(); err != nil {
+	//			relogin_hc = true
+	//		}
+	//	}()
+	//	//page_hc = browser.MustPage("https://huggingface.co/chat")
+	//	page_hc = stealth.MustPage(browser)
+	//	page_hc.MustNavigate("https://huggingface.co/chat")
+	//	for i := 1; i <= 30; i++ {
+	//		if page_hc.MustHasX("//button[contains(text(), 'Sign Out')]") {
+	//			relogin_hc = false
+	//			break
+	//		}
+	//		time.Sleep(time.Second)
+	//	}
+	//	if relogin_hc == true {
+	//		sprint("✘ HuggingChat")
+	//		//page_hc.MustPDF("./tmp/HuggingChat✘.pdf")
+	//	}
+	//	if relogin_hc == false {
+	//		sprint("✔ HuggingChat")
+	//		for {
+	//			select {
+	//			case question := <-channel_hc:
+	//				//page_hc.MustActivate()
+	//				//fmt.Println("HuggingChat received question...", question)
+	//				for i := 1; i <= 20; i++ {
+	//					if page_hc.MustHasX("//textarea[@enterkeyhint='send']") {
+	//						page_hc.MustElementX("//textarea[@enterkeyhint='send']").MustInput(question)
+	//						break
+	//					}
+	//					time.Sleep(time.Second)
+	//				}
+	//				//fmt.Println("HuggingChat input typed...")
+	//				for i := 1; i <= 20; i++ {
+	//					if page_hc.MustHas("button svg path[d='M27.71 4.29a1 1 0 0 0-1.05-.23l-22 8a1 1 0 0 0 0 1.87l8.59 3.43L19.59 11L21 12.41l-6.37 6.37l3.44 8.59A1 1 0 0 0 19 28a1 1 0 0 0 .92-.66l8-22a1 1 0 0 0-.21-1.05Z']") {
+	//						page_hc.MustElement("button svg path[d='M27.71 4.29a1 1 0 0 0-1.05-.23l-22 8a1 1 0 0 0 0 1.87l8.59 3.43L19.59 11L21 12.41l-6.37 6.37l3.44 8.59A1 1 0 0 0 19 28a1 1 0 0 0 .92-.66l8-22a1 1 0 0 0-.21-1.05Z']").MustClick()
+	//						break
+	//					}
+	//					time.Sleep(time.Second)
+	//				}
+	//				fmt.Println("HuggingChat generating...")
+	//				//page_hc.MustActivate() // Sometime three dot to hang
+	//				//if role == ".all" {
+	//				//	channel_hc <- "click_hc"
+	//				//}
+	//				// Check too much traffic
+	//				channel_hc_check := make(chan string)
+	//				go func() {
+	//					for i := 1; i <= 20; i++ {
+	//						if page_hc.MustHasX("//*[contains(text(), 'Too much traffic, please try again')]") {
+	//							channel_hc <- "✘✘  HuggingChat, Please check the internet connection and verify login status. Traffic."
+	//							fmt.Println("HuggingChat too much traffic...")
+	//							relogin_hc = true
+	//							close(channel_hc_check)
+	//							break
+	//						}
+	//						time.Sleep(1 * time.Second)
+	//					}
+	//				}()
+	//				// Check redirect to conversation
+	//				for i := 1; i <= 20; i++ {
+	//					info := page_hc.MustInfo()
+	//					if strings.HasPrefix(info.URL, "https://huggingface.co/chat/conversation") {
+	//						break
+	//					}
+	//					time.Sleep(1 * time.Second)
+	//				}
 
-					// stop_icon
-					var stop_icon_disappear = false
-					for i := 1; i <= 80; i++ {
-						//for {
-						if page_hc.MustHas("svg path[d='M24 6H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z']") {
-							stop_icon_disappear = false
-						} else {
-							if page_hc.MustHasX("//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')]") {
+	//				// stop_icon
+	//				var stop_icon_disappear = false
+	//				for i := 1; i <= 80; i++ {
+	//					//for {
+	//					if page_hc.MustHas("svg path[d='M24 6H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z']") {
+	//						stop_icon_disappear = false
+	//					} else {
+	//						if page_hc.MustHasX("//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')]") {
 
-								if page_hc.MustElementX("(//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')])[last()]").MustHasX("following-sibling::div[1]") {
-									stop_icon_disappear = true
-									break
-								}
-							}
+	//							if page_hc.MustElementX("(//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')])[last()]").MustHasX("following-sibling::div[1]") {
+	//								stop_icon_disappear = true
+	//								break
+	//							}
+	//						}
 
-						}
-						if relogin_hc == true {
-							continue
-						}
-						time.Sleep(time.Second)
-					}
-					if stop_icon_disappear == true {
-						//page_hc.MustHasX("//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')]")
-						page_hc.MustElementX("//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')]").MustWaitVisible()
-						img := page_hc.MustElementX("(//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')])[last()]")
-						content := img.MustElementX("following-sibling::div[1]")
-						answer := content.MustText()
-						channel_hc <- answer
-					} else {
-						channel_hc <- "✘✘  HuggingChat, Please check the internet connection and verify login status."
-						relogin_hc = true
-						//page_hc.MustPDF("./tmp/HuggingChat✘.pdf")
+	//					}
+	//					if relogin_hc == true {
+	//						continue
+	//					}
+	//					time.Sleep(time.Second)
+	//				}
+	//				if stop_icon_disappear == true {
+	//					//page_hc.MustHasX("//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')]")
+	//					page_hc.MustElementX("//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')]").MustWaitVisible()
+	//					img := page_hc.MustElementX("(//img[contains(@src, 'https://huggingface.co/avatars/2edb18bd0206c16b433841a47f53fa8e.svg')])[last()]")
+	//					content := img.MustElementX("following-sibling::div[1]")
+	//					answer := content.MustText()
+	//					channel_hc <- answer
+	//				} else {
+	//					channel_hc <- "✘✘  HuggingChat, Please check the internet connection and verify login status."
+	//					relogin_hc = true
+	//					//page_hc.MustPDF("./tmp/HuggingChat✘.pdf")
 
-					}
-				}
-			}
-		}
+	//				}
+	//			}
+	//		}
+	//	}
 
-	}()
+	//}()
 
 	//////////////////////c4////////////////////////////
 	// Set up client of chatgpt (rod version)
@@ -667,6 +667,192 @@ func main() {
 		}
 	}()
 
+	//////////////////////c5////////////////////////////
+	// Set up client of falcon180-180B (Rod version)
+	var page_falcon180 *rod.Page
+	var relogin_falcon180 = true
+	channel_falcon180 := make(chan string)
+	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				relogin_falcon180 = true
+			}
+		}()
+		//page_hc = browser.MustPage("https://huggingface.co/chat")
+		page_falcon180 = stealth.MustPage(browser)
+		//page_falcon180.MustNavigate("https://huggingface.co/spaces/tiiuae/falcon-180b-demo")
+                page_falcon180.MustNavigate("https://tiiuae-falcon-180b-demo.hf.space/?__theme=light")
+		for i := 1; i <= 30; i++ {
+			if page_falcon180.MustHasX("//textarea[@data-testid='textbox']") {
+				relogin_falcon180 = false
+				break
+			}
+			time.Sleep(time.Second)
+		}
+		if relogin_falcon180 == true {
+			sprint("✘ Falcon180")
+			//page_hc.MustPDF("./tmp/HuggingChat✘.pdf")
+		}
+		if relogin_falcon180 == false {
+			sprint("✔ Falcon180")
+			for {
+				select {
+				case question := <-channel_falcon180:
+					//page_hc.MustActivate()
+					//fmt.Println("Falcon180 received question...", question)
+					for i := 1; i <= 20; i++ {
+						if page_falcon180.MustHasX("//textarea[@data-testid='textbox']") {
+							page_falcon180.MustElementX("//textarea[@data-testid='textbox']").MustInput(question)
+							break
+						}
+						time.Sleep(time.Second)
+					}
+					//fmt.Println("Falcon180 input typed...")
+					for i := 1; i <= 20; i++ {
+						//if page_falcon180.MustHasX("//button[contains(text(), 'Submit')]") {
+						if page_falcon180.MustHasX("//button[@id='component-17']") {
+							page_falcon180.MustElementX("//button[@id='component-17']").MustClick()
+							break
+						}
+						time.Sleep(time.Second)
+					}
+					fmt.Println("Falcon180 generating...")
+					//page_falcon180.MustActivate() // Sometime three dot to hang
+					//if role == ".all" {
+					//	channel_falcon180 <- "click_falcon180"
+					//}
+					//// Check Error
+					//channel_falcon180_check := make(chan string)
+					//go func() {
+					//	for i := 1; i <= 20; i++ {
+					//		if page_falcon180.MustHasX("//*[contains(text(), 'Too much traffic, please try again')]") {
+					//			channel_falcon180 <- "✘✘ Falcon180, Please check the internet connection and verify login status. Traffic."
+					//			fmt.Println("Falcon180 too much traffic...")
+					//			relogin_falcon180 = true
+					//			close(channel_falcon180_check)
+					//			break
+					//		}
+					//		time.Sleep(1 * time.Second)
+					//	}
+					//}()
+
+					// stop_icon
+					var stop_icon_disappear = false
+					if page_falcon180.MustElementX("//button[@id='component-18']").MustWaitVisible() != nil {
+						//fmt.Println("creating...")
+						if page_falcon180.MustElementX("//button[@id='component-18']").MustWaitInvisible() != nil {
+							//fmt.Println("returned...")
+							stop_icon_disappear = true
+						}
+					}
+
+					if stop_icon_disappear == true {
+						answer := page_falcon180.MustElementX("(//div[@data-testid='bot'])[last()]").MustText()
+						channel_falcon180 <- answer
+					} else {
+						channel_falcon180 <- "✘✘  Falcon180, Please check the internet connection and verify login status."
+						relogin_falcon180 = true
+						//page_hc.MustPDF("./tmp/HuggingChat✘.pdf")
+
+					}
+				}
+			}
+		}
+
+	}()
+
+	//////////////////////c6////////////////////////////
+	// Set up client of Llama2 (Rod version)
+	var page_llama2 *rod.Page
+	var relogin_llama2 = true
+	channel_llama2 := make(chan string)
+	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				relogin_llama2 = true
+			}
+		}()
+		//page_hc = browser.MustPage("https://huggingface.co/chat")
+		page_llama2 = stealth.MustPage(browser)
+		page_llama2.MustNavigate("https://ysharma-explore-llamav2-with-tgi.hf.space")
+		for i := 1; i <= 30; i++ {
+			if page_llama2.MustHasX("//textarea[@data-testid='textbox']") {
+				relogin_llama2 = false
+				break
+			}
+			time.Sleep(time.Second)
+		}
+		if relogin_llama2 == true {
+			sprint("✘ Llama2")
+			//page_hc.MustPDF("./tmp/HuggingChat✘.pdf")
+		}
+		if relogin_llama2 == false {
+			sprint("✔ Llama2")
+			for {
+				select {
+				case question := <-channel_llama2:
+					//page_hc.MustActivate()
+					//fmt.Println("Falcon180 received question...", question)
+					for i := 1; i <= 20; i++ {
+						if page_llama2.MustHasX("//textarea[@data-testid='textbox']") {
+							page_llama2.MustElementX("//textarea[@data-testid='textbox']").MustInput(question)
+							break
+						}
+						time.Sleep(time.Second)
+					}
+					//fmt.Println("Falcon180 input typed...")
+					for i := 1; i <= 20; i++ {
+						if page_llama2.MustHasX("//button[contains(text(), 'Submit')]") {
+							page_llama2.MustElementX("//button[contains(text(), 'Submit')]").MustClick()
+							break
+						}
+						time.Sleep(time.Second)
+					}
+					fmt.Println("Llama2 generating...")
+					//page_falcon180.MustActivate() // Sometime three dot to hang
+					//if role == ".all" {
+					//	channel_falcon180 <- "click_falcon180"
+					//}
+					//// Check Error
+					//channel_falcon180_check := make(chan string)
+					//go func() {
+					//	for i := 1; i <= 20; i++ {
+					//		if page_falcon180.MustHasX("//*[contains(text(), 'Too much traffic, please try again')]") {
+					//			channel_falcon180 <- "✘✘ Falcon180, Please check the internet connection and verify login status. Traffic."
+					//			fmt.Println("Falcon180 too much traffic...")
+					//			relogin_falcon180 = true
+					//			close(channel_falcon180_check)
+					//			break
+					//		}
+					//		time.Sleep(1 * time.Second)
+					//	}
+					//}()
+
+					// stop_icon
+					var stop_icon_disappear = false
+					if page_llama2.MustElementX("//button[contains(text(), 'Stop')]").MustWaitVisible() != nil {
+						//fmt.Println("creating...")
+						if page_llama2.MustElementX("//button[contains(text(), 'Stop')]").MustWaitInvisible() != nil {
+							//fmt.Println("returned...")
+							stop_icon_disappear = true
+						}
+					}
+
+					if stop_icon_disappear == true {
+						answer := page_llama2.MustElementX("(//div[@data-testid='bot'])[last()]").MustText()
+						channel_llama2 <- answer
+					} else {
+						channel_llama2 <- "✘✘  Llama2, Please check the internet connection and verify login status."
+						relogin_llama2 = true
+						//page_hc.MustPDF("./tmp/HuggingChat✘.pdf")
+
+					}
+				}
+			}
+		}
+
+	}()
+
 	// Exit when wake up for the disconnecting with daemon browser
 	go func() {
 		//fmt.Println("wake monitor...")
@@ -679,7 +865,9 @@ func main() {
 				close(channel_bard)
 				close(channel_chatgpt)
 				close(channel_claude)
-				close(channel_hc)
+				//close(channel_hc)
+				close(channel_llama2)
+				close(channel_falcon180)
 				Liner.Close()
 				syscall.Exit(0)
 			}
@@ -738,7 +926,9 @@ func main() {
 			close(channel_bard)
 			close(channel_chatgpt)
 			close(channel_claude)
-			close(channel_hc)
+			//close(channel_hc)
+			close(channel_llama2)
+			close(channel_falcon180)
 			Liner.Close()
 			syscall.Exit(0)
 			//os.Exit(0)
@@ -858,7 +1048,9 @@ func main() {
 			close(channel_bard)
 			close(channel_chatgpt)
 			close(channel_claude)
-			close(channel_hc)
+			//close(channel_hc)
+			close(channel_llama2)
+			close(channel_falcon180)
 			Liner.Close()
 			syscall.Exit(0)
 		case ".new":
@@ -880,7 +1072,9 @@ func main() {
 					"Bard",
 					"ChatGPT",
 					"Claude",
-					"HuggingChat",
+					//"HuggingChat",
+					"Llama2",
+					"Falcon180",
 					"ChatGPT API gpt-3.5-turbo, $0.002/1K tokens",
 					"ChatGPT API gpt-4 8K Prompt, $0.03/1K tokens",
 					"ChatGPT API gpt-4 8K Completion, $0.06/1K tokens",
@@ -912,8 +1106,16 @@ func main() {
 				role = ".claude"
 				left_tokens = 0
 				continue
-			case "HuggingChat":
-				role = ".huggingchat"
+			//case "HuggingChat":
+			//	role = ".huggingchat"
+			//	left_tokens = 0
+			//	continue
+			case "Falcon180":
+				role = ".falcon180"
+				left_tokens = 0
+				continue
+			case "Llama2":
+				role = ".llama2"
 				left_tokens = 0
 				continue
 			case "All-In-One":
@@ -1013,6 +1215,7 @@ func main() {
 
 		// ALL-IN-ONE:
 		if role == ".all" {
+			//--------------- ----------------------
 			if relogin_bard == false {
 				channel_bard <- userInput
 				//<-channel_bard
@@ -1025,10 +1228,19 @@ func main() {
 				channel_claude <- userInput
 				//<-channel_claude
 			}
-			if relogin_hc == false {
-				channel_hc <- userInput
+			//if relogin_hc == false {
+			//	channel_hc <- userInput
+			//	//<-channel_hc
+			//}
+			if relogin_llama2 == false {
+				channel_llama2 <- userInput
 				//<-channel_hc
 			}
+			if relogin_falcon180 == false {
+				channel_falcon180 <- userInput
+				//<-channel_hc
+			}
+			//--------------- ----------------------
 
 			if relogin_bard == false {
 				answer_bard := <-channel_bard
@@ -1048,11 +1260,23 @@ func main() {
 				RESP += "\n\n---------------- claude answer ----------------\n"
 				RESP += strings.TrimSpace(answer_claude)
 			}
-			if relogin_hc == false {
-				answer_hc := <-channel_hc
-				fmt.Println(">HuggingChat Done.")
-				RESP += "\n\n---------------- huggingchat answer ----------------\n"
-				RESP += strings.TrimSpace(answer_hc)
+			//if relogin_hc == false {
+			//	answer_hc := <-channel_hc
+			//	fmt.Println(">HuggingChat Done.")
+			//	RESP += "\n\n---------------- huggingchat answer ----------------\n"
+			//	RESP += strings.TrimSpace(answer_hc)
+			//}
+			if relogin_llama2 == false {
+				answer_llama2 := <-channel_llama2
+				fmt.Println(">Llama2 Done.")
+				RESP += "\n\n---------------- llama2 answer ----------------\n"
+				RESP += strings.TrimSpace(answer_llama2)
+			}
+			if relogin_falcon180 == false {
+				answer_falcon180 := <-channel_falcon180
+				fmt.Println(">Falcon180 Done.")
+				RESP += "\n\n---------------- falcon180 answer ----------------\n"
+				RESP += strings.TrimSpace(answer_falcon180)
 			}
 			speak_out(speak, RESP)
 			save_conversation(role, userInput, RESP)
@@ -1109,22 +1333,56 @@ func main() {
 
 		}
 
-		// HUGGINGCHAT:
-		if role == ".huggingchat" {
-			if relogin_hc == true {
-				fmt.Println("✘ HuggingChat")
+		//// HUGGINGCHAT:
+		//if role == ".huggingchat" {
+		//	if relogin_hc == true {
+		//		fmt.Println("✘ HuggingChat")
+		//	} else {
+		//		channel_hc <- userInput
+		//		answer := <-channel_hc
+
+		//		// Print the response to the terminal
+		//		RESP = strings.TrimSpace(answer)
+		//		speak_out(speak, RESP)
+		//		save_conversation(role, userInput, RESP)
+		//		printer(color_huggingchat, RESP, false)
+		//	}
+
+		//}
+
+		// FALCON:
+		if role == ".falcon180" {
+			if relogin_falcon180 == true {
+				fmt.Println("✘ Falcon180")
 			} else {
-				channel_hc <- userInput
-				answer := <-channel_hc
+				channel_falcon180 <- userInput
+				answer := <-channel_falcon180
 
 				// Print the response to the terminal
 				RESP = strings.TrimSpace(answer)
 				speak_out(speak, RESP)
 				save_conversation(role, userInput, RESP)
-				printer(color_huggingchat, RESP, false)
+				printer(color_chat, RESP, false)
 			}
 
 		}
+		// LLAMA2:
+		if role == ".llama2" {
+			if relogin_llama2 == true {
+				fmt.Println("✘ Llama2")
+			} else {
+				channel_llama2 <- userInput
+				answer := <-channel_llama2
+
+				// Print the response to the terminal
+				RESP = strings.TrimSpace(answer)
+				speak_out(speak, RESP)
+				save_conversation(role, userInput, RESP)
+				printer(color_chat, RESP, false)
+			}
+
+		}
+
 	CHATAPI:
 		if role == ".chatapi" {
 			// Check ChatGPT API Key
@@ -1184,6 +1442,7 @@ func main() {
 
 		}
 
+		save2clip_board(RESP)
 		// clean RESP
 		RESP = ""
 
