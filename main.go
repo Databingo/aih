@@ -936,7 +936,7 @@ func main() {
 			fmt.Println("                           ")
 			fmt.Println("                 Welcome to Aih!                             ")
 			fmt.Println("--------------------------------------------------------------------------- ")
-			fmt.Println(" .               Select AI mode of Bard/ChatGPT/Claude2/HuggingChat(Llama2)")
+			fmt.Println(" .               Select AI mode of Bard/ChatGPT/Claude2/Llama2/Falcon180 ")
 			fmt.Println(" ↑               Previous input")
 			fmt.Println(" ↓               Next input")
 			fmt.Println(" <<              Start multiple lines input")

@@ -10,7 +10,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 ## Command list
 | Command    | Operation|
 |------------|----------|
-|.           | Select AI mode of Bard/ChatGPT/Claude2/HuggingChat(Llama2)|
+|.           | Select AI mode of Bard/ChatGPT/Claude2/Llama2/Falcon180 |
 |↑           | Previous input|
 |↓           | Next input|
 |<<          | Start multiple lines input mode|
