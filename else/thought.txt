@@ -54,8 +54,8 @@ https://huggingface.co/chat/conversation/64f30169c498fd14c9f41469/web-search?
 
 TODO:
 yaml for histoy
-headless false to get cookie? NO
+//headless false to get cookie? NO
 check chatGPT verify mask? Difficult
 color setting of vi for symbols (now is black can't see in black background)
 restart for faulse AI model?
-escapt %v out of %!s(MISSING): on webpage
+//escapt %v out of %!s(MISSING): on webpage Done
