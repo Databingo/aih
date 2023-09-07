@@ -59,3 +59,4 @@ check chatGPT verify mask? Difficult
 color setting of vi for symbols (now is black can't see in black background)
 restart for faulse AI model?
 //escapt %v out of %!s(MISSING): on webpage Done
+// add Falcon  Done

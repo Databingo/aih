@@ -34,7 +34,8 @@ func style(name string) tcell.Style {
 	}
 	if name == "special" {
 		return tcell.StyleDefault.
-			Foreground(tcell.Color(0))
+			//Foreground(tcell.Color(0))
+			Foreground(tcell.Color(2))
 	}
 	if name == "text.string" {
 		return tcell.StyleDefault.
@@ -42,7 +43,8 @@ func style(name string) tcell.Style {
 	}
 	if name == "text.number" {
 		return tcell.StyleDefault.
-			Foreground(tcell.ColorOlive)
+			//Foreground(tcell.ColorOlive)
+			Foreground(tcell.Color(2))
 	}
 	if name == "text.comment" {
 		return tcell.StyleDefault.
@@ -54,7 +56,8 @@ func style(name string) tcell.Style {
 	}
 	if name == "text.special" {
 		return tcell.StyleDefault.
-			Foreground(tcell.Color(6))
+			//Foreground(tcell.Color(6))
+			Foreground(tcell.Color(2))
 	}
 	if name == "cursor" {
 		return tcell.StyleDefault.Reverse(true)
