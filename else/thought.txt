@@ -60,3 +60,17 @@ check chatGPT verify mask? Difficult
 restart for faulse AI model?
 //escapt %v out of %!s(MISSING): on webpage Done
 // add Falcon  Done
+1.one file for all notes
+2.one file for all pass
+//3.hasX stop then hasX submit
+4.internet error of llama2/falcon180
+5.merger proxies-groups
+6.optimise yaml model in merger
+7.sell books
+8.select cloth/shoes to sell
+9.prepare gift to guards
+10.prompt engineering/sell? deeper?
+11.aih prompt select/create/save function
+12.group for prompt engineering?
+//13.tester 30 parameter of cli
+15.aih .i instruction list to vi mode?
