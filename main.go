@@ -34,13 +34,14 @@ import (
 
 var trace = false
 
-//var trace = true
+// var trace = true
 var userInput string
 var color_bard = tcell.ColorDarkCyan
 var color_bing = tcell.ColorDarkMagenta
 var color_chat = tcell.ColorWhite
 var color_chatapi = tcell.ColorWhite
 var color_claude = tcell.ColorYellow
+
 //var color_huggingchat = tcell.ColorDarkMagenta
 
 func clear() {
@@ -681,7 +682,7 @@ func main() {
 		//page_hc = browser.MustPage("https://huggingface.co/chat")
 		page_falcon180 = stealth.MustPage(browser)
 		//page_falcon180.MustNavigate("https://huggingface.co/spaces/tiiuae/falcon-180b-demo")
-                page_falcon180.MustNavigate("https://tiiuae-falcon-180b-demo.hf.space/?__theme=light")
+		page_falcon180.MustNavigate("https://tiiuae-falcon-180b-demo.hf.space/?__theme=light")
 		for i := 1; i <= 30; i++ {
 			if page_falcon180.MustHasX("//textarea[@data-testid='textbox']") {
 				relogin_falcon180 = false
@@ -738,12 +739,20 @@ func main() {
 
 					// stop_icon
 					var stop_icon_disappear = false
-					if page_falcon180.MustElementX("//button[@id='component-18']").MustWaitVisible() != nil {
-						//fmt.Println("creating...")
-						if page_falcon180.MustElementX("//button[@id='component-18']").MustWaitInvisible() != nil {
-							//fmt.Println("returned...")
+					err := rod.Try(func() {
+						page_falcon180.Timeout(10 * time.Second).MustElementX("//button[@id='component-18']").MustWaitVisible().CancelTimeout()
+					})
+					if err == nil {
+						err = rod.Try(func() {
+							page_falcon180.Timeout(80 * time.Second).MustElementX("//button[@id='component-18']").MustWaitInvisible().CancelTimeout()
+						})
+						if err == nil {
 							stop_icon_disappear = true
+						} else {
+							//fmt.Println("err::::", err)
 						}
+					} else {
+						//fmt.Println("err::", err)
 					}
 
 					if stop_icon_disappear == true {
@@ -830,12 +839,20 @@ func main() {
 
 					// stop_icon
 					var stop_icon_disappear = false
-					if page_llama2.MustElementX("//button[contains(text(), 'Stop')]").MustWaitVisible() != nil {
-						//fmt.Println("creating...")
-						if page_llama2.MustElementX("//button[contains(text(), 'Stop')]").MustWaitInvisible() != nil {
-							//fmt.Println("returned...")
+					err := rod.Try(func() {
+						page_llama2.Timeout(10 * time.Second).MustElementX("//button[contains(text(), 'Stop')]").MustWaitVisible().CancelTimeout()
+					})
+					if err == nil {
+						err = rod.Try(func() {
+							page_llama2.Timeout(80 * time.Second).MustElementX("//button[contains(text(), 'Stop')]").MustWaitInvisible().CancelTimeout()
+						})
+						if err == nil {
 							stop_icon_disappear = true
+						} else {
+							//fmt.Println("err::::", err)
 						}
+					} else {
+						//fmt.Println("err::", err)
 					}
 
 					if stop_icon_disappear == true {
