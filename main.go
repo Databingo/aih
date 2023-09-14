@@ -1009,7 +1009,7 @@ func main() {
 			continue
 		case ".", "/":
 			proms := promptui.Select{
-				Label: "Select AI mode to chat",
+				Label: "Select AI model to chat",
 				Size:  10,
 				Items: []string{
 					"All-In-One",
@@ -1129,6 +1129,45 @@ func main() {
 				OpenAI_Key = ""
 				role = ".chatapi"
 				goto CHATAPI
+			case "Exit":
+				continue
+			}
+		case ".r", ".restart":
+			prom := promptui.Select{
+				Label: "Select AI model to restart:",
+				Size:  6,
+				Items: []string{
+					"Restart Bard",
+					"Exit",
+				},
+			}
+
+			_, keyy, err := prom.Run()
+			if err != nil {
+				panic(err)
+			}
+
+			switch keyy {
+			case "Restart Bard":
+			      //close(channel_bard)
+			      page_bard.MustClose()
+
+	//// Open rod browser
+	////var browser *rod.Browser
+	//browser_ = rod.New().
+	//	Trace(trace).
+	//	ControlURL(proxy_u).
+	//	Timeout(60 * 24 * time.Minute).
+	//	MustConnect()
+
+	//// Get cookies (for login AI accounts)
+	//cookies := browser_.MustGetCookies()
+	//for _, i := range cookies {
+	//	browser.MustSetCookies(i)
+	//}
+
+			      go Bard()
+				continue
 			case "Exit":
 				continue
 			}
