@@ -11,7 +11,7 @@ import (
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/go-rod/stealth"
-//	"github.com/google/uuid"
+	//	"github.com/google/uuid"
 	"github.com/manifoldco/promptui"
 	"github.com/peterh/liner"
 	"github.com/rivo/tview"
@@ -248,10 +248,10 @@ func main() {
 	//	 xhr.setRequestHeader('Connection', 'keep-alive');
 	//	 xhr.setRequestHeader('Accept', 'text/event-stream, text/event-stream');
 	//	 xhr.onreadystatechange = function() {
-	//	     if (xhr.readyState == XMLHttpRequest.DONE) { 
+	//	     if (xhr.readyState == XMLHttpRequest.DONE) {
 	//	         var res_text = xhr.responseText;
 	//	         console.log(res_text);
-	//	        } 
+	//	        }
 	//	     }
 	//         console.log(sdata);
 	//	 xhr.send(sdata);
@@ -311,7 +311,7 @@ func main() {
 	//	                               xhr.setRequestHeader('Connection', 'keep-alive');
 	//	                               xhr.setRequestHeader('Accept', 'text/event-stream, text/event-stream');
 	//	                               xhr.onreadystatechange = function() {
-	//	                                   if (xhr.readyState == XMLHttpRequest.DONE) { 
+	//	                                   if (xhr.readyState == XMLHttpRequest.DONE) {
 	//	                                       var res_text = xhr.responseText;
 	//	                                       console.log(res_text);
 	//	                                   }
@@ -735,7 +735,7 @@ func main() {
 					for i := 1; i <= 20; i++ {
 
 						//if page_llama2.MustHasX("//button[contains(text(), 'Submit')]") {
-							//page_llama2.MustElementX("//button[contains(text(), 'Submit')]").MustClick()
+						//page_llama2.MustElementX("//button[contains(text(), 'Submit')]").MustClick()
 						if page_llama2.MustHasX("//button[@id='component-14']") {
 							page_llama2.MustElementX("//button[@id='component-14']").MustClick()
 							break
@@ -1138,6 +1138,7 @@ func main() {
 				Size:  6,
 				Items: []string{
 					"Restart Bard",
+					"Restart Claude2",
 					"Exit",
 				},
 			}
@@ -1146,27 +1147,29 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
+			// Renew cookies
+			b := rod.New().
+				Trace(trace).
+				ControlURL(proxy_u).
+				Timeout(60 * 24 * time.Minute).
+				MustConnect()
+
+			// Get cookies (for login AI accounts)
+			cks := b.MustGetCookies()
+			for _, i := range cks {
+				browser.MustSetCookies(i)
+			}
 
 			switch keyy {
 			case "Restart Bard":
-			      //close(channel_bard)
-			      page_bard.MustClose()
-
-	//// Open rod browser
-	////var browser *rod.Browser
-	//browser_ = rod.New().
-	//	Trace(trace).
-	//	ControlURL(proxy_u).
-	//	Timeout(60 * 24 * time.Minute).
-	//	MustConnect()
-
-	//// Get cookies (for login AI accounts)
-	//cookies := browser_.MustGetCookies()
-	//for _, i := range cookies {
-	//	browser.MustSetCookies(i)
-	//}
-
-			      go Bard()
+				page_bard.MustClose()
+				relogin_bard = true
+				go Bard()
+				continue
+			case "Restart Claude2":
+				page_claude.MustClose()
+				relogin_claude = true
+				go Claude2()
 				continue
 			case "Exit":
 				continue
@@ -1202,14 +1205,17 @@ func main() {
 			if relogin_bard == false {
 				channel_bard <- userInput
 				//<-channel_bard
+				fmt.Println("ask bard")
 			}
 			if relogin_chatgpt == false {
 				channel_chatgpt <- userInput
 				//<-channel_chatgpt
+				fmt.Println("ask chatgpt")
 			}
 			if relogin_claude == false {
 				channel_claude <- userInput
 				//<-channel_claude
+				fmt.Println("ask claude2")
 			}
 			//if relogin_hc == false {
 			//	channel_hc <- userInput
@@ -1218,10 +1224,13 @@ func main() {
 			if relogin_llama2 == false {
 				channel_llama2 <- userInput
 				//<-channel_hc
+				fmt.Println("ask llama2")
 			}
 			if relogin_falcon180 == false {
 				channel_falcon180 <- userInput
 				//<-channel_hc
+				fmt.Println("ask falcon180")
+
 			}
 			//--------------- ----------------------
 

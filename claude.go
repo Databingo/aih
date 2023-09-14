@@ -1,34 +1,14 @@
 package main
 
 import (
-	//	"context"
 	_ "embed"
 	"fmt"
-	//	"github.com/atotto/clipboard"
-	//	"github.com/creack/pty"
-	//	"github.com/gdamore/tcell/v2"
 	"github.com/go-rod/rod"
-	//	"github.com/go-rod/rod/lib/launcher"
-	//	"github.com/go-rod/rod/lib/utils"
 	"github.com/go-rod/stealth"
 	"github.com/google/uuid"
-	//	"github.com/manifoldco/promptui"
-	//	"github.com/peterh/liner"
-	//	"github.com/rivo/tview"
-	//	openai "github.com/sashabaranov/go-openai"
 	"github.com/tidwall/gjson"
-	//	"github.com/tidwall/sjson"
-	//	"golang.org/x/crypto/ssh/terminal"
-	//	"io"
-	//	"io/ioutil"
-	//	"log"
-	//	"os"
-	//	"os/exec"
-	//	"os/signal"
-	//	"runtime"
 	"strconv"
 	"strings"
-	//	"syscall"
 	"time"
 )
 
@@ -36,7 +16,6 @@ var page_claude *rod.Page
 var relogin_claude = true
 var channel_claude chan string
 
-//	channel_claude := make(chan string)
 func Claude2() {
 	channel_claude = make(chan string)
 	defer func() {
