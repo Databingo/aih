@@ -56,8 +56,6 @@ func Bard() {
 		sprint("✔ Bard")
 		for {
 			select {
-		//	case <-channel_bard:
-		//	 return
 			case question := <-channel_bard:
 				//page_bard.MustActivate()
 				page_bard.MustElementX("//textarea[@id='mat-input-0']").MustWaitVisible().MustInput(question)
