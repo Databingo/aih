@@ -213,16 +213,16 @@ func main() {
 	go Bard()
 
 	//////////////////////c2////////////////////////////
+	go Chatgpt()
+
+	//////////////////////c3////////////////////////////
 	go Claude2()
 
 	//////////////////////c4////////////////////////////
-	go Chatgpt()
+	go Llama2()
 
 	//////////////////////c5////////////////////////////
 	go Falcon180()
-
-	//////////////////////c6////////////////////////////
-	go Llama2()
 
 	// Exit when wake up for the disconnecting with daemon browser
 	go func() {
@@ -322,6 +322,7 @@ func main() {
 			fmt.Println(" .v              Mini vi to edit quest, `:ai` send, `:q` cancel")
 			fmt.Println(" .c or .clear    Clear screen")
 			fmt.Println(" .h or .history  Show history")
+			fmt.Println(" .r or .restart  Re-start AI model")
 			fmt.Println(" .key            Set key of ChatGPT API")
 			fmt.Println(" .proxy          Set proxy")
 			fmt.Println(" .help           Help")

@@ -25,6 +25,7 @@ Download [binary file](https://github.com/Databingo/aih/releases) then type:
 |.v          | Mini `vi` to edit quest, `:ai` send, `:q` cancel|
 |.c or .clear| Clear the screen|
 |.h or .history | Show history of conversations|
+|.r or .restart | Re-start AI model|
 |.proxy      | Set proxy, for example: socks5://127.0.0.1:7890|
 |.help       | Show help|
 |.exit       | Exit Aih|
