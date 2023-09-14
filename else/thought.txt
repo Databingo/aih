@@ -57,7 +57,7 @@ yaml for histoy
 //headless false to get cookie? NO
 check chatGPT verify mask? Difficult
 //color setting of vi for symbols (now is black can't see in black background)
-restart for faulse AI model?
+//restart for faulse AI model?
 //escapt %v out of %!s(MISSING): on webpage Done
 // add Falcon  Done
 1.one file for all notes
@@ -65,10 +65,10 @@ restart for faulse AI model?
 //3.hasX stop then hasX submit
 // Hard to insert check 4.internet error of llama2/falcon180
 //Done 5.merger proxies-groups
-6.optimise yaml model in merger
+//6.optimise yaml model in merger
 //7.sell books
-8.select cloth/shoes to sell
-9.prepare gift to guards wine?
+//8.select cloth/shoes to sell
+//9.prepare gift to guards wine?
 10.prompt engineering/sell? deeper?
 11.aih prompt select/create/save function
 12.group for prompt engineering?
