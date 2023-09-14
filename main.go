@@ -1507,3 +1507,5 @@ func speak_out(speak int, RESP string) {
 		}()
 	}
 }
+
+var browser *rod.Browser

@@ -1,38 +1,14 @@
 package main
 
 import (
-	//	"context"
 	_ "embed"
 	"fmt"
-	//	"github.com/atotto/clipboard"
-	//	"github.com/creack/pty"
-	//	"github.com/gdamore/tcell/v2"
 	"github.com/go-rod/rod"
-	//	"github.com/go-rod/rod/lib/launcher"
-	//	"github.com/go-rod/rod/lib/utils"
 	"github.com/go-rod/stealth"
-	//"github.com/google/uuid"
-	//	"github.com/manifoldco/promptui"
-	//	"github.com/peterh/liner"
-	//	"github.com/rivo/tview"
-	//	openai "github.com/sashabaranov/go-openai"
-	//"github.com/tidwall/gjson"
-	//	"github.com/tidwall/sjson"
-	//	"golang.org/x/crypto/ssh/terminal"
-	//	"io"
-	//	"io/ioutil"
-	//	"log"
-	//	"os"
-	//	"os/exec"
-	//	"os/signal"
-	//	"runtime"
-	//"strconv"
 	"strings"
-	//	"syscall"
 	"time"
 )
 
-var browser *rod.Browser
 
 // Set up client of Bard (Rod version)
 var page_bard *rod.Page
