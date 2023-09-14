@@ -811,8 +811,11 @@ func main() {
 					}
 					//fmt.Println("Falcon180 input typed...")
 					for i := 1; i <= 20; i++ {
-						if page_llama2.MustHasX("//button[contains(text(), 'Submit')]") {
-							page_llama2.MustElementX("//button[contains(text(), 'Submit')]").MustClick()
+
+						//if page_llama2.MustHasX("//button[contains(text(), 'Submit')]") {
+							//page_llama2.MustElementX("//button[contains(text(), 'Submit')]").MustClick()
+						if page_llama2.MustHasX("//button[@id='component-14']") {
+							page_llama2.MustElementX("//button[@id='component-14']").MustClick()
 							break
 						}
 						time.Sleep(time.Second)
@@ -840,11 +843,13 @@ func main() {
 					// stop_icon
 					var stop_icon_disappear = false
 					err := rod.Try(func() {
-						page_llama2.Timeout(10 * time.Second).MustElementX("//button[contains(text(), 'Stop')]").MustWaitVisible().CancelTimeout()
+						//page_llama2.Timeout(10 * time.Second).MustElementX("//button[contains(text(), 'Stop')]").MustWaitVisible().CancelTimeout()
+						page_llama2.Timeout(10 * time.Second).MustElementX("//button[@id='component-15']").MustWaitVisible().CancelTimeout()
 					})
 					if err == nil {
 						err = rod.Try(func() {
-							page_llama2.Timeout(80 * time.Second).MustElementX("//button[contains(text(), 'Stop')]").MustWaitInvisible().CancelTimeout()
+							//page_llama2.Timeout(80 * time.Second).MustElementX("//button[contains(text(), 'Stop')]").MustWaitInvisible().CancelTimeout()
+							page_llama2.Timeout(80 * time.Second).MustElementX("//button[@id='component-15']").MustWaitInvisible().CancelTimeout()
 						})
 						if err == nil {
 							stop_icon_disappear = true
