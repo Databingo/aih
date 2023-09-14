@@ -218,222 +218,109 @@ func main() {
 
 	//////////////////////c4////////////////////////////
 	go Chatgpt()
-	//// Set up client of chatgpt (rod version)
-	//var page_chatgpt *rod.Page
-	//var relogin_chatgpt = true
-	//channel_chatgpt := make(chan string)
+
+	//////////////////////c5////////////////////////////
+	go Falcon180()
+	//// Set up client of falcon180-180B (Rod version)
+	//var page_falcon180 *rod.Page
+	//var relogin_falcon180 = true
+	//channel_falcon180 := make(chan string)
 	//go func() {
 	//	defer func() {
 	//		if err := recover(); err != nil {
-	//			relogin_chatgpt = true
+	//			relogin_falcon180 = true
 	//		}
 	//	}()
-	//	//page_chatgpt = browser.MustPage("https://chat.openai.com")
-	//	page_chatgpt = stealth.MustPage(browser)
-	//	page_chatgpt.MustNavigate("https://chat.openai.com")
-
-	//	channel_chatgpt_tips := make(chan string)
-	//	go func() {
-	//		for i := 1; i <= 30; i++ {
-	//			if page_chatgpt.MustHasX("//div[contains(text(), 'Okay, let')]") {
-	//				page_chatgpt.MustElementX("//div[contains(text(), 'Okay, let')]").MustWaitVisible().MustClick()
-	//				close(channel_chatgpt_tips)
-	//				break
-	//			}
-	//			if page_chatgpt.MustHasX("//h2[contains(text(), 'Your session has expired')]") {
-	//				relogin_chatgpt = true
-	//				close(channel_chatgpt_tips)
-	//				break
-	//			}
-	//			time.Sleep(time.Second)
-	//		}
-	//	}()
-
-	//	//for i := 1; i <= 30; i++ {
-	//	//	if page_chatgpt.MustHasX("//div[contains(text(), 'Okay, let')]") {
-	//	//		page_chatgpt.MustElementX("//div[contains(text(), 'Okay, let')]").MustWaitVisible().MustClick()
-	//	//	}
-	//	//	time.Sleep(time.Second)
-	//	//}
-	//	//for i := 1; i <= 30; i++ {
-	//	//	if page_chatgpt.MustHasX("//h2[contains(text(), 'Your session has expired')]") {
-	//	//		relogin_chatgpt = true
-	//	//		break
-	//	//	}
-	//	//	if page_chatgpt.MustHasX("//div[contains(text(), 'Something went wrong. If this issue persists please')]") {
-	//	//		//fmt.Println("ChatGPT web error")
-	//	//		//channel_chatgpt <- "✘✘  ChatGPT, Please check the internet connection and verify login status."
-	//	//		relogin_chatgpt = true
-	//	//		break
-	//	//		//page_chatgpt.MustPDF("ChatGPT✘.pdf")
-	//	//	}
-	//	//	time.Sleep(time.Second)
-	//	//}
+	//	//page_hc = browser.MustPage("https://huggingface.co/chat")
+	//	page_falcon180 = stealth.MustPage(browser)
+	//	//page_falcon180.MustNavigate("https://huggingface.co/spaces/tiiuae/falcon-180b-demo")
+	//	page_falcon180.MustNavigate("https://tiiuae-falcon-180b-demo.hf.space/?__theme=light")
 	//	for i := 1; i <= 30; i++ {
-	//		if page_chatgpt.MustHasX("//textarea[@id='prompt-textarea']") && !page_chatgpt.MustHasX("//h2[contains(text(), 'Your session has expired')]") {
-	//			relogin_chatgpt = false
+	//		if page_falcon180.MustHasX("//textarea[@data-testid='textbox']") {
+	//			relogin_falcon180 = false
 	//			break
 	//		}
 	//		time.Sleep(time.Second)
 	//	}
-
-	//	if relogin_chatgpt == true {
-	//		sprint("✘ ChatGPT")
-	//		//page_chatgpt.MustPDF("./tmp/ChatGPT✘.pdf")
+	//	if relogin_falcon180 == true {
+	//		sprint("✘ Falcon180")
+	//		//page_hc.MustPDF("./tmp/HuggingChat✘.pdf")
 	//	}
-	//	if relogin_chatgpt == false {
-	//		sprint("✔ ChatGPT")
+	//	if relogin_falcon180 == false {
+	//		sprint("✔ Falcon180")
 	//		for {
 	//			select {
-	//			case question := <-channel_chatgpt:
-	//				//page_chatgpt.MustActivate()
+	//			case question := <-channel_falcon180:
+	//				//page_hc.MustActivate()
+	//				//fmt.Println("Falcon180 received question...", question)
 	//				for i := 1; i <= 20; i++ {
-	//					if page_chatgpt.MustHasX("//textarea[@id='prompt-textarea']") {
-	//						page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']").MustInput(question)
+	//					if page_falcon180.MustHasX("//textarea[@data-testid='textbox']") {
+	//						page_falcon180.MustElementX("//textarea[@data-testid='textbox']").MustInput(question)
 	//						break
 	//					}
-	//					time.Sleep(1 * time.Second)
+	//					time.Sleep(time.Second)
 	//				}
+	//				//fmt.Println("Falcon180 input typed...")
 	//				for i := 1; i <= 20; i++ {
-	//					if page_chatgpt.MustHasX("//textarea[@id='prompt-textarea']/..//button") {
-	//						page_chatgpt.MustElementX("//textarea[@id='prompt-textarea']/..//button").MustClick()
+	//					//if page_falcon180.MustHasX("//button[contains(text(), 'Submit')]") {
+	//					if page_falcon180.MustHasX("//button[@id='component-17']") {
+	//						page_falcon180.MustElementX("//button[@id='component-17']").MustClick()
 	//						break
 	//					}
-	//					time.Sleep(1 * time.Second)
+	//					time.Sleep(time.Second)
 	//				}
-	//				fmt.Println("ChatGPT generating...")
-	//				//page_chatgpt.MustActivate()
+	//				fmt.Println("Falcon180 generating...")
+	//				//page_falcon180.MustActivate() // Sometime three dot to hang
 	//				//if role == ".all" {
-	//				//	channel_chatgpt <- "click_chatgpt"
+	//				//	channel_falcon180 <- "click_falcon180"
 	//				//}
+	//				//// Check Error
+	//				//channel_falcon180_check := make(chan string)
+	//				//go func() {
+	//				//	for i := 1; i <= 20; i++ {
+	//				//		if page_falcon180.MustHasX("//*[contains(text(), 'Too much traffic, please try again')]") {
+	//				//			channel_falcon180 <- "✘✘ Falcon180, Please check the internet connection and verify login status. Traffic."
+	//				//			fmt.Println("Falcon180 too much traffic...")
+	//				//			relogin_falcon180 = true
+	//				//			close(channel_falcon180_check)
+	//				//			break
+	//				//		}
+	//				//		time.Sleep(1 * time.Second)
+	//				//	}
+	//				//}()
 
-	//				var regenerate_icon = false
-	//				for i := 1; i <= 60; i++ {
-	//					if page_chatgpt.MustHas("svg path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']") {
-	//						regenerate_icon = true
-	//						break
+	//				// stop_icon
+	//				var stop_icon_disappear = false
+	//				err := rod.Try(func() {
+	//					page_falcon180.Timeout(10 * time.Second).MustElementX("//button[@id='component-18']").MustWaitVisible().CancelTimeout()
+	//				})
+	//				if err == nil {
+	//					err = rod.Try(func() {
+	//						page_falcon180.Timeout(80 * time.Second).MustElementX("//button[@id='component-18']").MustWaitInvisible().CancelTimeout()
+	//					})
+	//					if err == nil {
+	//						stop_icon_disappear = true
+	//					} else {
+	//						//fmt.Println("err::::", err)
 	//					}
-	//					time.Sleep(1 * time.Second)
-	//				}
-	//				if regenerate_icon == true {
-	//					answer := page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()[7:]
-	//					if strings.Contains(answer,
-	//						"An error occurred. Either the engine you requested does not exist or there was another issue processing your request. If this issue persists please contact us through our help center at help.openai.com.") {
-	//						relogin_chatgpt = true
-	//					}
-	//					channel_chatgpt <- answer
 	//				} else {
-	//					channel_chatgpt <- "✘✘  ChatGPT, Please check the internet connection and verify login status."
-	//					relogin_chatgpt = true
-	//					//page_chatgpt.MustPDF("./tmp/ChatGPT✘.pdf")
+	//					//fmt.Println("err::", err)
+	//				}
+
+	//				if stop_icon_disappear == true {
+	//					answer := page_falcon180.MustElementX("(//div[@data-testid='bot'])[last()]").MustText()
+	//					channel_falcon180 <- answer
+	//				} else {
+	//					channel_falcon180 <- "✘✘  Falcon180, Please check the internet connection and verify login status."
+	//					relogin_falcon180 = true
+	//					//page_hc.MustPDF("./tmp/HuggingChat✘.pdf")
 
 	//				}
 	//			}
 	//		}
 	//	}
+
 	//}()
-
-	//////////////////////c5////////////////////////////
-	// Set up client of falcon180-180B (Rod version)
-	var page_falcon180 *rod.Page
-	var relogin_falcon180 = true
-	channel_falcon180 := make(chan string)
-	go func() {
-		defer func() {
-			if err := recover(); err != nil {
-				relogin_falcon180 = true
-			}
-		}()
-		//page_hc = browser.MustPage("https://huggingface.co/chat")
-		page_falcon180 = stealth.MustPage(browser)
-		//page_falcon180.MustNavigate("https://huggingface.co/spaces/tiiuae/falcon-180b-demo")
-		page_falcon180.MustNavigate("https://tiiuae-falcon-180b-demo.hf.space/?__theme=light")
-		for i := 1; i <= 30; i++ {
-			if page_falcon180.MustHasX("//textarea[@data-testid='textbox']") {
-				relogin_falcon180 = false
-				break
-			}
-			time.Sleep(time.Second)
-		}
-		if relogin_falcon180 == true {
-			sprint("✘ Falcon180")
-			//page_hc.MustPDF("./tmp/HuggingChat✘.pdf")
-		}
-		if relogin_falcon180 == false {
-			sprint("✔ Falcon180")
-			for {
-				select {
-				case question := <-channel_falcon180:
-					//page_hc.MustActivate()
-					//fmt.Println("Falcon180 received question...", question)
-					for i := 1; i <= 20; i++ {
-						if page_falcon180.MustHasX("//textarea[@data-testid='textbox']") {
-							page_falcon180.MustElementX("//textarea[@data-testid='textbox']").MustInput(question)
-							break
-						}
-						time.Sleep(time.Second)
-					}
-					//fmt.Println("Falcon180 input typed...")
-					for i := 1; i <= 20; i++ {
-						//if page_falcon180.MustHasX("//button[contains(text(), 'Submit')]") {
-						if page_falcon180.MustHasX("//button[@id='component-17']") {
-							page_falcon180.MustElementX("//button[@id='component-17']").MustClick()
-							break
-						}
-						time.Sleep(time.Second)
-					}
-					fmt.Println("Falcon180 generating...")
-					//page_falcon180.MustActivate() // Sometime three dot to hang
-					//if role == ".all" {
-					//	channel_falcon180 <- "click_falcon180"
-					//}
-					//// Check Error
-					//channel_falcon180_check := make(chan string)
-					//go func() {
-					//	for i := 1; i <= 20; i++ {
-					//		if page_falcon180.MustHasX("//*[contains(text(), 'Too much traffic, please try again')]") {
-					//			channel_falcon180 <- "✘✘ Falcon180, Please check the internet connection and verify login status. Traffic."
-					//			fmt.Println("Falcon180 too much traffic...")
-					//			relogin_falcon180 = true
-					//			close(channel_falcon180_check)
-					//			break
-					//		}
-					//		time.Sleep(1 * time.Second)
-					//	}
-					//}()
-
-					// stop_icon
-					var stop_icon_disappear = false
-					err := rod.Try(func() {
-						page_falcon180.Timeout(10 * time.Second).MustElementX("//button[@id='component-18']").MustWaitVisible().CancelTimeout()
-					})
-					if err == nil {
-						err = rod.Try(func() {
-							page_falcon180.Timeout(80 * time.Second).MustElementX("//button[@id='component-18']").MustWaitInvisible().CancelTimeout()
-						})
-						if err == nil {
-							stop_icon_disappear = true
-						} else {
-							//fmt.Println("err::::", err)
-						}
-					} else {
-						//fmt.Println("err::", err)
-					}
-
-					if stop_icon_disappear == true {
-						answer := page_falcon180.MustElementX("(//div[@data-testid='bot'])[last()]").MustText()
-						channel_falcon180 <- answer
-					} else {
-						channel_falcon180 <- "✘✘  Falcon180, Please check the internet connection and verify login status."
-						relogin_falcon180 = true
-						//page_hc.MustPDF("./tmp/HuggingChat✘.pdf")
-
-					}
-				}
-			}
-		}
-
-	}()
 
 	//////////////////////c6////////////////////////////
 	// Set up client of Llama2 (Rod version)
@@ -883,6 +770,7 @@ func main() {
 					"Restart Bard",
 					"Restart Claude2",
 					"Restart ChatGPT",
+					"Restart Falcon180",
 					"Exit",
 				},
 			}
@@ -919,6 +807,11 @@ func main() {
 				page_chatgpt.MustClose()
 				relogin_chatgpt = true
 				go Chatgpt()
+				continue
+			case "Restart Falcon180":
+				page_falcon180.MustClose()
+				relogin_falcon180 = true
+				go Falcon180()
 				continue
 			case "Exit":
 				continue
