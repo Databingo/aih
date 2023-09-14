@@ -11,7 +11,7 @@ import (
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/go-rod/stealth"
-	"github.com/google/uuid"
+//	"github.com/google/uuid"
 	"github.com/manifoldco/promptui"
 	"github.com/peterh/liner"
 	"github.com/rivo/tview"
@@ -163,7 +163,7 @@ func main() {
 		MustLaunch()
 
 	// Open rod browser
-	var browser *rod.Browser
+	//var browser *rod.Browser
 	browser = rod.New().
 		Trace(trace).
 		ControlURL(proxy_u).
@@ -213,229 +213,232 @@ func main() {
 
 	//////////////////////c1////////////////////////////
 	// Set up client of Bard (Rod version)
-	var page_bard *rod.Page
-	var relogin_bard = true
-	channel_bard := make(chan string)
-	go func() {
-		defer func() {
-			if err := recover(); err != nil {
-				relogin_bard = true
-			}
-		}()
-		//page_bard := browser.MustPage("https://bard.google.com")
-		page_bard = stealth.MustPage(browser)
-		page_bard.MustNavigate("https://bard.google.com")
+	//var page_bard *rod.Page
+	//var relogin_bard = true
+	//var channel_bard  chan string
+	go bard()
+	//channel_bard := make(chan string)
+	//go func() {
+	//	defer func() {
+	//		if err := recover(); err != nil {
+	//			relogin_bard = true
+	//		}
+	//	}()
+	//	//page_bard := browser.MustPage("https://bard.google.com")
+	//	page_bard = stealth.MustPage(browser)
+	//	page_bard.MustNavigate("https://bard.google.com")
 
-		for i := 1; i <= 30; i++ {
-			if page_bard.MustHasX("//textarea[@id='mat-input-0']") {
-				relogin_bard = false
-				break
-			}
-			// Check "I'm not a robot"
-			info := page_bard.MustInfo()
-			if strings.HasPrefix(info.URL, "https://google.com/sorry") {
-				relogin_bard = true
-				break
-			}
-			// Check "Sign in"
-			if page_bard.MustHasX("//a[contains(text(), 'Sign in')]") {
-				relogin_bard = true
-				break
-			}
-			// Check "You've been signed out"
-			if page_bard.MustHasX("//h1[contains(text(), 've been signed out')]") {
-				relogin_bard = true
-				break
-			}
+	//	for i := 1; i <= 30; i++ {
+	//		if page_bard.MustHasX("//textarea[@id='mat-input-0']") {
+	//			relogin_bard = false
+	//			break
+	//		}
+	//		// Check "I'm not a robot"
+	//		info := page_bard.MustInfo()
+	//		if strings.HasPrefix(info.URL, "https://google.com/sorry") {
+	//			relogin_bard = true
+	//			break
+	//		}
+	//		// Check "Sign in"
+	//		if page_bard.MustHasX("//a[contains(text(), 'Sign in')]") {
+	//			relogin_bard = true
+	//			break
+	//		}
+	//		// Check "You've been signed out"
+	//		if page_bard.MustHasX("//h1[contains(text(), 've been signed out')]") {
+	//			relogin_bard = true
+	//			break
+	//		}
 
-			time.Sleep(time.Second)
-		}
-		if relogin_bard == true {
-			sprint("✘ Bard")
-			//page_bard.MustPDF("./tmp/Bard✘.pdf")
-		}
-		if relogin_bard == false {
-			sprint("✔ Bard")
-			for {
-				select {
-				case question := <-channel_bard:
-					//page_bard.MustActivate()
-					page_bard.MustElementX("//textarea[@id='mat-input-0']").MustWaitVisible().MustInput(question)
-					page_bard.MustElementX("//button[@mattooltip='Submit']").MustClick()
-					fmt.Println("Bard generating...")
-					//page_bard.MustActivate()
-					//if role == ".all" {
-					//	channel_bard <- "click_bard"
-					//}
-					// wait generated icon
-					var generated_icon_appear = false
-					for i := 1; i <= 60; i++ {
-						if page_bard.MustHasX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')]") {
-							generated_icon_appear = true
-							break
-						}
-						time.Sleep(1 * time.Second)
-					}
-					if generated_icon_appear == true {
-						img := page_bard.MustElementX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')][last()]").MustWaitVisible()
-						response := img.MustElementX("parent::div/parent::div").MustWaitVisible()
-						answer := response.MustText()
-						channel_bard <- answer
-					} else {
-						channel_bard <- "✘✘  Bard, Please check the internet connection and verify login status."
-						relogin_bard = true
-						//page_bard.MustPDF("./tmp/Bard✘.pdf")
+	//		time.Sleep(time.Second)
+	//	}
+	//	if relogin_bard == true {
+	//		sprint("✘ Bard")
+	//		//page_bard.MustPDF("./tmp/Bard✘.pdf")
+	//	}
+	//	if relogin_bard == false {
+	//		sprint("✔ Bard")
+	//		for {
+	//			select {
+	//			case question := <-channel_bard:
+	//				//page_bard.MustActivate()
+	//				page_bard.MustElementX("//textarea[@id='mat-input-0']").MustWaitVisible().MustInput(question)
+	//				page_bard.MustElementX("//button[@mattooltip='Submit']").MustClick()
+	//				fmt.Println("Bard generating...")
+	//				//page_bard.MustActivate()
+	//				//if role == ".all" {
+	//				//	channel_bard <- "click_bard"
+	//				//}
+	//				// wait generated icon
+	//				var generated_icon_appear = false
+	//				for i := 1; i <= 60; i++ {
+	//					if page_bard.MustHasX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')]") {
+	//						generated_icon_appear = true
+	//						break
+	//					}
+	//					time.Sleep(1 * time.Second)
+	//				}
+	//				if generated_icon_appear == true {
+	//					img := page_bard.MustElementX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')][last()]").MustWaitVisible()
+	//					response := img.MustElementX("parent::div/parent::div").MustWaitVisible()
+	//					answer := response.MustText()
+	//					channel_bard <- answer
+	//				} else {
+	//					channel_bard <- "✘✘  Bard, Please check the internet connection and verify login status."
+	//					relogin_bard = true
+	//					//page_bard.MustPDF("./tmp/Bard✘.pdf")
 
-					}
-				}
-			}
-		}
+	//				}
+	//			}
+	//		}
+	//	}
 
-	}()
+	//}()
 
 	//////////////////////c2////////////////////////////
 	// Set up client of Claude (Rod version)
-	var page_claude *rod.Page
-	var relogin_claude = true
-	channel_claude := make(chan string)
-	go func() {
-		defer func() {
-			if err := recover(); err != nil {
-				relogin_claude = true
-			}
-		}()
-		//page_claude = browser.MustPage("https://claude.ai")
-		page_claude = stealth.MustPage(browser)
-		page_claude.MustNavigate("https://claude.ai/api/organizations").MustWaitLoad()
-		org_json := page_claude.MustElementX("//pre").MustText()
-		org_uuid := gjson.Get(string(org_json), "0.uuid").String()
-		time.Sleep(6 * time.Second)
+	go Claude2()
+	//var page_claude *rod.Page
+	//var relogin_claude = true
+	//channel_claude := make(chan string)
+	//go func() {
+	//	defer func() {
+	//		if err := recover(); err != nil {
+	//			relogin_claude = true
+	//		}
+	//	}()
+	//	//page_claude = browser.MustPage("https://claude.ai")
+	//	page_claude = stealth.MustPage(browser)
+	//	page_claude.MustNavigate("https://claude.ai/api/organizations").MustWaitLoad()
+	//	org_json := page_claude.MustElementX("//pre").MustText()
+	//	org_uuid := gjson.Get(string(org_json), "0.uuid").String()
+	//	time.Sleep(6 * time.Second)
 
-		new_uuid := uuid.New().String()
-		new_uuid_url := "https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations"
-		create_new_converastion_json := `{"uuid":"` + new_uuid + `","name":""}`
-		create_new_converastion_js := `
-		 (new_uuid_url, sdata) => {
-		 var xhr = new XMLHttpRequest();
-		 xhr.open("POST", new_uuid_url);
-		 xhr.setRequestHeader('Content-Type', 'application/json');
-		 xhr.setRequestHeader('Referer', 'https://claude.ai/chats');
-		 xhr.setRequestHeader('Origin', 'https://claude.ai');
-		 xhr.setRequestHeader('TE', 'trailers');
-		 xhr.setRequestHeader('DNT', '1');
-		 xhr.setRequestHeader('Connection', 'keep-alive');
-		 xhr.setRequestHeader('Accept', 'text/event-stream, text/event-stream');
-		 xhr.onreadystatechange = function() {
-		     if (xhr.readyState == XMLHttpRequest.DONE) { 
-		         var res_text = xhr.responseText;
-		         console.log(res_text);
-		        } 
-		     }
-	         console.log(sdata);
-		 xhr.send(sdata);
-		}
-		`
-		page_claude.MustEval(create_new_converastion_js, new_uuid_url, create_new_converastion_json).Str()
-		// posted new conversation uuid
-		time.Sleep(3 * time.Second) // delay to simulate human being
+	//	new_uuid := uuid.New().String()
+	//	new_uuid_url := "https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations"
+	//	create_new_converastion_json := `{"uuid":"` + new_uuid + `","name":""}`
+	//	create_new_converastion_js := `
+	//	 (new_uuid_url, sdata) => {
+	//	 var xhr = new XMLHttpRequest();
+	//	 xhr.open("POST", new_uuid_url);
+	//	 xhr.setRequestHeader('Content-Type', 'application/json');
+	//	 xhr.setRequestHeader('Referer', 'https://claude.ai/chats');
+	//	 xhr.setRequestHeader('Origin', 'https://claude.ai');
+	//	 xhr.setRequestHeader('TE', 'trailers');
+	//	 xhr.setRequestHeader('DNT', '1');
+	//	 xhr.setRequestHeader('Connection', 'keep-alive');
+	//	 xhr.setRequestHeader('Accept', 'text/event-stream, text/event-stream');
+	//	 xhr.onreadystatechange = function() {
+	//	     if (xhr.readyState == XMLHttpRequest.DONE) { 
+	//	         var res_text = xhr.responseText;
+	//	         console.log(res_text);
+	//	        } 
+	//	     }
+	//         console.log(sdata);
+	//	 xhr.send(sdata);
+	//	}
+	//	`
+	//	page_claude.MustEval(create_new_converastion_js, new_uuid_url, create_new_converastion_json).Str()
+	//	// posted new conversation uuid
+	//	time.Sleep(3 * time.Second) // delay to simulate human being
 
-		var record_chat_messages string
-		var response_chat_messages string
-		for i := 1; i <= 20; i++ {
-			create_json := page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid).MustElementX("//pre").MustText()
+	//	var record_chat_messages string
+	//	var response_chat_messages string
+	//	for i := 1; i <= 20; i++ {
+	//		create_json := page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid).MustElementX("//pre").MustText()
 
-			message_uuid := gjson.Get(string(create_json), "uuid").String()
-			if message_uuid == new_uuid {
-				//fmt.Println("create_conversation success...")
-				relogin_claude = false
-				record_chat_messages = gjson.Get(string(create_json), "chat_messages").String()
-				break
-			}
-			time.Sleep(2 * time.Second)
-		}
+	//		message_uuid := gjson.Get(string(create_json), "uuid").String()
+	//		if message_uuid == new_uuid {
+	//			//fmt.Println("create_conversation success...")
+	//			relogin_claude = false
+	//			record_chat_messages = gjson.Get(string(create_json), "chat_messages").String()
+	//			break
+	//		}
+	//		time.Sleep(2 * time.Second)
+	//	}
 
-		if relogin_claude == true {
-			sprint("✘ Claude")
-			//page_claude.MustPDF("./tmp/Claude✘.pdf")
-		}
-		if relogin_claude == false {
-			sprint("✔ Claude")
-			for {
-				select {
-				case question := <-channel_claude:
-					question = strings.Replace(question, "\r", "\n", -1)
-					question = strings.Replace(question, "\"", "\\\"", -1)
-					question = strings.Replace(question, "\n", "\\n", -1)
-					question = strings.TrimSuffix(question, "\n")
-					// re-activate
-					page_claude.MustNavigate("https://claude.ai/api/account/statsig/" + org_uuid).MustWaitLoad()
-					record_json := page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid).MustElementX("//pre").MustText()
-					record_chat_messages = gjson.Get(string(record_json), "chat_messages").String()
-					record_count := gjson.Get(string(response_chat_messages), "#").Int()
-					page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid).MustWaitLoad()
-					time.Sleep(2 * time.Second) // delay to simulate human being
-					//question = strings.Replace(question, `"`, `\"`, -1) // escape " in input text when code into json
+	//	if relogin_claude == true {
+	//		sprint("✘ Claude")
+	//		//page_claude.MustPDF("./tmp/Claude✘.pdf")
+	//	}
+	//	if relogin_claude == false {
+	//		sprint("✔ Claude")
+	//		for {
+	//			select {
+	//			case question := <-channel_claude:
+	//				question = strings.Replace(question, "\r", "\n", -1)
+	//				question = strings.Replace(question, "\"", "\\\"", -1)
+	//				question = strings.Replace(question, "\n", "\\n", -1)
+	//				question = strings.TrimSuffix(question, "\n")
+	//				// re-activate
+	//				page_claude.MustNavigate("https://claude.ai/api/account/statsig/" + org_uuid).MustWaitLoad()
+	//				record_json := page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid).MustElementX("//pre").MustText()
+	//				record_chat_messages = gjson.Get(string(record_json), "chat_messages").String()
+	//				record_count := gjson.Get(string(response_chat_messages), "#").Int()
+	//				page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid).MustWaitLoad()
+	//				time.Sleep(2 * time.Second) // delay to simulate human being
+	//				//question = strings.Replace(question, `"`, `\"`, -1) // escape " in input text when code into json
 
-					d := `{"completion":{"prompt":"` + question + `","timezone":"Asia/Shanghai","model":"claude-2"},"organization_uuid":"` + org_uuid + `","conversation_uuid":"` + new_uuid + `","text":"` + question + `","attachments":[]}`
-					//fmt.Println(d)
-					js := `
-		                               (sdata, new_uuid) => {
-		                               var xhr = new XMLHttpRequest();
-		                               xhr.open("POST", "https://claude.ai/api/append_message");
-		                               xhr.setRequestHeader('Content-Type', 'application/json');
-		                               xhr.setRequestHeader('Referer', 'https://claude.ai/chat/new_uuid');
-		                               xhr.setRequestHeader('Origin', 'https://claude.ai');
-		                               xhr.setRequestHeader('TE', 'trailers');
-		                               xhr.setRequestHeader('Connection', 'keep-alive');
-		                               xhr.setRequestHeader('Accept', 'text/event-stream, text/event-stream');
-		                               xhr.onreadystatechange = function() {
-		                                   if (xhr.readyState == XMLHttpRequest.DONE) { 
-		                                       var res_text = xhr.responseText;
-		                                       console.log(res_text);
-		                                   }
-		                               }
-		                               console.log(sdata);
-		                               xhr.send(sdata);
-		                               }
-		                              `
-					page_claude.MustEval(js, d, new_uuid).Str()
-					fmt.Println("Claude generating...")
-					//if role == ".all" {
-					//	channel_claude <- "click_claude"
-					//}
-					time.Sleep(3 * time.Second) // delay to simulate human being
+	//				d := `{"completion":{"prompt":"` + question + `","timezone":"Asia/Shanghai","model":"claude-2"},"organization_uuid":"` + org_uuid + `","conversation_uuid":"` + new_uuid + `","text":"` + question + `","attachments":[]}`
+	//				//fmt.Println(d)
+	//				js := `
+	//	                               (sdata, new_uuid) => {
+	//	                               var xhr = new XMLHttpRequest();
+	//	                               xhr.open("POST", "https://claude.ai/api/append_message");
+	//	                               xhr.setRequestHeader('Content-Type', 'application/json');
+	//	                               xhr.setRequestHeader('Referer', 'https://claude.ai/chat/new_uuid');
+	//	                               xhr.setRequestHeader('Origin', 'https://claude.ai');
+	//	                               xhr.setRequestHeader('TE', 'trailers');
+	//	                               xhr.setRequestHeader('Connection', 'keep-alive');
+	//	                               xhr.setRequestHeader('Accept', 'text/event-stream, text/event-stream');
+	//	                               xhr.onreadystatechange = function() {
+	//	                                   if (xhr.readyState == XMLHttpRequest.DONE) { 
+	//	                                       var res_text = xhr.responseText;
+	//	                                       console.log(res_text);
+	//	                                   }
+	//	                               }
+	//	                               console.log(sdata);
+	//	                               xhr.send(sdata);
+	//	                               }
+	//	                              `
+	//				page_claude.MustEval(js, d, new_uuid).Str()
+	//				fmt.Println("Claude generating...")
+	//				//if role == ".all" {
+	//				//	channel_claude <- "click_claude"
+	//				//}
+	//				time.Sleep(3 * time.Second) // delay to simulate human being
 
-					// wait answer
-					var claude_response = false
-					var response_json string
-					for i := 1; i <= 20; i++ {
-						if page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid).MustHasX("//pre") {
-							response_json = page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid).MustElementX("//pre").MustText()
-							response_chat_messages = gjson.Get(string(response_json), "chat_messages").String()
-							count := gjson.Get(string(response_chat_messages), "#").Int()
+	//				// wait answer
+	//				var claude_response = false
+	//				var response_json string
+	//				for i := 1; i <= 20; i++ {
+	//					if page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid).MustHasX("//pre") {
+	//						response_json = page_claude.MustNavigate("https://claude.ai/api/organizations/" + org_uuid + "/chat_conversations/" + new_uuid).MustElementX("//pre").MustText()
+	//						response_chat_messages = gjson.Get(string(response_json), "chat_messages").String()
+	//						count := gjson.Get(string(response_chat_messages), "#").Int()
 
-							if response_chat_messages != record_chat_messages && count == record_count+2 {
-								claude_response = true
-								record_chat_messages = response_chat_messages
-								break
-							}
-						}
-						time.Sleep(3 * time.Second)
-					}
-					if claude_response == true {
-						count := gjson.Get(string(response_chat_messages), "#").Int()
-						answer := gjson.Get(string(response_json), "chat_messages.#(index=="+strconv.FormatInt(count-1, 10)+").text").String()
-						channel_claude <- answer
-					} else {
-						channel_claude <- "✘✘  Claude, Please check the internet connection and verify login status."
-						relogin_claude = true
-						//page_claude.MustPDF("./tmp/Claude✘.pdf")
-					}
-				}
-			}
-		}
+	//						if response_chat_messages != record_chat_messages && count == record_count+2 {
+	//							claude_response = true
+	//							record_chat_messages = response_chat_messages
+	//							break
+	//						}
+	//					}
+	//					time.Sleep(3 * time.Second)
+	//				}
+	//				if claude_response == true {
+	//					count := gjson.Get(string(response_chat_messages), "#").Int()
+	//					answer := gjson.Get(string(response_json), "chat_messages.#(index=="+strconv.FormatInt(count-1, 10)+").text").String()
+	//					channel_claude <- answer
+	//				} else {
+	//					channel_claude <- "✘✘  Claude, Please check the internet connection and verify login status."
+	//					relogin_claude = true
+	//					//page_claude.MustPDF("./tmp/Claude✘.pdf")
+	//				}
+	//			}
+	//		}
+	//	}
 
-	}()
+	//}()
 
 	////////////////////////c3////////////////////////////
 	//// Set up client of Huggingchat (Rod version)
@@ -1585,3 +1588,83 @@ func speak_out(speak int, RESP string) {
 		}()
 	}
 }
+
+	var browser *rod.Browser
+	// Set up client of Bard (Rod version)
+	var page_bard *rod.Page
+	var relogin_bard = true
+	var channel_bard  chan string
+func bard() {
+	channel_bard = make(chan string)
+		defer func() {
+			if err := recover(); err != nil {
+				relogin_bard = true
+			}
+		}()
+		page_bard = stealth.MustPage(browser)
+		page_bard.MustNavigate("https://bard.google.com")
+
+		for i := 1; i <= 30; i++ {
+			if page_bard.MustHasX("//textarea[@id='mat-input-0']") {
+				relogin_bard = false
+				break
+			}
+			// Check "I'm not a robot"
+			info := page_bard.MustInfo()
+			if strings.HasPrefix(info.URL, "https://google.com/sorry") {
+				relogin_bard = true
+				break
+			}
+			// Check "Sign in"
+			if page_bard.MustHasX("//a[contains(text(), 'Sign in')]") {
+				relogin_bard = true
+				break
+			}
+			// Check "You've been signed out"
+			if page_bard.MustHasX("//h1[contains(text(), 've been signed out')]") {
+				relogin_bard = true
+				break
+			}
+
+			time.Sleep(time.Second)
+		}
+		if relogin_bard == true {
+			sprint("✘ Bard")
+		}
+		if relogin_bard == false {
+			sprint("✔ Bard")
+			for {
+				select {
+				case question := <-channel_bard:
+					//page_bard.MustActivate()
+					page_bard.MustElementX("//textarea[@id='mat-input-0']").MustWaitVisible().MustInput(question)
+					page_bard.MustElementX("//button[@mattooltip='Submit']").MustClick()
+					fmt.Println("Bard generating...")
+					//page_bard.MustActivate()
+					//if role == ".all" {
+					//	channel_bard <- "click_bard"
+					//}
+					// wait generated icon
+					var generated_icon_appear = false
+					for i := 1; i <= 60; i++ {
+						if page_bard.MustHasX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')]") {
+							generated_icon_appear = true
+							break
+						}
+						time.Sleep(1 * time.Second)
+					}
+					if generated_icon_appear == true {
+						img := page_bard.MustElementX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')][last()]").MustWaitVisible()
+						response := img.MustElementX("parent::div/parent::div").MustWaitVisible()
+						answer := response.MustText()
+						channel_bard <- answer
+					} else {
+						channel_bard <- "✘✘  Bard, Please check the internet connection and verify login status."
+						relogin_bard = true
+
+					}
+				}
+			}
+		}
+
+	}
