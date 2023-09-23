@@ -26,7 +26,8 @@ func Bard() {
 	page_bard.MustNavigate("https://bard.google.com")
 
 	for i := 1; i <= 30; i++ {
-		if page_bard.MustHasX("//textarea[@id='mat-input-0']") {
+		//if page_bard.MustHasX("//textarea[@id='mat-input-0']") {
+		if page_bard.MustHasX("//rich-textarea[@aria-label='Input for prompt text']") {
 			relogin_bard = false
 			break
 		}
@@ -58,7 +59,7 @@ func Bard() {
 			select {
 			case question := <-channel_bard:
 				//page_bard.MustActivate()
-				page_bard.MustElementX("//textarea[@id='mat-input-0']").MustWaitVisible().MustInput(question)
+				page_bard.MustElementX("//rich-textarea[@aria-label='Input for prompt text']").MustWaitVisible().MustInput(question)
 				page_bard.MustElementX("//button[@mattooltip='Submit']").MustClick()
 				fmt.Println("Bard generating...")
 				//page_bard.MustActivate()
@@ -76,7 +77,7 @@ func Bard() {
 				}
 				if generated_icon_appear == true {
 					img := page_bard.MustElementX("//img[contains(@src, 'https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif')][last()]").MustWaitVisible()
-					response := img.MustElementX("parent::div/parent::div").MustWaitVisible()
+					response := img.MustElementX("parent::div/parent::bard-logo/parent::div/parent::div").MustWaitVisible()
 					answer := response.MustText()
 					channel_bard <- answer
 				} else {
