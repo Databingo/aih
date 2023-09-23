@@ -31,10 +31,10 @@ func main() {
 
 	// Create a new release
 	release, _, err := client.Repositories.CreateRelease(ctx, owner, repo, &github.RepositoryRelease{
-		TagName:         github.String("v0.2.5.3"),
+		TagName:         github.String("v0.2.5.4"),
 		TargetCommitish: github.String("master"),
-		Name:            github.String("Release v0.2.5.3"),
-		Body:            github.String("Welcome to Aih! Reconstructed main.go & Added .r/.restart function for restarting AI model."),
+		Name:            github.String("Release v0.2.5.4"),
+		Body:            github.String("Welcome to Aih! Fix bard for new update."),
 		Draft:           github.Bool(false),
 		Prerelease:      github.Bool(false),
 	})
