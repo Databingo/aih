@@ -30,9 +30,9 @@ import (
 	"time"
 )
 
-//var trace = false
+var trace = false
 
-var trace = true
+//var trace = true
 var userInput string
 var color_bard = tcell.ColorDarkCyan
 var color_bing = tcell.ColorDarkMagenta
