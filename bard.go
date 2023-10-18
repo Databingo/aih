@@ -27,7 +27,8 @@ func Bard() {
 
 	for i := 1; i <= 30; i++ {
 		//if page_bard.MustHasX("//textarea[@id='mat-input-0']") {
-		if page_bard.MustHasX("//rich-textarea[@aria-label='Input for prompt text']") {
+		//if page_bard.MustHasX("//rich-textarea[@aria-label='Input for prompt text']") {
+		if page_bard.MustHasX("//rich-textarea[@enterkeyhint='send']") {
 			relogin_bard = false
 			break
 		}
@@ -58,8 +59,9 @@ func Bard() {
 		for {
 			select {
 			case question := <-channel_bard:
-				//page_bard.MustActivate()
-				page_bard.MustElementX("//rich-textarea[@aria-label='Input for prompt text']").MustWaitVisible().MustInput(question)
+				//page_bard.MustActivate()       
+				//page_bard.MustElementX("//rich-textarea[@aria-label='Input for prompt text']").MustWaitVisible().MustInput(question)
+				page_bard.MustElementX("//rich-textarea[@enterkeyhint='send']").MustWaitVisible().MustInput(question)
 				page_bard.MustElementX("//button[@mattooltip='Submit']").MustClick()
 				fmt.Println("Bard generating...")
 				//page_bard.MustActivate()
