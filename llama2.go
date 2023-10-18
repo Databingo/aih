@@ -100,7 +100,8 @@ func Llama2() {
 				}
 
 				if stop_icon_disappear == true {
-					answer := page_llama2.MustElementX("(//div[@data-testid='bot'])[last()]").MustText()
+					//answer := page_llama2.MustElementX("(//div[@data-testid='bot'])[last()]").MustText()
+					answer := page_llama2.MustElementX("(//button[@data-testid='bot'])[last()]").MustText()
 					channel_llama2 <- answer
 				} else {
 					channel_llama2 <- "✘✘  Llama2, Please check the internet connection and verify login status."

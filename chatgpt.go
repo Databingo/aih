@@ -109,7 +109,8 @@ func Chatgpt() {
 					time.Sleep(1 * time.Second)
 				}
 				if regenerate_icon == true {
-					answer := page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()[7:]
+					//answer := page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()[7:]
+					answer := page_chatgpt.MustElementX("(//div[contains(@class, 'group final-completion w-full')])[last()]").MustText()[7:]
 					if strings.Contains(answer,
 						"An error occurred. Either the engine you requested does not exist or there was another issue processing your request. If this issue persists please contact us through our help center at help.openai.com.") {
 						relogin_chatgpt = true
