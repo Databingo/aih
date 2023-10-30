@@ -100,6 +100,7 @@ func Chatgpt() {
 				//	channel_chatgpt <- "click_chatgpt"
 				//}
 
+			        page_chatgpt.MustElementX("//div[contains(text(), 'Stop generating')]")
 				var regenerate_icon = false
 				for i := 1; i <= 60; i++ {
 					if page_chatgpt.MustHas("svg path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']") {
@@ -109,8 +110,8 @@ func Chatgpt() {
 					time.Sleep(1 * time.Second)
 				}
 				if regenerate_icon == true {
-					//answer := page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()[7:]
-					answer := page_chatgpt.MustElementX("(//div[contains(@class, 'group final-completion w-full')])[last()]").MustText()[7:]
+					answer := page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()[7:]
+					//answer := page_chatgpt.MustElementX("(//div[contains(@class, 'group final-completion w-full')])[last()]").MustText()[7:]
 					if strings.Contains(answer,
 						"An error occurred. Either the engine you requested does not exist or there was another issue processing your request. If this issue persists please contact us through our help center at help.openai.com.") {
 						relogin_chatgpt = true
