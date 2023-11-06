@@ -7,7 +7,7 @@ require (
 	github.com/atotto/clipboard v0.1.4
 	github.com/creack/pty v1.1.18
 	// github.com/gdamore/tcell/v2 v2.6.1-0.20230827060410-08c7757cd1c9
-	github.com/go-rod/rod v0.114.2
+	github.com/go-rod/rod v0.114.5
 	github.com/go-rod/stealth v0.4.9
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/google/uuid v1.3.1
