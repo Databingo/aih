@@ -68,5 +68,9 @@ $ go mod tidy && go build -tags vi
 - github.com/sashabaranov/go-openai 
 - github.com/kiasaki/ry
 
+## Todo
+- x for disable certain AI mode.
+- Change deamon mode to minimal browser mode for passing bot checking of ChatGPT.
+
 ## License
 MIT and "You can choose not to include this MIT license into your copies".
