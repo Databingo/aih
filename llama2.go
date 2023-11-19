@@ -85,19 +85,32 @@ func Llama2() {
 					//page_llama2.Timeout(10 * time.Second).MustElementX("//button[contains(text(), 'Stop')]").MustWaitVisible().CancelTimeout()
 					page_llama2.Timeout(10 * time.Second).MustElementX("//button[@id='component-15']").MustWaitVisible().CancelTimeout()
 				})
+				//fmt.Println("find stop button")
 				if err == nil {
 					err = rod.Try(func() {
 						//page_llama2.Timeout(80 * time.Second).MustElementX("//button[contains(text(), 'Stop')]").MustWaitInvisible().CancelTimeout()
 						page_llama2.Timeout(80 * time.Second).MustElementX("//button[@id='component-15']").MustWaitInvisible().CancelTimeout()
+				                //fmt.Println("disappear stop button")
 					})
 					if err == nil {
 						stop_icon_disappear = true
 					} else {
-						//fmt.Println("err::::", err)
+						//fmt.Println("err in find disappear stop button", err)
 					}
 				} else {
-					//fmt.Println("err::", err)
+					//fmt.Println("err in find stop button", err)
 				}
+
+				//if page_llama2.MustHas("span:contains('Error')") {
+				fmt.Println("finding Error")
+				if page_llama2.MustHasX("//span[contains(text(), 'Error')]"){
+
+				        //fmt.Println("find Error")
+					channel_llama2 <- "✘✘  Llama2, Please check the internet connection and verify login status."
+					relogin_llama2 = true
+			       }
+
+
 
 				if stop_icon_disappear == true {
 					//answer := page_llama2.MustElementX("(//div[@data-testid='bot'])[last()]").MustText()
