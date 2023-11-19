@@ -100,17 +100,24 @@ func Chatgpt() {
 				//	channel_chatgpt <- "click_chatgpt"
 				//}
 
-			        page_chatgpt.MustElementX("//div[contains(text(), 'Stop generating')]")
+
+			        //page_chatgpt.MustElementX("//div[contains(text(), 'Stop generating')]")
+				page_chatgpt.MustElement("svg path[d='M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2z']") 
+				//fmt.Println("found creating icon")
 				var regenerate_icon = false
+
 				for i := 1; i <= 60; i++ {
-					if page_chatgpt.MustHas("svg path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']") {
+					//if page_chatgpt.MustHas("svg path[d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15']") {
+					if page_chatgpt.MustHas("svg path[d='M7 11L12 6L17 11M12 18V7']") {
 						regenerate_icon = true
+						//fmt.Println("wait...")
 						break
 					}
 					time.Sleep(1 * time.Second)
 				}
-				if regenerate_icon == true {
-					answer := page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()[7:]
+				if regenerate_icon == true { 
+					answer := page_chatgpt.MustElementX("(//div[contains(@class, 'w-full text-token-text-primary')])[last()]").MustText()[7:]
+					//answer := page_chatgpt.MustElementX("(//div[contains(@class, 'group w-full')])[last()]").MustText()[7:]
 					//answer := page_chatgpt.MustElementX("(//div[contains(@class, 'group final-completion w-full')])[last()]").MustText()[7:]
 					if strings.Contains(answer,
 						"An error occurred. Either the engine you requested does not exist or there was another issue processing your request. If this issue persists please contact us through our help center at help.openai.com.") {

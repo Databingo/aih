@@ -69,7 +69,7 @@ $ go mod tidy && go build -tags vi
 - github.com/kiasaki/ry
 
 ## Todo
-- x for disable certain AI mode.
+- x for disable certain AI mode.(Finished)
 - Change deamon mode to minimal browser mode for passing bot checking of ChatGPT.
 
 ## License
