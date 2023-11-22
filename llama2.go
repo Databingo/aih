@@ -102,7 +102,7 @@ func Llama2() {
 				}
 
 				//if page_llama2.MustHas("span:contains('Error')") {
-				fmt.Println("finding Error")
+				//fmt.Println("finding Error")
 				if page_llama2.MustHasX("//span[contains(text(), 'Error')]"){
 
 				        //fmt.Println("find Error")
