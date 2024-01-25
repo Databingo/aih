@@ -39,7 +39,7 @@ func Llama2() {
 		for {
 			select {
 			case question := <-channel_llama2:
-				//page_hc.MustActivate()
+				page_llama2.MustActivate()
 				//fmt.Println("Falcon180 received question...", question)
 				for i := 1; i <= 20; i++ {
 					if page_llama2.MustHasX("//textarea[@data-testid='textbox']") {
@@ -59,11 +59,11 @@ func Llama2() {
 					}
 					time.Sleep(time.Second)
 				}
-				fmt.Println("Llama2 generating...")
+				fmt.Println("Llama2 generating...", role)
 				//page_falcon180.MustActivate() // Sometime three dot to hang
-				//if role == ".all" {
-				//	channel_falcon180 <- "click_falcon180"
-				//}
+				if role == ".all" {
+					channel_llama2 <- "click_llama2"
+				}
 				//// Check Error
 				//channel_falcon180_check := make(chan string)
 				//go func() {

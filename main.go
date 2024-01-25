@@ -30,8 +30,10 @@ import (
 	"time"
 )
 
-var trace = false
+var channel_all chan string
+var role string
 
+var trace = false
 //var trace = true
 var userInput string
 var color_bard = tcell.ColorDarkCyan
@@ -149,7 +151,7 @@ func main() {
 	//os.Setenv("http_proxy", Proxy)
 	//os.Setenv("https_proxy", Proxy)
 
-	role := ".bard"
+	role = ".bard"
 
 	// Set proxy
 	proxy_u := launcher.NewUserMode().
@@ -198,7 +200,7 @@ func main() {
 	}
 
 	// Renew browser to daemon
-	browser = browser_
+	// browser = browser_
 	//browser.ServeMonitor(":7777")
 
 	//////////////////////0////////////////////////////
@@ -216,13 +218,13 @@ func main() {
 	go Chatgpt()
 
 	//////////////////////c3////////////////////////////
-	go Claude2()
+	//go Claude2()
 
 	//////////////////////c4////////////////////////////
 	go Llama2()
 
 	//////////////////////c5////////////////////////////
-	go Falcon180()
+	//go Falcon180()
 
 	// Exit when wake up for the disconnecting with daemon browser
 	go func() {
@@ -650,18 +652,21 @@ func main() {
 			//--------------- ----------------------
 			if relogin_bard == false {
 				channel_bard <- userInput
-				//<-channel_bard
-				fmt.Println("ask bard")
+				<-channel_bard
+				//fmt.Println("ask bard")
+				fmt.Println("bard submit ok")
 			}
 			if relogin_chatgpt == false {
 				channel_chatgpt <- userInput
-				//<-channel_chatgpt
-				fmt.Println("ask chatgpt")
+				<-channel_chatgpt
+				//fmt.Println("ask chatgpt")
+				fmt.Println("chategpt submit ok")
 			}
 			if relogin_claude == false {
 				channel_claude <- userInput
-				//<-channel_claude
-				fmt.Println("ask claude2")
+				<-channel_claude
+				//fmt.Println("ask claude2")
+				fmt.Println("claude submit ok")
 			}
 			//if relogin_hc == false {
 			//	channel_hc <- userInput
@@ -669,15 +674,16 @@ func main() {
 			//}
 			if relogin_llama2 == false {
 				channel_llama2 <- userInput
-				//<-channel_hc
-				fmt.Println("ask llama2")
+				<-channel_llama2
+				//fmt.Println("ask llama2")
+				fmt.Println("llama2 submit ok")
 			}
-			if relogin_falcon180 == false {
-				channel_falcon180 <- userInput
-				//<-channel_hc
-				fmt.Println("ask falcon180")
+			//if relogin_falcon180 == false {
+			//	channel_falcon180 <- userInput
+			//	//<-channel_hc
+			//	fmt.Println("ask falcon180")
+			//}
 
-			}
 			//--------------- ----------------------
 
 			if relogin_bard == false {

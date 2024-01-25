@@ -4,7 +4,7 @@ import (
 	_ "embed"
 	"fmt"
 	"github.com/go-rod/rod"
-	//"github.com/go-rod/stealth"
+	"github.com/go-rod/stealth"
 	"github.com/google/uuid"
 	"github.com/tidwall/gjson"
 	"strconv"
@@ -23,21 +23,9 @@ func Claude2() {
 			relogin_claude = true
 		}
 	}()
-	page_claude = browser.MustPage("https://claude.ai")
-	//page_claude = stealth.MustPage(browser)
-	//page_claude.MustNavigate("https://claude.ai/chats").MustWaitLoad()
-	for i := 1; i <= 30; i++ {
-		if page_claude.MustHasX("//div[contains(text(), 'Start a new chat')]") {
-		   time.Sleep(3 * time.Second)
-		   page_claude.MustElementX("//div[contains(text(), 'Start a new chat')]").MustClick()
-			relogin_claude = false
-			break
-		}
-		time.Sleep(time.Second)
-	}
-
-
-
+	//page_claude = browser.MustPage("https://claude.ai")
+	page_claude = stealth.MustPage(browser)
+	page_claude.MustNavigate("https://claude.ai/api/organizations").MustWaitLoad()
 	org_json := page_claude.MustElementX("//pre").MustText()
 	org_uuid := gjson.Get(string(org_json), "0.uuid").String()
 	time.Sleep(6 * time.Second)

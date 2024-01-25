@@ -40,7 +40,7 @@ func Falcon180() {
 		for {
 			select {
 			case question := <-channel_falcon180:
-				//page_hc.MustActivate()
+				//page_falcon180.MustActivate()
 				//fmt.Println("Falcon180 received question...", question)
 				for i := 1; i <= 20; i++ {
 					if page_falcon180.MustHasX("//textarea[@data-testid='textbox']") {
